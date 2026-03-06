@@ -1,7 +1,7 @@
 """Definitions for WUI delineation bundles.
 
 These structures describe *how* a WUI boundary object is constructed (index d).
-Real delineation logic is intentionally deferred until real datasets are integrated.
+Real delineation logic is intentionally lightweight until real datasets are integrated.
 """
 
 from dataclasses import dataclass
@@ -31,3 +31,9 @@ class DelineationBundle:
             f"radius_m={self.neighborhood_radius_m}; "
             f"adj={self.adjacency_rule}"
         )
+
+    def short_id(self) -> str:
+        """Return a filesystem-safe short identifier for delineation index d."""
+        settlement = self.settlement_representation.replace(" ", "_")
+        adjacency = self.adjacency_rule.replace(" ", "_")
+        return f"{settlement}_v{self.vegetation_threshold:.2f}_r{int(self.neighborhood_radius_m)}_{adjacency}"

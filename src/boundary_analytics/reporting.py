@@ -1,5 +1,7 @@
 """Reporting helpers for manuscript/site outputs."""
 
+from pathlib import Path
+
 
 def assemble_summary_row(
     delineation_id: str,
@@ -19,3 +21,9 @@ def assemble_summary_row(
         "fit_status": fit_status,
         "slope": slope,
     }
+
+
+def write_markdown_summary(output_path: Path, lines: list[str]) -> None:
+    """Write a small markdown summary file."""
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
