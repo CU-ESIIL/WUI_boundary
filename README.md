@@ -48,3 +48,14 @@ http://127.0.0.1:8000
 ---
 
 Use **"Use this template"** on GitHub to start a new project.
+
+
+## Current Milestone: UI Drafts + Analytics Scaffold
+
+This repository now includes:
+
+- a **UI Drafts** docs section with a presentation-ready synthetic Draft 1 Story Lab
+- a **Roadmap to Real Data** page describing the next analytic steps
+- a lightweight Python **boundary analytics scaffold** under `src/boundary_analytics`
+
+These additions are intentionally scaffold-level and do not claim completed real-data analytics.

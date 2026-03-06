@@ -49,3 +49,10 @@ rsconnect/
 
 # macOS
 .DS_Store
+
+# Python build/test artifacts
+__pycache__/
+*.pyc
+
+# MkDocs build output
+site/
