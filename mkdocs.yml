@@ -15,6 +15,7 @@ nav:
       - Roadmap to Real Data: ui-drafts/roadmap-to-real-data.md
   - Analytics:
       - Boundary Analytics Scaffold: analytics/scaffold.md
+      - Minimal Demo Output: analytics/minimal-demo.md
 
 theme:
   name: material
