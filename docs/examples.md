@@ -108,3 +108,7 @@ Use callouts for important notes or caution points.
 
 !!! tip
     Keep examples short and focused so future contributors can copy and adapt them quickly.
+
+---
+
+For the current conceptual WUI prototype, see [Draft 1 — WUI Boundary Story Lab](ui-drafts/draft-1.md).

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WUI Boundary Story Lab — Draft 1</title>
+  <style>
+    :root { color-scheme: light dark; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      line-height: 1.4;
+      background: #f6f8fa;
+      color: #1f2937;
+    }
+    main {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+    .panel {
+      background: #ffffff;
+      border: 1px solid #d0d7de;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+    }
+    label { font-weight: 600; display: block; margin-bottom: 0.3rem; }
+    input[type='range'] { width: 100%; }
+    .value { font-size: 0.9rem; color: #4b5563; }
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 0.75rem;
+    }
+    .metric {
+      border: 1px solid #d0d7de;
+      border-radius: 8px;
+      padding: 0.75rem;
+      background: #f9fafb;
+    }
+    .metric strong { display: block; font-size: 1.1rem; margin-top: 0.25rem; }
+    canvas { width: 100%; border: 1px solid #d0d7de; border-radius: 8px; background: #fff; }
+    .tiny { font-size: 0.85rem; color: #4b5563; }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="panel">
+      <h1>WUI Boundary Story Lab (Draft 1)</h1>
+      <p>
+        This synthetic interface is a conceptual demo. It illustrates how changing <em>definition scale</em>
+        and <em>measurement scale</em> can change measured WUI boundary length.
+      </p>
+      <p class="tiny">
+        Not real-data analytics: values and geometry are synthetic and presentation-focused.
+      </p>
+    </section>
+
+    <section class="panel controls">
+      <div>
+        <label for="definitionScale">Definition bundle index (d)</label>
+        <input id="definitionScale" type="range" min="1" max="5" step="1" value="3" />
+        <div class="value" id="definitionValue"></div>
+      </div>
+      <div>
+        <label for="measurementScale">Measurement scale (ε)</label>
+        <input id="measurementScale" type="range" min="1" max="12" step="1" value="6" />
+        <div class="value" id="measurementValue"></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="metric-grid">
+        <div class="metric">Boundary complexity proxy<strong id="complexityMetric"></strong></div>
+        <div class="metric">Estimated perimeter L<sub>d</sub>(ε)<strong id="lengthMetric"></strong></div>
+        <div class="metric">Local slope (log-log proxy)<strong id="slopeMetric"></strong></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Synthetic profile across measurement scales</h2>
+      <canvas id="profile" width="940" height="320" aria-label="synthetic profile chart"></canvas>
+      <p class="tiny">
+        The plotted curve is synthetic and only demonstrates the form of scale-conditioned behavior.
+      </p>
+    </section>
+  </main>
+
+  <script>
+    const dSlider = document.getElementById('definitionScale');
+    const eSlider = document.getElementById('measurementScale');
+    const dValue = document.getElementById('definitionValue');
+    const eValue = document.getElementById('measurementValue');
+    const complexity = document.getElementById('complexityMetric');
+    const lengthMetric = document.getElementById('lengthMetric');
+    const slopeMetric = document.getElementById('slopeMetric');
+    const canvas = document.getElementById('profile');
+    const ctx = canvas.getContext('2d');
+
+    function syntheticLength(d, e) {
+      const a = 220 + d * 65;
+      const beta = 0.22 + d * 0.05;
+      const ripple = 1 + 0.06 * Math.sin((d + e) / 2);
+      return a * Math.pow(e, -beta) * ripple;
+    }
+
+    function redraw() {
+      const d = Number(dSlider.value);
+      const e = Number(eSlider.value);
+
+      dValue.textContent = `Definition bundle d = ${d} (more detailed object as d increases)`;
+      eValue.textContent = `Measurement scale ε = ${e} (coarser ruler as ε increases)`;
+
+      const curr = syntheticLength(d, e);
+      const prev = syntheticLength(d, Math.max(1, e - 1));
+      const slope = (Math.log(curr) - Math.log(prev)) / (Math.log(e) - Math.log(Math.max(1, e - 1) || 1.0001));
+      complexity.textContent = (1.2 + d * 0.25).toFixed(2);
+      lengthMetric.textContent = curr.toFixed(1);
+      slopeMetric.textContent = Number.isFinite(slope) ? slope.toFixed(2) : 'n/a';
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.strokeStyle = '#9ca3af';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(40, 20);
+      ctx.lineTo(40, 285);
+      ctx.lineTo(900, 285);
+      ctx.stroke();
+
+      ctx.strokeStyle = '#2563eb';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      for (let x = 1; x <= 12; x++) {
+        const yVal = syntheticLength(d, x);
+        const px = 40 + x * 70;
+        const py = 285 - Math.min(240, yVal * 0.5);
+        if (x === 1) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+
+      const selectedX = 40 + e * 70;
+      const selectedY = 285 - Math.min(240, curr * 0.5);
+      ctx.fillStyle = '#dc2626';
+      ctx.beginPath();
+      ctx.arc(selectedX, selectedY, 5, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    dSlider.addEventListener('input', redraw);
+    eSlider.addEventListener('input', redraw);
+    redraw();
+  </script>
+</body>
+</html>
