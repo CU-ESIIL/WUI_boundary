@@ -41,6 +41,7 @@ python scripts/run_minimal_boundary_scaling.py
 
 Expected output location:
 
+- `outputs/minimal_demo/boundary_scaling_plot.png`
 - `outputs/minimal_demo/boundary_scaling_summary.csv`
 - `outputs/minimal_demo/run_summary.md`
 
@@ -58,3 +59,7 @@ Expected output location:
 - Figure-ready data products for manuscript and site publication.
 
 See [UI Drafts / Draft 1](../ui-drafts/draft-1.md) for the current story-lab interface and [Roadmap to Real Data](../ui-drafts/roadmap-to-real-data.md) for planned implementation steps.
+
+## Automation
+
+GitHub Actions workflow `.github/workflows/boundary-scaling-demo.yml` runs tests, executes the synthetic minimal demo, uploads `outputs/minimal_demo/` as artifacts, and refreshes selected docs-facing assets for website publication.

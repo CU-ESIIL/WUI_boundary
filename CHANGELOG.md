@@ -3,6 +3,10 @@
 ## Unreleased
 
 ### Added
+- GitHub Actions workflow `.github/workflows/boundary-scaling-demo.yml` for pull requests and manual dispatch to run tests, execute minimal analysis, upload artifacts, and optionally commit selected docs-facing assets on workflow_dispatch.
+- New analytics docs page: `docs/analytics/minimal-demo.md` showing the synthetic boundary-scaling plot and rerun guidance.
+- Workflow-driven publication of website-facing synthetic demo assets under `docs/assets/figures/` and `docs/assets/data/` (generated/updated by CI job).
+- Minimal analysis now generates `outputs/minimal_demo/boundary_scaling_plot.png` in addition to CSV and markdown summary.
 - New website section **UI Drafts** with:
   - Draft 1 — WUI Boundary Story Lab (synthetic conceptual prototype)
   - Roadmap to Real Data
