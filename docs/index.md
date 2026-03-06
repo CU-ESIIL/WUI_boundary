@@ -1,11 +1,11 @@
-# basic_OASIS
+# WUI_boundary
 
-`basic_OASIS` is a lightweight MkDocs + Material starter for clear project documentation. It is designed to stay minimal, readable, and easy to extend.
+`WUI_boundary` hosts the project website for scale-conditioned wildland-urban interface boundary analysis, including conceptual UI drafts and analytics scaffolding.
 
-[Explore Examples](examples.md){ .md-button .md-button--primary }
+[Project Patterns](examples.md){ .md-button .md-button--primary }
 [Draft 1 — WUI Boundary Story Lab](ui-drafts/draft-1.md){ .md-button .md-button--primary }
 [Boundary Analytics Scaffold](analytics/scaffold.md){ .md-button }
-[View Repository](https://github.com/CU-ESIIL/basic_OASIS){ .md-button }
+[View Repository](https://github.com/CU-ESIIL/WUI_boundary){ .md-button }
 
 <div class="grid cards" markdown>
 
@@ -21,11 +21,11 @@
 
   Review the minimal scaffold for future reproducible real-data workflows.
 
-- **Docs**
+- **Project Documentation**
 
   ---
 
-  Keep guides concise so project state stays transparent.
+  Keep implementation notes and workflow guidance aligned with current repository state.
 
 </div>
 

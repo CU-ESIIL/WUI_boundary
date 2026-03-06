@@ -5,13 +5,13 @@ This Draft 1 interface is a presentation-ready **story lab** for the manuscript'
 <div class="oasis-embed">
   <iframe
     title="WUI Boundary Story Lab Draft 1"
-    src="/basic_OASIS/ui-drafts/draft-1/story-lab.html"
+    src="draft-1/story-lab.html"
     loading="lazy"
     allowfullscreen>
   </iframe>
 </div>
 
-[Open the Story Lab in a full page](/basic_OASIS/ui-drafts/draft-1/story-lab.html){ .md-button .oasis-hover-button }
+[Open the Story Lab in a full page](draft-1/story-lab.html){ .md-button .oasis-hover-button }
 
 ## What this draft demonstrates
 

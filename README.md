@@ -1,40 +1,34 @@
-# Research Project Template
+# WUI_boundary
 
-This repository is a **minimal template for research and data science projects** that combine code, documentation, and a project website.
+This repository contains the `WUI_boundary` project website and analytics scaffold for scale-conditioned wildland-urban interface boundary length estimation.
 
 It includes:
 
-* a clean project structure (`src`, `data`, `docs`, `tests`, etc.)
-* a documentation website built with **MkDocs + Material**
-* automatic deployment to **GitHub Pages** using GitHub Actions
-* development history files (changelog, roadmap, dev log)
-* an `AGENTS.md` file with guidance for AI coding agents
+* project documentation and website content under `docs/` (MkDocs + Material)
+* a UI draft section with a synthetic Story Lab prototype
+* a lightweight Python analytics scaffold under `src/boundary_analytics`
+* runnable synthetic demo scripts and outputs for reproducible workflow wiring
+* project history and governance files such as `CHANGELOG.md` and `AGENTS.md`
 
-The website is built from the `docs/` folder and automatically deployed when changes are pushed.
+The website is built from the `docs/` folder and deployed with GitHub Pages.
 
 ---
 
-# Enable the Website
+# Website deployment
 
-After creating a repository from this template you must enable GitHub Pages once.
+Enable GitHub Pages with **Source: GitHub Actions** in repository settings.
 
-1. Go to **Settings → Pages**
-2. Under **Build and deployment**, choose
-   **Source: GitHub Actions**
-
-The site will then deploy automatically on push.
-
-Your site will appear at:
+Expected site URL:
 
 ```
-https://<your-username>.github.io/<repository-name>/
+https://cu-esiil.github.io/WUI_boundary/
 ```
 
 ---
 
-# Preview Locally
+# Preview locally
 
-```
+```bash
 pip install -r requirements.txt
 mkdocs serve
 ```
@@ -47,9 +41,9 @@ http://127.0.0.1:8000
 
 ---
 
-## Current Milestone: Executable Minimal Boundary Scaling Demo
+## Current milestone: executable minimal boundary scaling demo
 
-This repository now includes:
+This repository currently includes:
 
 - a **UI Drafts** docs section with a presentation-ready synthetic Draft 1 Story Lab
 - a **Roadmap to Real Data** page describing the next analytic steps
