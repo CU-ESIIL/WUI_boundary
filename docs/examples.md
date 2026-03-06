@@ -1,10 +1,10 @@
-# UI Examples
+# Project Patterns
 
-This page contains small, copyable patterns that are compatible with a standard MkDocs + Material setup.
+This page captures reusable documentation patterns used in the `WUI_boundary` site.
 
-## Hoverable button
+## Navigation CTA pattern
 
-Use this for a small call-to-action with a subtle hover effect.
+Use this for concise internal calls-to-action.
 
 [Back to Home](index.md){ .md-button .oasis-hover-button }
 
@@ -12,14 +12,14 @@ Use this for a small call-to-action with a subtle hover effect.
 [Back to Home](index.md){ .md-button .oasis-hover-button }
 ```
 
-## Responsive iframe embed
+## Responsive iframe embed for UI drafts
 
-Use this wrapper to keep embedded content responsive.
+Use this wrapper to keep embedded conceptual prototypes responsive.
 
 <div class="oasis-embed">
   <iframe
-    title="OpenStreetMap example embed"
-    src="https://www.openstreetmap.org/export/embed.html?bbox=-105.3%2C39.9%2C-104.9%2C40.1&amp;layer=mapnik"
+    title="WUI Boundary Story Lab Draft 1"
+    src="draft-1/story-lab.html"
     loading="lazy"
     allowfullscreen>
   </iframe>
@@ -28,8 +28,8 @@ Use this wrapper to keep embedded content responsive.
 ```html
 <div class="oasis-embed">
   <iframe
-    title="OpenStreetMap example embed"
-    src="https://www.openstreetmap.org/export/embed.html?bbox=-105.3%2C39.9%2C-104.9%2C40.1&amp;layer=mapnik"
+    title="WUI Boundary Story Lab Draft 1"
+    src="draft-1/story-lab.html"
     loading="lazy"
     allowfullscreen>
   </iframe>
@@ -38,77 +38,37 @@ Use this wrapper to keep embedded content responsive.
 
 ## Card grid
 
-Use card grids to present parallel links or content categories.
+Use card grids to present top-level project sections.
 
 <div class="grid cards" markdown>
 
-- **Guide**
+- **UI Drafts**
 
   ---
 
-  Link short onboarding content.
+  Link conceptual interfaces and transition plans.
 
-- **Workflow**
-
-  ---
-
-  Summarize repeatable project steps.
-
-- **Reference**
+- **Analytics**
 
   ---
 
-  Point to key files and definitions.
+  Link scaffold package docs and reproducible run steps.
+
+- **Documentation**
+
+  ---
+
+  Link onboarding, conventions, and project history.
 
 </div>
-
-```md
-<div class="grid cards" markdown>
-
-- **Guide**
-
-  ---
-
-  Link short onboarding content.
-
-- **Workflow**
-
-  ---
-
-  Summarize repeatable project steps.
-
-- **Reference**
-
-  ---
-
-  Point to key files and definitions.
-
-</div>
-```
-
-## Content tabs
-
-Use tabs when two or three variants should live in one place.
-
-=== "Python"
-
-    ```python
-    print("Hello from Python")
-    ```
-
-=== "R"
-
-    ```r
-    print("Hello from R")
-    ```
 
 ## Admonition
 
-Use callouts for important notes or caution points.
+Use callouts for status and scope boundaries.
 
 !!! tip
-    Keep examples short and focused so future contributors can copy and adapt them quickly.
+    Keep examples short and project-focused so contributors can reuse them without template cleanup.
 
 ---
 
-For the current conceptual WUI prototype, see [Draft 1 — WUI Boundary Story Lab](ui-drafts/draft-1.md).
+For the current conceptual prototype, see [Draft 1 — WUI Boundary Story Lab](ui-drafts/draft-1.md).
