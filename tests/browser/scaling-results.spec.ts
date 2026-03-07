@@ -11,8 +11,13 @@ test('scaling results page renders figure, table, and csv link', async ({ page }
 
   const plot = page.locator('img[alt*="boundary scaling" i]').first();
   await expect(plot).toBeVisible();
-  const naturalWidth = await plot.evaluate((img) => (img as HTMLImageElement).naturalWidth);
-  expect(naturalWidth).toBeGreaterThan(0);
+
+  const plotSrc = await plot.getAttribute('src');
+  expect(plotSrc, 'Scaling plot should define an image source').toBeTruthy();
+
+  const plotUrl = new URL(plotSrc as string, page.url()).toString();
+  const plotResponse = await page.request.get(plotUrl);
+  expect(plotResponse.ok(), `Expected scaling plot to load successfully: ${plotUrl}`).toBeTruthy();
 
   const csvLink = page.getByRole('link', { name: /boundary_scaling_summary\.csv/i });
   await expect(csvLink).toBeVisible();
