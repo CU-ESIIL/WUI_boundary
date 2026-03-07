@@ -3,6 +3,7 @@
 ## Unreleased
 
 ### Changed
+- Fixed Playwright homepage link assertions to target links inside `main` content and fixed scaling plot fetch checks to use browser-resolved image URLs (`currentSrc`/`src`) under MkDocs base URL behavior.
 - Relaxed brittle Playwright content assertions by broadening the homepage H1 check and validating scaling plot asset fetch success instead of relying on `naturalWidth` for SVG rendering.
 - Fixed Playwright navigation paths to use repository-relative routes (without leading `/`) so checks resolve under the GitHub Pages project site base path (`/WUI_boundary/`) in CI.
 - Added a Playwright-based deployed-site reviewer (tests + config + CI workflow) that validates key GitHub Pages routes, figures, tables, iframes, console/network sanity, and uploads screenshots/report artifacts for inspection.
