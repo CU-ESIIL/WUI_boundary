@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WUI Boundary Story Lab — Fresh Draft</title>
+  <style>
+    :root {
+      --bg: #071019;
+      --panel: rgba(14, 24, 40, 0.92);
+      --panel-2: rgba(18, 31, 52, 0.94);
+      --line: rgba(255,255,255,0.08);
+      --text: #edf5ff;
+      --muted: #a9b8cb;
+      --accent: #85d7ff;
+      --accent-2: #ffca7a;
+      --accent-3: #8ff0b3;
+      --accent-4: #ff90bc;
+      --land: #d7cfb8;
+      --veg: #234a32;
+      --urban: #b59f84;
+      --shadow: 0 24px 64px rgba(0,0,0,.28);
+      --radius: 24px;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 12% 10%, rgba(133,215,255,.11), transparent 28%),
+        radial-gradient(circle at 90% 88%, rgba(143,240,179,.07), transparent 24%),
+        linear-gradient(180deg, #071019 0%, #091321 46%, #08111b 100%);
+    }
+    .app {
+      display: grid;
+      grid-template-columns: 380px minmax(0, 1fr);
+      gap: 18px;
+      min-height: 100vh;
+      padding: 18px;
+    }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      backdrop-filter: blur(8px);
+    }
+    .sidebar {
+      display: grid;
+      gap: 18px;
+      align-content: start;
+    }
+    .section {
+      padding: 18px;
+      border-bottom: 1px solid var(--line);
+    }
+    .section:last-child { border-bottom: none; }
+    h1, h2, h3, p { margin: 0; }
+    h1 { font-size: 1.4rem; line-height: 1.1; margin-bottom: 10px; }
+    h2 { font-size: 1rem; margin-bottom: 10px; }
+    h3 { font-size: .92rem; margin-bottom: 6px; }
+    p, li { color: var(--muted); line-height: 1.52; }
+    .lede { color: #e6f2ff; font-size: .97rem; }
+    .tagrow, .legend, .chiprow, .toggle-row, .button-row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .tag, .chip {
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.05);
+      color: #dceafe;
+      font-size: .78rem;
+    }
+    .story-list { display: grid; gap: 10px; }
+    .story-card {
+      background: var(--panel-2);
+      border: 1px solid rgba(255,255,255,.05);
+      border-radius: 18px;
+      padding: 12px;
+      cursor: pointer;
+      transition: transform .14s ease, border-color .14s ease, background .14s ease;
+    }
+    .story-card:hover { transform: translateY(-1px); }
+    .story-card.active {
+      background: linear-gradient(180deg, rgba(133,215,255,.14), rgba(133,215,255,.04));
+      border-color: rgba(133,215,255,.34);
+    }
+    .story-number {
+      display: inline-flex;
+      width: 24px;
+      height: 24px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      background: rgba(255,255,255,.08);
+      font-size: .78rem;
+      font-weight: 700;
+      margin-right: 8px;
+    }
+    .control-grid { display: grid; gap: 12px; }
+    .control {
+      background: var(--panel-2);
+      border: 1px solid rgba(255,255,255,.05);
+      border-radius: 18px;
+      padding: 12px;
+    }
+    .labelrow {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+      color: #eef6ff;
+      font-size: .91rem;
+    }
+    .value { color: var(--accent); font-weight: 800; }
+    input[type="range"] { width: 100%; accent-color: var(--accent); }
+    button {
+      appearance: none;
+      border: 0;
+      border-radius: 14px;
+      padding: 10px 12px;
+      cursor: pointer;
+      color: var(--text);
+      background: #213554;
+      font-weight: 700;
+      transition: transform .12s ease, opacity .12s ease, background .12s ease;
+    }
+    button:hover { transform: translateY(-1px); }
+    button.active { background: #2f659a; }
+    button.ghost { background: rgba(255,255,255,.05); }
+    .main {
+      display: grid;
+      grid-template-rows: auto auto 1fr;
+      gap: 18px;
+      min-width: 0;
+    }
+    .hero { padding: 18px 20px; }
+    .hero-title { font-size: 1.26rem; margin-bottom: 6px; }
+    .hero-sub { max-width: 1050px; }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 18px;
+    }
+    .mode-tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+    .content-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(360px, .92fr);
+      gap: 18px;
+      min-height: 680px;
+    }
+    .cardhead { display: flex; justify-content: space-between; gap: 12px; padding: 16px 16px 0; }
+    .cardtitle { font-size: 1rem; font-weight: 800; }
+    .sub { color: var(--muted); font-size: .86rem; }
+    .canvaswrap { padding: 12px 14px 14px; }
+    canvas { display: block; width: 100%; height: 100%; }
+    #mapCanvas { height: 580px; }
+    #scaleCanvas { height: 250px; }
+    #sensitivityCanvas { height: 250px; }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      padding: 0 14px 16px;
+    }
+    .stat {
+      background: var(--panel-2);
+      border: 1px solid rgba(255,255,255,.05);
+      border-radius: 18px;
+      padding: 12px;
+    }
+    .k { font-size: .78rem; color: var(--muted); margin-bottom: 4px; }
+    .v { font-size: 1.15rem; font-weight: 800; color: white; }
+    .narrative { padding: 0 14px 16px; }
+    .narrative-box {
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.05);
+      border-radius: 18px;
+      padding: 14px;
+      color: #dbe7f8;
+      line-height: 1.55;
+    }
+    .analysis-stack { display: grid; gap: 18px; }
+    .analysis-list { display: grid; gap: 10px; padding: 14px; }
+    .analysis-item {
+      padding: 12px;
+      border-radius: 15px;
+      background: var(--panel-2);
+      border: 1px solid rgba(255,255,255,.05);
+    }
+    .small { font-size: .84rem; color: var(--muted); }
+    .footer-note { padding: 14px 18px 18px; }
+    .swatch { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+    .callout {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.05);
+      color: #dce8fb;
+      font-size: .9rem;
+    }
+    @media (max-width: 1180px) {
+      .app { grid-template-columns: 1fr; }
+      .content-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 760px) {
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .topbar { align-items: start; flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="panel">
+        <div class="section">
+          <h1>WUI Boundary Story Lab</h1>
+          <p class="lede">A fresh draft designed to feel more like a serious scientific exhibit: cinematic, interactive, and explicit about the difference between changing the map and changing the ruler.</p>
+          <div class="tagrow" style="margin-top:12px">
+            <span class="tag">Definition scale</span>
+            <span class="tag">Measurement scale</span>
+            <span class="tag">Sensitivity surface</span>
+            <span class="tag">Talk-ready</span>
+          </div>
+        </div>
+
+        <div class="section">
+          <h2>Story beats</h2>
+          <div class="story-list" id="storyList"></div>
+        </div>
+
+        <div class="section">
+          <h2>Controls</h2>
+          <div class="control-grid">
+            <div class="control">
+              <div class="labelrow"><span>Definition radius</span><span class="value" id="radiusValue">220 m</span></div>
+              <input id="radiusSlider" type="range" min="80" max="620" step="10" value="220" />
+              <p class="small">Moves the classification halo outward and changes which structures count as WUI.</p>
+            </div>
+            <div class="control">
+              <div class="labelrow"><span>Measurement scale</span><span class="value" id="epsValue">24 m</span></div>
+              <input id="epsSlider" type="range" min="6" max="84" step="2" value="24" />
+              <p class="small">Shrinks or enlarges the effective ruler used to trace the extracted boundary.</p>
+            </div>
+            <div class="control">
+              <div class="labelrow"><span>Boundary roughness</span><span class="value" id="roughValue">0.72</span></div>
+              <input id="roughSlider" type="range" min="20" max="95" step="1" value="72" />
+              <p class="small">Shifts the edge from clean suburban geometry toward rough, exurban indentation.</p>
+            </div>
+            <div class="control">
+              <div class="labelrow"><span>Housing pressure</span><span class="value" id="housingValue">0.58</span></div>
+              <input id="housingSlider" type="range" min="15" max="95" step="1" value="58" />
+              <p class="small">Adds more structures near vegetation and increases sensitivity to radius decisions.</p>
+            </div>
+            <div class="control">
+              <div class="labelrow"><span>Landscape archetype</span><span class="value" id="profileValue">Exurban fringe</span></div>
+              <div class="chiprow" id="profileButtons">
+                <button class="active" data-profile="exurban">Exurban fringe</button>
+                <button class="ghost" data-profile="suburban">Suburban edge</button>
+                <button class="ghost" data-profile="mountain">Mountain mosaic</button>
+              </div>
+            </div>
+            <div class="control">
+              <div class="button-row">
+                <button id="playStoryBtn" class="active">Play story</button>
+                <button id="playSweepBtn" class="ghost">Sweep ruler</button>
+                <button id="toggleBoxesBtn" class="ghost active">Show boxes</button>
+                <button id="toggleHaloBtn" class="ghost active">Show halo</button>
+                <button id="resetBtn" class="ghost">Reset</button>
+              </div>
+            </div>
+          </div>
+          <div class="callout" id="insightBox">Insight: you can now see both sensitivities at once. The map panel changes because classification changes the object; the scale panel changes because measurement changes the value traced from that object.</div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="panel hero">
+        <div class="hero-title">From “how long is it?” to “how does it scale?”</div>
+        <p class="hero-sub">This remake adds a stronger comparative frame. Instead of one chart and one map, it gives you a full story stack: a synthetic landscape, a measurement-scaling curve, and a sensitivity panel that compares how much uncertainty comes from changing the WUI definition versus changing the ruler.</p>
+        <div class="legend" style="margin-top:12px">
+          <span class="chip"><span class="swatch" style="background:#234a32"></span>&nbsp;wildland vegetation</span>
+          <span class="chip"><span class="swatch" style="background:#85d7ff"></span>&nbsp;definition halo</span>
+          <span class="chip"><span class="swatch" style="background:#ff90bc"></span>&nbsp;structures in WUI</span>
+          <span class="chip"><span class="swatch" style="background:#ffca7a"></span>&nbsp;measurement boxes</span>
+          <span class="chip"><span class="swatch" style="background:#ffffff"></span>&nbsp;boundary trace</span>
+        </div>
+      </div>
+
+      <div class="panel topbar">
+        <div>
+          <div class="cardtitle">Narrative mode</div>
+          <div class="sub" id="modeSubtitle">Step 1: begin with the deceptively ordinary question.</div>
+        </div>
+        <div class="mode-tabs" id="modeTabs"></div>
+      </div>
+
+      <div class="content-grid">
+        <section class="panel">
+          <div class="cardhead">
+            <div>
+              <div class="cardtitle">Synthetic WUI landscape</div>
+              <div class="sub">A talk-safe sandbox for showing how classification and measurement interact</div>
+            </div>
+          </div>
+          <div class="canvaswrap">
+            <canvas id="mapCanvas" width="1100" height="580"></canvas>
+          </div>
+          <div class="stats">
+            <div class="stat"><div class="k">Mapped WUI area</div><div class="v" id="areaStat">0 km²</div></div>
+            <div class="stat"><div class="k">Measured boundary length</div><div class="v" id="lengthStat">0 km</div></div>
+            <div class="stat"><div class="k">Effective dimension</div><div class="v" id="dimStat">1.00</div></div>
+            <div class="stat"><div class="k">Definition vs measurement</div><div class="v" id="ratioStat">1.0×</div></div>
+          </div>
+          <div class="narrative">
+            <div class="narrative-box" id="storyText"></div>
+          </div>
+        </section>
+
+        <section class="analysis-stack">
+          <div class="panel">
+            <div class="cardhead">
+              <div>
+                <div class="cardtitle">Boundary length vs measurement scale</div>
+                <div class="sub">The coastline-paradox view: same mapped boundary, different ruler sizes</div>
+              </div>
+            </div>
+            <div class="canvaswrap">
+              <canvas id="scaleCanvas" width="760" height="250"></canvas>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="cardhead">
+              <div>
+                <div class="cardtitle">Sensitivity comparison</div>
+                <div class="sub">How much of the uncertainty comes from changing the map versus changing the ruler?</div>
+              </div>
+            </div>
+            <div class="canvaswrap">
+              <canvas id="sensitivityCanvas" width="760" height="250"></canvas>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="cardhead">
+              <div>
+                <div class="cardtitle">Next analysis prompts</div>
+                <div class="sub">The app now sets up concrete package tasks rather than just abstract ideas</div>
+              </div>
+            </div>
+            <div class="analysis-list" id="analysisList"></div>
+            <div class="footer-note small">Fresh draft note: this version is still self-contained and synthetic, but it is designed to feel much closer to the real analysis interface you would eventually want on the website.</div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    (() => {
+      const stories = [
+        {
+          title: 'The ordinary question',
+          short: 'How long is the WUI boundary?',
+          subtitle: 'Step 1: begin with the deceptively ordinary question.',
+          body: 'Start with the kind of planning question that sounds almost trivial: how long is the wildland–urban interface boundary here? This draft is built to let the room feel that simplicity for a moment before the structure of the problem begins to move.',
+          preset: { radius: 220, eps: 44 }
+        },
+        {
+          title: 'The first surprise',
+          short: 'Change the definition, change the object.',
+          subtitle: 'Step 2: changing the radius changes the map itself.',
+          body: 'Now widen the classification radius. More structures qualify as WUI, the mapped zone expands, and the object you are calling “the boundary” shifts. This is not yet a measurement paradox. This is the delineation rule changing the thing being measured.',
+          preset: { radius: 420, eps: 44 }
+        },
+        {
+          title: 'The deeper surprise',
+          short: 'Hold the map fixed, change the ruler.',
+          subtitle: 'Step 3: the traced length changes with the ruler size.',
+          body: 'Freeze the definition. Now shrink the ruler. The extracted boundary gets longer because smaller boxes and shorter simplification tolerances capture more bends, not because the landscape has changed. This is the WUI version of the coastline paradox.',
+          preset: { radius: 220, eps: 14 }
+        },
+        {
+          title: 'The scientific turn',
+          short: 'Length becomes a scaling relation.',
+          subtitle: 'Step 4: the right object may be a curve, not a scalar.',
+          body: 'Once you see a stable trend on a log–log plot, the question changes. Maybe there is no single true length across all scales. Maybe what matters is how length varies with measurement scale over a defensible interval, and how that interval differs across landscapes.',
+          preset: { radius: 240, eps: 10 }
+        },
+        {
+          title: 'The analysis agenda',
+          short: 'Separate two sources of sensitivity.',
+          subtitle: 'Step 5: compare definition sensitivity and measurement sensitivity.',
+          body: 'A useful analysis system should estimate both kinds of uncertainty: how much the mapped WUI changes when you alter the definition, and how much the measured perimeter changes when you alter the ruler. Those are different scientific and management questions.',
+          preset: { radius: 300, eps: 20 }
+        }
+      ];
+
+      const analysisPrompts = [
+        'Build a real-data runner that ingests building footprints and vegetation layers, then reconstructs WUI boundaries under multiple delineation bundles.',
+        'Estimate slope only across the portion of the log–log curve that is approximately linear rather than assuming one universal dimension.',
+        'Compare exurban, suburban, and mountainous study areas to see whether effective dimension and sensitivity ratios are landscape-specific.',
+        'Report both area sensitivity and perimeter sensitivity so managers can tell whether uncertainty is mostly classificatory or geometrical.'
+      ];
+
+      const profiles = {
+        exurban: { rough: 72, housing: 58, radius: 220, label: 'Exurban fringe' },
+        suburban: { rough: 44, housing: 70, radius: 180, label: 'Suburban edge' },
+        mountain: { rough: 88, housing: 42, radius: 280, label: 'Mountain mosaic' }
+      };
+
+      const mapCanvas = document.getElementById('mapCanvas');
+      const scaleCanvas = document.getElementById('scaleCanvas');
+      const sensitivityCanvas = document.getElementById('sensitivityCanvas');
+      const mctx = mapCanvas.getContext('2d');
+      const sctx = scaleCanvas.getContext('2d');
+      const xctx = sensitivityCanvas.getContext('2d');
+
+      const radiusSlider = document.getElementById('radiusSlider');
+      const epsSlider = document.getElementById('epsSlider');
+      const roughSlider = document.getElementById('roughSlider');
+      const housingSlider = document.getElementById('housingSlider');
+      const radiusValue = document.getElementById('radiusValue');
+      const epsValue = document.getElementById('epsValue');
+      const roughValue = document.getElementById('roughValue');
+      const housingValue = document.getElementById('housingValue');
+      const profileValue = document.getElementById('profileValue');
+
+      const areaStat = document.getElementById('areaStat');
+      const lengthStat = document.getElementById('lengthStat');
+      const dimStat = document.getElementById('dimStat');
+      const ratioStat = document.getElementById('ratioStat');
+      const storyText = document.getElementById('storyText');
+      const modeSubtitle = document.getElementById('modeSubtitle');
+      const insightBox = document.getElementById('insightBox');
+
+      const playStoryBtn = document.getElementById('playStoryBtn');
+      const playSweepBtn = document.getElementById('playSweepBtn');
+      const toggleBoxesBtn = document.getElementById('toggleBoxesBtn');
+      const toggleHaloBtn = document.getElementById('toggleHaloBtn');
+      const resetBtn = document.getElementById('resetBtn');
+      const profileButtons = [...document.querySelectorAll('#profileButtons button')];
+      const storyList = document.getElementById('storyList');
+      const modeTabs = document.getElementById('modeTabs');
+      const analysisList = document.getElementById('analysisList');
+
+      const W = mapCanvas.width;
+      const H = mapCanvas.height;
+      const PAD = 34;
+      const PX_TO_KM = 0.01;
+      let currentStory = 0;
+      let currentProfile = 'exurban';
+      let showBoxes = true;
+      let showHalo = true;
+      let storyTimer = null;
+      let sweepTimer = null;
+      let storyPlaying = false;
+      let sweepPlaying = false;
+
+      storyList.innerHTML = stories.map((s, i) => `
+        <div class="story-card ${i === 0 ? 'active' : ''}" data-story="${i}">
+          <div><span class="story-number">${i + 1}</span><strong>${s.title}</strong></div>
+          <p>${s.short}</p>
+        </div>
+      `).join('');
+
+      modeTabs.innerHTML = stories.map((s, i) => `<button class="${i === 0 ? 'active' : ''}" data-mode="${i}">${i + 1}. ${s.title.split(' ')[0]}</button>`).join('');
+      analysisList.innerHTML = analysisPrompts.map((p, i) => `<div class="analysis-item"><strong>Prompt ${i + 1}.</strong> ${p}</div>`).join('');
+
+      const storyCards = [...document.querySelectorAll('.story-card')];
+      const modeButtons = [...document.querySelectorAll('#modeTabs button')];
+
+      function mulberry32(a) {
+        return function() {
+          let t = a += 0x6D2B79F5;
+          t = Math.imul(t ^ (t >>> 15), t | 1);
+          t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+          return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+        }
+      }
+
+      function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+      function lerp(a, b, t) { return a + (b - a) * t; }
+
+      function lineLength(points) {
+        let L = 0;
+        for (let i = 1; i < points.length; i++) L += Math.hypot(points[i].x - points[i-1].x, points[i].y - points[i-1].y);
+        return L;
+      }
+
+      function simplifyDP(points, tol) {
+        if (points.length <= 2) return points.slice();
+        const sqTol = tol * tol;
+        function sqSegDist(p, p1, p2) {
+          let x = p1.x, y = p1.y;
+          let dx = p2.x - x, dy = p2.y - y;
+          if (dx !== 0 || dy !== 0) {
+            let t = ((p.x - x) * dx + (p.y - y) * dy) / (dx*dx + dy*dy);
+            if (t > 1) { x = p2.x; y = p2.y; }
+            else if (t > 0) { x += dx * t; y += dy * t; }
+          }
+          dx = p.x - x; dy = p.y - y;
+          return dx*dx + dy*dy;
+        }
+        function recurse(start, end, out) {
+          let maxSq = sqTol, idx = -1;
+          for (let i = start + 1; i < end; i++) {
+            const sq = sqSegDist(points[i], points[start], points[end]);
+            if (sq > maxSq) { maxSq = sq; idx = i; }
+          }
+          if (idx !== -1) {
+            if (idx - start > 1) recurse(start, idx, out);
+            out.push(points[idx]);
+            if (end - idx > 1) recurse(idx, end, out);
+          }
+        }
+        const out = [points[0]];
+        recurse(0, points.length - 1, out);
+        out.push(points[points.length - 1]);
+        return out;
+      }
+
+      function boxCount(points, eps) {
+        const occupied = new Set();
+        for (let i = 1; i < points.length; i++) {
+          const a = points[i-1], b = points[i];
+          const segLen = Math.hypot(b.x - a.x, b.y - a.y);
+          const n = Math.max(2, Math.ceil(segLen / (eps * 0.35)));
+          for (let j = 0; j <= n; j++) {
+            const t = j / n;
+            const x = lerp(a.x, b.x, t);
+            const y = lerp(a.y, b.y, t);
+            occupied.add(Math.floor(x / eps) + ',' + Math.floor(y / eps));
+          }
+        }
+        return occupied;
+      }
+
+      function linearRegression(xs, ys) {
+        const n = xs.length;
+        const mx = xs.reduce((a,b)=>a+b,0) / n;
+        const my = ys.reduce((a,b)=>a+b,0) / n;
+        let num = 0, den = 0;
+        for (let i = 0; i < n; i++) {
+          num += (xs[i] - mx) * (ys[i] - my);
+          den += (xs[i] - mx) * (xs[i] - mx);
+        }
+        const slope = num / den;
+        return { slope, intercept: my - slope * mx };
+      }
+
+      function boundaryAtRoughness(rough, profile) {
+        const rand = mulberry32(profile === 'suburban' ? 8 : profile === 'mountain' ? 21 : 48);
+        const pts = [];
+        const n = 360;
+        const baseX = profile === 'suburban' ? W * 0.49 : profile === 'mountain' ? W * 0.53 : W * 0.51;
+        const amp1 = 78 + 136 * rough;
+        const amp2 = profile === 'suburban' ? 12 + 20 * rough : 16 + 40 * rough;
+        const amp3 = profile === 'mountain' ? 18 + 34 * rough : 10 + 28 * rough;
+        const amp4 = profile === 'suburban' ? 2 + 6 * rough : 4 + 12 * rough;
+        for (let i = 0; i <= n; i++) {
+          const t = i / n;
+          const y = PAD + t * (H - 2 * PAD);
+          const phase = t * Math.PI * 2;
+          const x = baseX
+            + Math.sin(phase * 1.0 + 0.25) * amp1
+            + Math.sin(phase * 4.7 + 1.0) * amp2
+            + Math.cos(phase * (profile === 'mountain' ? 13.2 : 10.9) - 0.5) * amp3
+            + Math.sin(phase * 22.0 + 2.2) * amp4
+            + (rand() - 0.5) * (profile === 'suburban' ? 2.8 : 5.5) * rough;
+          pts.push({ x, y });
+        }
+        return pts;
+      }
+
+      function sideAtY(px, py, boundary) {
+        let bestI = 0, best = Infinity;
+        for (let i = 0; i < boundary.length; i++) {
+          const d = Math.abs(boundary[i].y - py);
+          if (d < best) { best = d; bestI = i; }
+        }
+        return px - boundary[bestI].x;
+      }
+
+      function pointToPolylineDist(px, py, points) {
+        let dmin = Infinity;
+        for (let i = 1; i < points.length; i++) {
+          const x1 = points[i-1].x, y1 = points[i-1].y;
+          const x2 = points[i].x, y2 = points[i].y;
+          const dx = x2 - x1, dy = y2 - y1;
+          const len2 = dx*dx + dy*dy;
+          let t = 0;
+          if (len2 > 0) t = clamp(((px - x1) * dx + (py - y1) * dy) / len2, 0, 1);
+          const x = x1 + t * dx, y = y1 + t * dy;
+          dmin = Math.min(dmin, Math.hypot(px - x, py - y));
+        }
+        return dmin;
+      }
+
+      function generateHouses(boundary, housingPressure, profile) {
+        const rand = mulberry32(profile === 'suburban' ? 101 : profile === 'mountain' ? 808 : 777);
+        const houses = [];
+        const base = profile === 'suburban' ? 180 : profile === 'mountain' ? 120 : 140;
+        const spread = profile === 'suburban' ? 260 : profile === 'mountain' ? 190 : 280;
+        const n = Math.floor(base + housingPressure * spread);
+        for (let i = 0; i < n; i++) {
+          const y = lerp(PAD + 12, H - PAD - 12, rand());
+          const boundaryX = boundary[Math.floor((boundary.length - 1) * ((y - PAD) / (H - 2 * PAD)))].x;
+          const cluster = rand();
+          const offset = (rand() ** (profile === 'suburban' ? 0.96 : 0.74)) * (profile === 'mountain' ? 180 : 240);
+          let x = cluster < (profile === 'mountain' ? 0.72 : 0.8)
+            ? boundaryX + 20 + offset + rand() * (profile === 'suburban' ? 95 : 70)
+            : boundaryX - 14 - rand() * (profile === 'mountain' ? 120 : 90);
+          x = clamp(x, PAD, W - PAD);
+          houses.push({ x, y, size: 4 + rand() * 3.6 });
+        }
+        return houses;
+      }
+
+      function computeWUI(boundary, houses, radiusPx) {
+        const selected = [];
+        let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+        for (const h of houses) {
+          const d = pointToPolylineDist(h.x, h.y, boundary);
+          const side = sideAtY(h.x, h.y, boundary);
+          const ok = d <= radiusPx && side > -radiusPx * 0.4;
+          if (ok) {
+            selected.push(h);
+            minX = Math.min(minX, h.x - radiusPx * 0.82);
+            maxX = Math.max(maxX, h.x + radiusPx * 0.82);
+            minY = Math.min(minY, h.y - radiusPx * 0.82);
+            maxY = Math.max(maxY, h.y + radiusPx * 0.82);
+          }
+        }
+        if (!selected.length) {
+          minX = W * 0.56; maxX = W * 0.67; minY = H * 0.3; maxY = H * 0.68;
+        }
+        const width = Math.max(80, maxX - minX);
+        const height = Math.max(90, maxY - minY);
+        return {
+          houses: selected,
+          bbox: { x: minX, y: minY, w: width, h: height },
+          areaPx2: width * height * 0.62
+        };
+      }
+
+      function measureBoundary(boundary, eps) {
+        const simplified = simplifyDP(boundary, eps * 0.72);
+        const length = lineLength(simplified);
+        const boxes = boxCount(boundary, eps);
+        const boxLength = boxes.size * eps * 0.78;
+        return { simplified, length, boxes, boxLength };
+      }
+
+      function updateLabels() {
+        radiusValue.textContent = `${radiusSlider.value} m`;
+        epsValue.textContent = `${epsSlider.value} m`;
+        roughValue.textContent = (+roughSlider.value / 100).toFixed(2);
+        housingValue.textContent = (+housingSlider.value / 100).toFixed(2);
+        profileValue.textContent = profiles[currentProfile].label;
+      }
+
+      function drawPanelBase(ctx, w, h) {
+        ctx.clearRect(0, 0, w, h);
+        ctx.fillStyle = '#111b2e';
+        ctx.fillRect(0, 0, w, h);
+        ctx.strokeStyle = 'rgba(255,255,255,.06)';
+        ctx.strokeRect(.5, .5, w - 1, h - 1);
+      }
+
+      function drawMap(boundary, houses, wui, measurement, radiusPx, eps) {
+        mctx.clearRect(0, 0, W, H);
+
+        mctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--land');
+        mctx.fillRect(0, 0, W, H);
+
+        mctx.beginPath();
+        mctx.moveTo(0, 0);
+        mctx.lineTo(boundary[0].x, boundary[0].y);
+        for (const p of boundary) mctx.lineTo(p.x, p.y);
+        mctx.lineTo(0, H);
+        mctx.closePath();
+        mctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--veg');
+        mctx.fill();
+
+        const rand = mulberry32(91 + currentStory * 3);
+        for (let i = 0; i < 720; i++) {
+          const x = rand() * W * 0.7;
+          const y = rand() * H;
+          if (sideAtY(x, y, boundary) < 0) {
+            mctx.fillStyle = rand() > .5 ? 'rgba(118,160,114,.30)' : 'rgba(70,103,74,.24)';
+            const r = 2 + rand() * 5;
+            mctx.beginPath();
+            mctx.arc(x, y, r, 0, Math.PI * 2);
+            mctx.fill();
+          }
+        }
+
+        mctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--urban');
+        mctx.fillRect(W * 0.58, 0, W * 0.42, H);
+        for (let i = 0; i < 84; i++) {
+          const y = 20 + i * 7 + (i % 3) * 1.3;
+          mctx.strokeStyle = 'rgba(142,118,90,.16)';
+          mctx.beginPath();
+          mctx.moveTo(W * 0.58, y);
+          mctx.lineTo(W, y + 18);
+          mctx.stroke();
+        }
+
+        if (showHalo) {
+          mctx.save();
+          mctx.strokeStyle = 'rgba(133,215,255,.34)';
+          mctx.lineWidth = radiusPx * 0.72;
+          mctx.lineCap = 'round';
+          mctx.lineJoin = 'round';
+          mctx.beginPath();
+          mctx.moveTo(boundary[0].x, boundary[0].y);
+          for (const p of boundary) mctx.lineTo(p.x, p.y);
+          mctx.stroke();
+          mctx.restore();
+        }
+
+        if (showBoxes && currentStory >= 2) {
+          mctx.strokeStyle = 'rgba(255,202,122,.42)';
+          mctx.lineWidth = 1;
+          measurement.boxes.forEach(key => {
+            const [gx, gy] = key.split(',').map(Number);
+            mctx.strokeRect(gx * eps, gy * eps, eps, eps);
+          });
+        }
+
+        mctx.strokeStyle = '#ffffff';
+        mctx.lineWidth = 2.3;
+        mctx.beginPath();
+        mctx.moveTo(boundary[0].x, boundary[0].y);
+        for (const p of boundary) mctx.lineTo(p.x, p.y);
+        mctx.stroke();
+
+        for (const h of houses) {
+          const inWUI = wui.houses.includes(h);
+          mctx.fillStyle = inWUI ? '#ff90bc' : '#eef4fb';
+          mctx.strokeStyle = inWUI ? '#ffe7ef' : '#718099';
+          mctx.lineWidth = 1;
+          mctx.beginPath();
+          mctx.rect(h.x - h.size, h.y - h.size, h.size * 2, h.size * 2);
+          mctx.fill();
+          mctx.stroke();
+        }
+
+        const lx = 18, ly = 18, lw = 266, lh = 132;
+        mctx.fillStyle = 'rgba(10,18,31,.74)';
+        mctx.fillRect(lx, ly, lw, lh);
+        mctx.strokeStyle = 'rgba(255,255,255,.08)';
+        mctx.strokeRect(lx + .5, ly + .5, lw, lh);
+        const legend = [
+          ['#234a32', 'wildland vegetation'],
+          ['#85d7ff', 'definition halo'],
+          ['#ffffff', 'boundary trace'],
+          ['#ff90bc', 'structures in WUI'],
+          ['#eef4fb', 'other structures'],
+          ['#ffca7a', 'measurement boxes']
+        ];
+        mctx.font = '12px Inter, sans-serif';
+        legend.forEach((row, i) => {
+          const yy = ly + 18 + i * 18;
+          mctx.fillStyle = row[0];
+          mctx.fillRect(lx + 12, yy - 8, 13, 13);
+          mctx.fillStyle = '#ecf3ff';
+          mctx.fillText(row[1], lx + 33, yy + 2);
+        });
+      }
+
+      function drawScaleChart(data, currentEps, dim) {
+        const w = scaleCanvas.width, h = scaleCanvas.height;
+        drawPanelBase(sctx, w, h);
+        const left = 64, right = 18, top = 16, bottom = 42;
+        const pw = w - left - right, ph = h - top - bottom;
+        const xs = data.map(d => Math.log10(d.eps));
+        const ys = data.map(d => Math.log10(d.len));
+        const xmin = Math.min(...xs), xmax = Math.max(...xs);
+        const ymin = Math.min(...ys), ymax = Math.max(...ys);
+        const X = v => left + ((v - xmin) / (xmax - xmin)) * pw;
+        const Y = v => top + ph - ((v - ymin) / (ymax - ymin)) * ph;
+
+        sctx.strokeStyle = '#22324f';
+        for (let i = 0; i < 5; i++) {
+          const gx = left + i * pw / 4;
+          const gy = top + i * ph / 4;
+          sctx.beginPath(); sctx.moveTo(gx, top); sctx.lineTo(gx, top + ph); sctx.stroke();
+          sctx.beginPath(); sctx.moveTo(left, gy); sctx.lineTo(left + pw, gy); sctx.stroke();
+        }
+
+        sctx.strokeStyle = '#85d7ff';
+        sctx.lineWidth = 2.4;
+        sctx.beginPath();
+        data.forEach((d, i) => {
+          const x = X(Math.log10(d.eps));
+          const y = Y(Math.log10(d.len));
+          if (i === 0) sctx.moveTo(x, y); else sctx.lineTo(x, y);
+        });
+        sctx.stroke();
+
+        sctx.fillStyle = '#eef5ff';
+        data.forEach(d => {
+          sctx.beginPath();
+          sctx.arc(X(Math.log10(d.eps)), Y(Math.log10(d.len)), 3.5, 0, Math.PI * 2);
+          sctx.fill();
+        });
+
+        const current = data.reduce((best, d) => Math.abs(d.eps - currentEps) < Math.abs(best.eps - currentEps) ? d : best, data[0]);
+        sctx.fillStyle = '#ffca7a';
+        sctx.beginPath();
+        sctx.arc(X(Math.log10(current.eps)), Y(Math.log10(current.len)), 6.2, 0, Math.PI * 2);
+        sctx.fill();
+
+        sctx.fillStyle = '#a9b8cb';
+        sctx.font = '12px Inter, sans-serif';
+        sctx.fillText('log10(measurement scale)', left + pw / 2 - 56, h - 14);
+        sctx.save();
+        sctx.translate(18, top + ph / 2 + 30);
+        sctx.rotate(-Math.PI / 2);
+        sctx.fillText('log10(boundary length)', 0, 0);
+        sctx.restore();
+        sctx.fillStyle = '#edf5ff';
+        sctx.font = '13px Inter, sans-serif';
+        sctx.fillText('D ≈ ' + dim.toFixed(3), w - 92, 22);
+      }
+
+      function drawSensitivityChart(radiusSweep, scaleSweep, currentRadius, currentEps) {
+        const w = sensitivityCanvas.width, h = sensitivityCanvas.height;
+        drawPanelBase(xctx, w, h);
+        const left = 64, right = 18, top = 20, bottom = 42;
+        const pw = w - left - right, ph = h - top - bottom;
+
+        const defSens = [];
+        for (let i = 1; i < radiusSweep.length; i++) {
+          const prev = radiusSweep[i-1], cur = radiusSweep[i];
+          defSens.push({ x: cur.r, y: Math.abs(cur.area - prev.area) / Math.max(0.0001, cur.area) });
+        }
+        const measSens = [];
+        for (let i = 1; i < scaleSweep.length; i++) {
+          const prev = scaleSweep[i-1], cur = scaleSweep[i];
+          measSens.push({ x: cur.eps, y: Math.abs(cur.len - prev.len) / Math.max(0.0001, prev.len) });
+        }
+
+        const x1min = Math.min(...defSens.map(d => d.x));
+        const x1max = Math.max(...defSens.map(d => d.x));
+        const x2min = Math.min(...measSens.map(d => d.x));
+        const x2max = Math.max(...measSens.map(d => d.x));
+        const ymax = Math.max(
+          ...defSens.map(d => d.y),
+          ...measSens.map(d => d.y),
+          0.05
+        ) * 1.18;
+        const half = pw / 2 - 14;
+        const X1 = v => left + ((v - x1min) / (x1max - x1min)) * half;
+        const X2 = v => left + half + 28 + ((v - x2min) / (x2max - x2min)) * half;
+        const Y = v => top + ph - (v / ymax) * ph;
+
+        xctx.strokeStyle = '#22324f';
+        for (let i = 0; i < 5; i++) {
+          const gy = top + i * ph / 4;
+          xctx.beginPath(); xctx.moveTo(left, gy); xctx.lineTo(left + pw, gy); xctx.stroke();
+        }
+        xctx.beginPath();
+        xctx.moveTo(left + half + 14, top);
+        xctx.lineTo(left + half + 14, top + ph);
+        xctx.strokeStyle = 'rgba(255,255,255,.08)';
+        xctx.stroke();
+
+        xctx.fillStyle = '#a9b8cb';
+        xctx.font = '12px Inter, sans-serif';
+        xctx.fillText('definition sensitivity', left + half / 2 - 44, h - 14);
+        xctx.fillText('measurement sensitivity', left + half + 28 + half / 2 - 50, h - 14);
+        xctx.save();
+        xctx.translate(18, top + ph / 2 + 22);
+        xctx.rotate(-Math.PI / 2);
+        xctx.fillText('relative change', 0, 0);
+        xctx.restore();
+
+        xctx.strokeStyle = '#8ff0b3';
+        xctx.lineWidth = 2.4;
+        xctx.beginPath();
+        defSens.forEach((d, i) => {
+          const x = X1(d.x), y = Y(d.y);
+          if (i === 0) xctx.moveTo(x, y); else xctx.lineTo(x, y);
+        });
+        xctx.stroke();
+        xctx.fillStyle = '#c8f7d4';
+        defSens.forEach(d => { xctx.beginPath(); xctx.arc(X1(d.x), Y(d.y), 3.5, 0, Math.PI * 2); xctx.fill(); });
+
+        xctx.strokeStyle = '#ffca7a';
+        xctx.lineWidth = 2.4;
+        xctx.beginPath();
+        measSens.forEach((d, i) => {
+          const x = X2(d.x), y = Y(d.y);
+          if (i === 0) xctx.moveTo(x, y); else xctx.lineTo(x, y);
+        });
+        xctx.stroke();
+        xctx.fillStyle = '#ffe1a8';
+        measSens.forEach(d => { xctx.beginPath(); xctx.arc(X2(d.x), Y(d.y), 3.5, 0, Math.PI * 2); xctx.fill(); });
+
+        const curDef = defSens.reduce((best, d) => Math.abs(d.x - currentRadius) < Math.abs(best.x - currentRadius) ? d : best, defSens[0]);
+        const curMeas = measSens.reduce((best, d) => Math.abs(d.x - currentEps) < Math.abs(best.x - currentEps) ? d : best, measSens[0]);
+        xctx.fillStyle = '#ffffff';
+        xctx.beginPath(); xctx.arc(X1(curDef.x), Y(curDef.y), 5.8, 0, Math.PI * 2); xctx.fill();
+        xctx.beginPath(); xctx.arc(X2(curMeas.x), Y(curMeas.y), 5.8, 0, Math.PI * 2); xctx.fill();
+      }
+
+      function stopAnimations() {
+        storyPlaying = false;
+        sweepPlaying = false;
+        clearTimeout(storyTimer);
+        clearTimeout(sweepTimer);
+        playStoryBtn.classList.remove('active');
+        playSweepBtn.classList.remove('active');
+      }
+
+      function setStory(index, applyPreset = true) {
+        currentStory = index;
+        storyCards.forEach((el, i) => el.classList.toggle('active', i === index));
+        modeButtons.forEach((el, i) => el.classList.toggle('active', i === index));
+        modeSubtitle.textContent = stories[index].subtitle;
+        storyText.textContent = stories[index].body;
+        if (applyPreset) {
+          radiusSlider.value = stories[index].preset.radius;
+          epsSlider.value = stories[index].preset.eps;
+        }
+        render();
+      }
+
+      function playStorySequence() {
+        stopAnimations();
+        storyPlaying = true;
+        playStoryBtn.classList.add('active');
+        let i = 0;
+        function next() {
+          if (!storyPlaying) return;
+          setStory(i, true);
+          i += 1;
+          if (i < stories.length) storyTimer = setTimeout(next, 2200);
+          else {
+            storyPlaying = false;
+            playStoryBtn.classList.remove('active');
+          }
+        }
+        next();
+      }
+
+      function playMeasurementSweep() {
+        stopAnimations();
+        sweepPlaying = true;
+        playSweepBtn.classList.add('active');
+        setStory(2, false);
+        let dir = -1;
+        function tick() {
+          if (!sweepPlaying) return;
+          let v = +epsSlider.value + dir * 2;
+          if (v <= +epsSlider.min) { v = +epsSlider.min; dir = 1; }
+          if (v >= +epsSlider.max) { v = +epsSlider.max; dir = -1; }
+          epsSlider.value = v;
+          render();
+          sweepTimer = setTimeout(tick, 85);
+        }
+        tick();
+      }
+
+      function applyProfile(name) {
+        currentProfile = name;
+        profileButtons.forEach(btn => {
+          const on = btn.dataset.profile === name;
+          btn.classList.toggle('active', on);
+          btn.classList.toggle('ghost', !on);
+        });
+        const p = profiles[name];
+        roughSlider.value = p.rough;
+        housingSlider.value = p.housing;
+        if (currentStory === 0) radiusSlider.value = p.radius;
+        render();
+      }
+
+      function render() {
+        updateLabels();
+        const radius = +radiusSlider.value;
+        const eps = +epsSlider.value;
+        const rough = +roughSlider.value / 100;
+        const housing = +housingSlider.value / 100;
+        const radiusPx = radius * 0.34;
+
+        const boundary = boundaryAtRoughness(rough, currentProfile);
+        const houses = generateHouses(boundary, housing, currentProfile);
+        const wui = computeWUI(boundary, houses, radiusPx);
+        const measurement = measureBoundary(boundary, eps);
+
+        const areaKm2 = wui.areaPx2 * PX_TO_KM * PX_TO_KM;
+        const lenKm = measurement.boxLength * PX_TO_KM;
+
+        const scaleSweep = [8,10,12,16,20,28,36,48,64,80].map(e => {
+          const m = measureBoundary(boundary, e);
+          return { eps: e, len: m.boxLength };
+        });
+        const reg = linearRegression(scaleSweep.map(d => Math.log10(d.eps)), scaleSweep.map(d => Math.log10(d.len)));
+        const dim = 1 - reg.slope;
+
+        const radiusSweep = [80,120,160,220,300,400,500,600].map(r => {
+          const ww = computeWUI(boundary, houses, r * 0.34);
+          return { r, area: ww.areaPx2 * PX_TO_KM * PX_TO_KM };
+        });
+
+        const defSensitivity = (() => {
+          const low = computeWUI(boundary, houses, Math.max(80, radius - 40) * 0.34).areaPx2 * PX_TO_KM * PX_TO_KM;
+          const high = computeWUI(boundary, houses, Math.min(600, radius + 40) * 0.34).areaPx2 * PX_TO_KM * PX_TO_KM;
+          return Math.abs(high - low) / Math.max(areaKm2, 0.001);
+        })();
+        const measSensitivity = (() => {
+          const low = measureBoundary(boundary, Math.max(6, eps - 8)).boxLength * PX_TO_KM;
+          const high = measureBoundary(boundary, Math.min(84, eps + 8)).boxLength * PX_TO_KM;
+          return Math.abs(high - low) / Math.max(lenKm, 0.001);
+        })();
+        const ratio = defSensitivity / Math.max(measSensitivity, 0.0001);
+
+        drawMap(boundary, houses, wui, measurement, radiusPx, eps);
+        drawScaleChart(scaleSweep, eps, dim);
+        drawSensitivityChart(radiusSweep, scaleSweep, radius, eps);
+
+        areaStat.textContent = areaKm2.toFixed(2) + ' km²';
+        lengthStat.textContent = lenKm.toFixed(2) + ' km';
+        dimStat.textContent = dim.toFixed(2);
+        ratioStat.textContent = ratio.toFixed(1) + '×';
+
+        const emphasis = ratio > 1.25
+          ? 'Right now the delineation choice is dominating: changing the classification radius is moving the mapped object more than changing the ruler is moving the measured length.'
+          : ratio < 0.8
+          ? 'Right now the measurement choice is dominating: the geometry is rough enough that ruler size is creating as much or more uncertainty than the map definition.'
+          : 'Right now both sensitivities are comparable: this is exactly the kind of regime where a real analysis should report both rather than collapsing them into one perimeter number.';
+        insightBox.textContent = 'Insight: ' + emphasis;
+      }
+
+      [radiusSlider, epsSlider, roughSlider, housingSlider].forEach(el => {
+        el.addEventListener('input', () => {
+          stopAnimations();
+          render();
+        });
+      });
+
+      storyCards.forEach((card, i) => card.addEventListener('click', () => {
+        stopAnimations();
+        setStory(i, true);
+      }));
+
+      modeButtons.forEach((btn, i) => btn.addEventListener('click', () => {
+        stopAnimations();
+        setStory(i, true);
+      }));
+
+      profileButtons.forEach(btn => btn.addEventListener('click', () => {
+        stopAnimations();
+        applyProfile(btn.dataset.profile);
+      }));
+
+      playStoryBtn.addEventListener('click', () => {
+        if (storyPlaying) { stopAnimations(); render(); }
+        else playStorySequence();
+      });
+
+      playSweepBtn.addEventListener('click', () => {
+        if (sweepPlaying) { stopAnimations(); render(); }
+        else playMeasurementSweep();
+      });
+
+      toggleBoxesBtn.addEventListener('click', () => {
+        showBoxes = !showBoxes;
+        toggleBoxesBtn.classList.toggle('active', showBoxes);
+        render();
+      });
+
+      toggleHaloBtn.addEventListener('click', () => {
+        showHalo = !showHalo;
+        toggleHaloBtn.classList.toggle('active', showHalo);
+        render();
+      });
+
+      resetBtn.addEventListener('click', () => {
+        stopAnimations();
+        currentProfile = 'exurban';
+        applyProfile('exurban');
+        radiusSlider.value = 220;
+        epsSlider.value = 24;
+        roughSlider.value = 72;
+        housingSlider.value = 58;
+        showBoxes = true;
+        showHalo = true;
+        toggleBoxesBtn.classList.add('active');
+        toggleHaloBtn.classList.add('active');
+        setStory(0, false);
+        render();
+      });
+
+      applyProfile('exurban');
+      setStory(0, false);
+      render();
+    })();
+  </script>
+</body>
+</html>
