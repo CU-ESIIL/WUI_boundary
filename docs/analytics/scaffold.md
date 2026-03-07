@@ -44,6 +44,8 @@ Expected output location:
 - `outputs/minimal_demo/boundary_scaling_plot.png`
 - `outputs/minimal_demo/boundary_scaling_summary.csv`
 - `outputs/minimal_demo/run_summary.md`
+- `docs/assets/figures/boundary_scaling_plot.png`
+- `docs/assets/data/boundary_scaling_summary.csv`
 
 ## Future real-data inputs (expected)
 
@@ -62,4 +64,4 @@ See [UI Drafts / Draft 1](../ui-drafts/draft-1.md) for the current story-lab int
 
 ## Automation
 
-GitHub Actions workflow `.github/workflows/boundary-scaling-demo.yml` runs tests, executes the synthetic minimal demo, uploads `outputs/minimal_demo/` as artifacts, and refreshes selected docs-facing assets for website publication.
+GitHub Actions workflow `.github/workflows/boundary-scaling-demo.yml` runs tests, executes the synthetic minimal demo, uploads `outputs/minimal_demo/` as artifacts, and refreshes selected docs-facing assets for website publication. The local runner also copies those docs-facing assets so one local command can regenerate both raw outputs and published files.

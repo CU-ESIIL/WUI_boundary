@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import csv
 from pathlib import Path
+import shutil
 import struct
 import sys
 import zlib
@@ -133,6 +134,10 @@ def _draw_scaling_plot(plot_path: Path, epsilon_values: list[float], perimeter_v
 def run() -> None:
     output_dir = ROOT / "outputs" / "minimal_demo"
     output_dir.mkdir(parents=True, exist_ok=True)
+    docs_figure_dir = ROOT / "docs" / "assets" / "figures"
+    docs_data_dir = ROOT / "docs" / "assets" / "data"
+    docs_figure_dir.mkdir(parents=True, exist_ok=True)
+    docs_data_dir.mkdir(parents=True, exist_ok=True)
 
     bundle = DelineationBundle(
         settlement_representation="parcel",
@@ -189,6 +194,11 @@ def run() -> None:
     plot_path = output_dir / "boundary_scaling_plot.png"
     _draw_scaling_plot(plot_path, measurement["epsilon_values"], measurement["perimeter_values"])
 
+    docs_plot_path = docs_figure_dir / "boundary_scaling_plot.png"
+    docs_csv_path = docs_data_dir / "boundary_scaling_summary.csv"
+    shutil.copy2(plot_path, docs_plot_path)
+    shutil.copy2(table_path, docs_csv_path)
+
     summary_lines = [
         "# Minimal boundary scaling demo summary",
         "",
@@ -203,6 +213,8 @@ def run() -> None:
 
     print(f"Wrote: {table_path}")
     print(f"Wrote: {plot_path}")
+    print(f"Published: {docs_csv_path}")
+    print(f"Published: {docs_plot_path}")
     print(f"Wrote: {output_dir / 'run_summary.md'}")
 
 
