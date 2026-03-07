@@ -3,6 +3,7 @@
 ## Unreleased
 
 ### Added
+- New UI Drafts page `docs/ui-drafts/draft-2.md` and standalone app `docs/ui-drafts/draft-2/story-lab-remix.html` for Draft 2 — WUI Boundary Story Lab Remix, including iframe embed and full-page launch link.
 - QA audit report `outputs/qa/playwright-site-audit-2026-03-07.md` capturing Playwright page checks, link-scope review, screenshots, and conservative follow-up recommendations.
 - GitHub Actions workflow `.github/workflows/boundary-scaling-demo.yml` for pull requests and manual dispatch to run tests, execute minimal analysis, upload artifacts, and optionally commit selected docs-facing assets on workflow_dispatch.
 - New analytics docs page: `docs/analytics/minimal-demo.md` showing the synthetic boundary-scaling plot and rerun guidance.
