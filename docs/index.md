@@ -21,8 +21,9 @@ where **\(d\)** is the delineation choice (what counts as the boundary) and **\(
 [Read the scaling intuition](why-length-depends-on-scale.md){ .md-button }
 
 
-!!! info "See live scaling outputs"
-    For a quick results view, open [Scaling Results](scaling-results.md). That page shows the published plot and rendered summary table used by the website.
+!!! tip "Current synthetic output"
+    See the latest published figure and CSV on [Scaling Results](scaling-results.md).  
+    If those look stale, the workflow likely ran on a PR (artifact only) rather than a manual dispatch (commits docs assets).
 
 ## The question
 

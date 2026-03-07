@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="540" viewBox="0 0 900 540" role="img" aria-label="Synthetic WUI boundary scaling plot">
+  <rect x="0" y="0" width="900" height="540" fill="#ffffff" />
+  <line x1="90" y1="50.0" x2="860" y2="50.0" stroke="#e1e1e1" stroke-width="1" />
+<line x1="90" y1="155.0" x2="860" y2="155.0" stroke="#e1e1e1" stroke-width="1" />
+<line x1="90" y1="260.0" x2="860" y2="260.0" stroke="#e1e1e1" stroke-width="1" />
+<line x1="90" y1="365.0" x2="860" y2="365.0" stroke="#e1e1e1" stroke-width="1" />
+<line x1="90" y1="470.0" x2="860" y2="470.0" stroke="#e1e1e1" stroke-width="1" />
+  <line x1="90.0" y1="50" x2="90.0" y2="470" stroke="#e1e1e1" stroke-width="1" />
+<line x1="244.0" y1="50" x2="244.0" y2="470" stroke="#e1e1e1" stroke-width="1" />
+<line x1="398.0" y1="50" x2="398.0" y2="470" stroke="#e1e1e1" stroke-width="1" />
+<line x1="552.0" y1="50" x2="552.0" y2="470" stroke="#e1e1e1" stroke-width="1" />
+<line x1="706.0" y1="50" x2="706.0" y2="470" stroke="#e1e1e1" stroke-width="1" />
+<line x1="860.0" y1="50" x2="860.0" y2="470" stroke="#e1e1e1" stroke-width="1" />
+  <line x1="90" y1="470" x2="860" y2="470" stroke="#505050" stroke-width="1.5" />
+  <line x1="90" y1="50" x2="90" y2="470" stroke="#505050" stroke-width="1.5" />
+  <polyline fill="none" stroke="#2a6ac0" stroke-width="2.5" points="90.00,69.09 200.00,80.32 310.00,106.38 420.00,146.83 530.00,216.97 640.00,287.87 750.00,371.27 860.00,450.91" />
+  <circle cx="90.00" cy="69.09" r="3.5" fill="#2a6ac0" />
+<circle cx="200.00" cy="80.32" r="3.5" fill="#2a6ac0" />
+<circle cx="310.00" cy="106.38" r="3.5" fill="#2a6ac0" />
+<circle cx="420.00" cy="146.83" r="3.5" fill="#2a6ac0" />
+<circle cx="530.00" cy="216.97" r="3.5" fill="#2a6ac0" />
+<circle cx="640.00" cy="287.87" r="3.5" fill="#2a6ac0" />
+<circle cx="750.00" cy="371.27" r="3.5" fill="#2a6ac0" />
+<circle cx="860.00" cy="450.91" r="3.5" fill="#2a6ac0" />
+</svg>

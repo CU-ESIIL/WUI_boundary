@@ -57,7 +57,7 @@ jobs:
       - name: Copy website-facing assets
         run: |
           mkdir -p docs/assets/figures docs/assets/data
-          cp outputs/minimal_demo/boundary_scaling_plot.png docs/assets/figures/boundary_scaling_plot.png
+          cp outputs/minimal_demo/boundary_scaling_plot.svg docs/assets/figures/boundary_scaling_plot.svg
           cp outputs/minimal_demo/boundary_scaling_summary.csv docs/assets/data/boundary_scaling_summary.csv
 
       - name: Commit website assets back to branch
@@ -70,7 +70,7 @@ jobs:
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/assets/figures/boundary_scaling_plot.png docs/assets/data/boundary_scaling_summary.csv
+          git add docs/assets/figures/boundary_scaling_plot.svg docs/assets/data/boundary_scaling_summary.csv
           if git diff --cached --quiet; then
             echo "No website asset changes to commit."
             exit 0
