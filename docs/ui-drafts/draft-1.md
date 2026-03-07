@@ -5,7 +5,7 @@ This Draft 1 interface is a presentation-ready **story lab** for the manuscript'
 <div class="oasis-embed">
   <iframe
     title="WUI Boundary Story Lab Draft 1"
-    src="draft-1/story-lab.html"
+    src="story-lab.html"
     loading="lazy"
     allowfullscreen>
   </iframe>
