@@ -3,6 +3,13 @@
 ## Unreleased
 
 ### Changed
+- Audited and clarified synthetic analytics publication behavior across local runs, PR artifacts, and manual workflow dispatch in website-facing docs.
+- Expanded `docs/scaling-results.md` with a prominently embedded current plot, plain-language interpretation, CSV preview table, and explicit refresh guidance.
+- Expanded `docs/methods-reproducibility.md` with sections for generation triggers, site update behavior, and concrete testing pathways for local, PR, and manual Actions runs.
+- Added a homepage callout in `docs/index.md` that links directly to current Scaling Results and explains why published outputs can appear stale.
+- Added CLI flags to `scripts/run_minimal_boundary_scaling.py` so contributors can test alternate epsilon grids and delineation settings without editing code, including `--skip-doc-publish` for local-only experiments.
+- Switched published docs-facing plot output from PNG to SVG and updated workflow/docs references so result previews remain visible without requiring a committed binary image file.
+
 - Added robust inline iframe embeds on `docs/interactive-experiments.md` using GitHub Pages-rooted `/WUI_boundary/...` paths for Draft 1 and Draft 2 Story Lab demos, while preserving full-page fallback buttons.
 - Added dedicated `.app-frame` embed styling in `docs/stylesheets/extra.css` to prevent collapsed iframe height and improve responsive visibility on desktop/tablet/mobile.
 - Replaced the public MkDocs information architecture with a manuscript-style scientific narrative: Home, Why Length Depends on Scale, What Counts as the WUI Boundary, Interactive Experiments, Scaling Results, Fire Science Implications, and Methods & Reproducibility.
