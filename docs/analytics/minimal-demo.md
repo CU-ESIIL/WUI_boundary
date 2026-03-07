@@ -17,7 +17,7 @@ The companion summary table used for this plot is published at:
 
 - `docs/assets/data/boundary_scaling_summary.csv`
 
-If this repository checkout does not yet include those files, run the workflow once (or run the script locally and copy files) to refresh docs-facing assets.
+Docs-facing figure binaries are generated artifacts and may be absent in a fresh checkout; run the workflow once (or run the script locally) to refresh docs-facing assets.
 
 ## Rerun instructions
 
@@ -42,6 +42,8 @@ Generated files:
 - `outputs/minimal_demo/boundary_scaling_plot.png`
 - `outputs/minimal_demo/boundary_scaling_summary.csv`
 - `outputs/minimal_demo/run_summary.md`
+- `docs/assets/figures/boundary_scaling_plot.png`
+- `docs/assets/data/boundary_scaling_summary.csv`
 
 ## Before enabling real-data runs
 
