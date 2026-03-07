@@ -7,16 +7,16 @@ This is the core Story Lab for interrogating \(L_d(\varepsilon)\): how WUI bound
 
 ## Interactive Figure: Measuring the WUI boundary
 
-<div class="oasis-embed">
+<div class="app-frame">
   <iframe
-    title="Interactive Figure — Measuring the WUI boundary"
-    src="ui-drafts/draft-1/story-lab.html"
+    src="/WUI_boundary/ui-drafts/draft-1/story-lab.html"
+    title="Interactive Figure: Measuring the WUI Boundary"
     loading="lazy"
     allowfullscreen>
   </iframe>
 </div>
 
-[Open interactive figure in full page](ui-drafts/draft-1/story-lab.html){ .md-button .md-button--primary }
+[Open interactive figure in full page](/WUI_boundary/ui-drafts/draft-1/story-lab.html){ .md-button .md-button--primary }
 
 ## Experiment set A: vary measurement scale \(\varepsilon\)
 
@@ -34,15 +34,15 @@ Use the comparative panels to evaluate whether changes in measured length are do
 
 A second synthetic interface explores alternate layout and comparison interactions.
 
-<div class="oasis-embed">
+<div class="app-frame">
   <iframe
-    title="Interactive Figure — Story Lab Remix"
-    src="ui-drafts/draft-2/story-lab-remix.html"
+    src="/WUI_boundary/ui-drafts/draft-2/story-lab-remix.html"
+    title="Interactive Figure: Story Lab Remix"
     loading="lazy"
     allowfullscreen>
   </iframe>
 </div>
 
-[Open design variant in full page](ui-drafts/draft-2/story-lab-remix.html){ .md-button }
+[Open design variant in full page](/WUI_boundary/ui-drafts/draft-2/story-lab-remix.html){ .md-button }
 
 [Next: Scaling results](scaling-results.md){ .md-button .md-button--primary }

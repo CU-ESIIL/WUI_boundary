@@ -3,6 +3,8 @@
 ## Unreleased
 
 ### Changed
+- Added robust inline iframe embeds on `docs/interactive-experiments.md` using GitHub Pages-rooted `/WUI_boundary/...` paths for Draft 1 and Draft 2 Story Lab demos, while preserving full-page fallback buttons.
+- Added dedicated `.app-frame` embed styling in `docs/stylesheets/extra.css` to prevent collapsed iframe height and improve responsive visibility on desktop/tablet/mobile.
 - Replaced the public MkDocs information architecture with a manuscript-style scientific narrative: Home, Why Length Depends on Scale, What Counts as the WUI Boundary, Interactive Experiments, Scaling Results, Fire Science Implications, and Methods & Reproducibility.
 - Rewrote `docs/index.md` as an abstract-plus-figure narrative homepage centered on the core claim that WUI boundary length is a function \(L_d(\varepsilon)\).
 - Added new core manuscript pages (`docs/why-length-depends-on-scale.md`, `docs/what-counts-as-wui-boundary.md`, `docs/interactive-experiments.md`, `docs/scaling-results.md`, `docs/fire-science-implications.md`, `docs/methods-reproducibility.md`) and migrated key content from prior drafts/scaffold pages.
