@@ -31,6 +31,28 @@ python scripts/run_minimal_demo.py
 
 Demo outputs are written to `outputs/` (specifically `outputs/minimal_demo/` for the current minimal run).
 
+
+## Automated deployed-site review (Playwright)
+
+The repository includes a lightweight Playwright reviewer that checks the deployed GitHub Pages site at:
+
+- `https://cu-esiil.github.io/WUI_boundary/`
+
+It runs on pull requests and can also be launched manually from the Actions tab using the **Playwright Site Review** workflow. The review focuses on key scientific pages and catches common publication failures (broken page loads, missing figure/table/iframe content, console errors, and obvious navigation regressions).
+
+Artifacts from each run are available in GitHub Actions:
+
+- `playwright-report` (HTML report)
+- `playwright-test-results` (screenshots, traces on failure, and JSON diagnostics for console/request issues)
+
+You can also run it locally:
+
+```bash
+npm install
+npx playwright install --with-deps chromium
+npm run test:site-review
+```
+
 ## Project status
 
 At present, the repository demonstrates the conceptual framework with synthetic boundary geometries and synthetic scaling outputs. It is designed to grow toward empirical WUI datasets and case-based analyses while keeping delineation choices, measurement scale, and interpretation transparent.

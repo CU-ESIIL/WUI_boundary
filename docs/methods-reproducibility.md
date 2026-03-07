@@ -139,6 +139,25 @@ Supported flags:
 - `--adjacency-rule` (default `touches`)
 - `--skip-doc-publish` (default disabled)
 
+
+## Deployed website QA review (Playwright)
+
+In addition to the synthetic analysis workflow, this repository now includes browser-based QA for the published GitHub Pages site itself:
+
+- workflow: `.github/workflows/playwright-site-review.yml`
+- trigger: `pull_request` and manual `workflow_dispatch`
+- target URL: `https://cu-esiil.github.io/WUI_boundary/` (deployed site, not localhost)
+
+The review checks:
+
+- basic page health (navigation, title, `main` content, no obvious 404 text),
+- homepage narrative + key links,
+- interactive iframe visibility and fallback full-page link,
+- scaling-results figure load state, CSV link, and rendered table rows,
+- console/page errors and failed network requests (attached as diagnostics).
+
+Run artifacts include `playwright-report` and `playwright-test-results` (screenshots for key pages plus traces/videos on failures).
+
 ## Forward path to empirical analysis
 
 The next step is not a redesign of the conceptual claim; it is empirical activation of the same \(L_d(\varepsilon)\) framework with transparent data provenance, reproducible preprocessing, and explicit uncertainty reporting.
