@@ -1,0 +1,14 @@
+{
+  "name": "wui-boundary-site-review",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Playwright checks for deployed WUI Boundary GitHub Pages site",
+  "scripts": {
+    "test:site-review": "playwright test",
+    "test:site-review:headed": "playwright test --headed",
+    "test:site-review:report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.54.2"
+  }
+}
