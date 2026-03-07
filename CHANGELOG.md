@@ -3,6 +3,7 @@
 ## Unreleased
 
 ### Added
+- QA audit report `outputs/qa/playwright-site-audit-2026-03-07.md` capturing Playwright page checks, link-scope review, screenshots, and conservative follow-up recommendations.
 - GitHub Actions workflow `.github/workflows/boundary-scaling-demo.yml` for pull requests and manual dispatch to run tests, execute minimal analysis, upload artifacts, and optionally commit selected docs-facing assets on workflow_dispatch.
 - New analytics docs page: `docs/analytics/minimal-demo.md` showing the synthetic boundary-scaling plot and rerun guidance.
 - Workflow-driven publication of website-facing synthetic demo assets under `docs/assets/figures/` and `docs/assets/data/` (generated/updated by CI job).
