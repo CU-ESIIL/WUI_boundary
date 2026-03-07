@@ -1,12 +1,41 @@
 # Scaling results
 
-This section summarizes the current reproducible demonstration of scale-conditioned boundary length using
-\[
-L_d(\varepsilon).
-\]
+This page shows the current **synthetic demo** outputs for scale-conditioned boundary length,
+\(L_d(\varepsilon)\), in a website-ready format.
 
 !!! warning "Synthetic demo"
     The outputs shown here are generated from synthetic data and toy geometry. They demonstrate analysis wiring and interpretation logic, not empirical WUI estimates.
+
+!!! info "How results reach this website"
+    - **Pull request runs** create artifacts for validation and review.
+    - **Manual publish runs** regenerate and publish website-facing assets.
+    - **Local runs** write to `outputs/` and only affect the website after assets are copied into `docs/assets/` and published.
+
+## Current scaling plot
+
+<div
+  id="scaling-summary-plot"
+  class="scaling-plot-wrap"
+  data-csv-plot="true"
+  data-csv-src="../assets/data/boundary_scaling_summary.csv"
+  data-csv-fallback="Scaling plot is unavailable right now. You can still download the CSV below.">
+  Loading scaling plot…
+</div>
+
+The synthetic demo shows measured perimeter changing across the tested scale grid, which is exactly why boundary length should be reported as a function of scale rather than a single constant.
+
+## Summary table (rendered from CSV)
+
+<div
+  id="scaling-summary-table"
+  class="scaling-table-wrap"
+  data-csv-table="true"
+  data-csv-src="../assets/data/boundary_scaling_summary.csv"
+  data-csv-fallback="Summary table is unavailable right now. You can still download the CSV below.">
+  Loading summary table…
+</div>
+
+[Download summary CSV](assets/data/boundary_scaling_summary.csv)
 
 ## Reading the scaling relationship
 
@@ -21,17 +50,11 @@ In plain terms:
 - a steeper magnitude of slope means stronger scale sensitivity;
 - a flatter slope means weaker sensitivity over the tested scale range.
 
-## Current figure
+## Typical workflows
 
-<img src="assets/figures/boundary_scaling_plot.png" alt="Synthetic WUI boundary scaling relationship" loading="lazy" />
-
-If this image is missing in a fresh checkout, regenerate it using the methods page workflow.
-
-## Current summary table
-
-The companion summary table is published at:
-
-- [`docs/assets/data/boundary_scaling_summary.csv`](assets/data/boundary_scaling_summary.csv)
+1. **Local experimentation:** run analysis locally, inspect `outputs/minimal_demo/`, and iterate quickly.
+2. **Pull request validation:** open a PR and use run artifacts to review outputs before publishing.
+3. **Manual publish to website:** trigger a manual publish run to refresh `docs/assets/` and update the live page.
 
 ## Interpretation guardrails
 

@@ -40,6 +40,11 @@ Not yet implemented:
 - `outputs/minimal_demo/` — run outputs.
 - `docs/assets/data/` and `docs/assets/figures/` — published docs-facing artifacts.
 
+Current published website asset paths:
+
+- `docs/assets/figures/boundary_scaling_plot.png`
+- `docs/assets/data/boundary_scaling_summary.csv`
+
 ## Reproduce the current synthetic run
 
 ```bash

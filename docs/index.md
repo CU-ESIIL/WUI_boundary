@@ -20,6 +20,10 @@ where **\(d\)** is the delineation choice (what counts as the boundary) and **\(
 [Enter the interactive experiments](interactive-experiments.md){ .md-button .md-button--primary }
 [Read the scaling intuition](why-length-depends-on-scale.md){ .md-button }
 
+
+!!! info "See live scaling outputs"
+    For a quick results view, open [Scaling Results](scaling-results.md). That page shows the published plot and rendered summary table used by the website.
+
 ## The question
 
 When WUI boundaries are used for exposure, risk, and planning decisions, perimeter length is often treated as if it were a stable property of the landscape. This site treats that assumption as a testable scientific hypothesis.

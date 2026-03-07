@@ -3,6 +3,10 @@
 ## Unreleased
 
 ### Changed
+- Replaced the Scaling Results top image dependency with a CSV-rendered inline SVG plot so the page remains readable without committing binary figure artifacts, while keeping the CSV download path as the canonical source.
+- Polished `docs/scaling-results.md` into a results-first layout with a prominent published plot, a plain-language status callout, an in-page rendered CSV summary table (with download fallback), and a concise three-pathway workflow guide (local experimentation, PR validation, manual publish).
+- Added a home-page callout in `docs/index.md` that points readers directly to the live Scaling Results page.
+- Documented the current published website asset paths explicitly in `docs/methods-reproducibility.md` and wired a lightweight docs JavaScript loader (`docs/assets/javascripts/render-scaling-csv.js`) through `mkdocs.yml`, with matching table/figure styles in `docs/stylesheets/extra.css`.
 - Added robust inline iframe embeds on `docs/interactive-experiments.md` using GitHub Pages-rooted `/WUI_boundary/...` paths for Draft 1 and Draft 2 Story Lab demos, while preserving full-page fallback buttons.
 - Added dedicated `.app-frame` embed styling in `docs/stylesheets/extra.css` to prevent collapsed iframe height and improve responsive visibility on desktop/tablet/mobile.
 - Replaced the public MkDocs information architecture with a manuscript-style scientific narrative: Home, Why Length Depends on Scale, What Counts as the WUI Boundary, Interactive Experiments, Scaling Results, Fire Science Implications, and Methods & Reproducibility.
