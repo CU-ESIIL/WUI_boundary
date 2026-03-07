@@ -4,6 +4,7 @@
 
 ### Changed
 - Added a Playwright-based deployed-site reviewer (tests + config + CI workflow) that validates key GitHub Pages routes, figures, tables, iframes, console/network sanity, and uploads screenshots/report artifacts for inspection.
+- Updated the Playwright site-review workflow Node setup to avoid npm cache lockfile requirements so CI can run without a committed JavaScript lockfile.
 - Audited and clarified synthetic analytics publication behavior across local runs, PR artifacts, and manual workflow dispatch in website-facing docs.
 - Expanded `docs/scaling-results.md` with a prominently embedded current plot, plain-language interpretation, CSV preview table, and explicit refresh guidance.
 - Expanded `docs/methods-reproducibility.md` with sections for generation triggers, site update behavior, and concrete testing pathways for local, PR, and manual Actions runs.
