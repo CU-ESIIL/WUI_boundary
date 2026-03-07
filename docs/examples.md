@@ -19,7 +19,7 @@ Use this wrapper to keep embedded conceptual prototypes responsive.
 <div class="oasis-embed">
   <iframe
     title="WUI Boundary Story Lab Draft 1"
-    src="draft-1/story-lab.html"
+    src="../ui-drafts/draft-1/story-lab.html"
     loading="lazy"
     allowfullscreen>
   </iframe>
@@ -29,7 +29,7 @@ Use this wrapper to keep embedded conceptual prototypes responsive.
 <div class="oasis-embed">
   <iframe
     title="WUI Boundary Story Lab Draft 1"
-    src="draft-1/story-lab.html"
+    src="../ui-drafts/draft-1/story-lab.html"
     loading="lazy"
     allowfullscreen>
   </iframe>

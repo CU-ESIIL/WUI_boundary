@@ -21,5 +21,6 @@
 - Removed `/basic_OASIS/` hardcoded Draft 1 embed paths in favor of project-safe links and updated the custom logo partial to route to the site homepage.
 - Replaced the Draft 1 Story Lab placeholder page with the exact current standalone HTML/CSS/JS implementation and preserved its interactive behavior/styling.
 - Updated Draft 1 embedding links so the standalone app resolves correctly from the docs page build path.
+- Corrected Draft 1 iframe/full-page Story Lab links to use repo-native relative paths (`story-lab.html`) so embeds resolve under `WUI_boundary` GitHub Pages without template-base leakage.
 - Replaced placeholder-only measurement and scaling calls with minimal executable toy implementations while preserving delineation index `d` and measurement scale `epsilon` separation.
 - Updated README and analytics docs with explicit rerun instructions for tests and minimal analysis.
