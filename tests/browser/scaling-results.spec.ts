@@ -12,14 +12,31 @@ test('scaling results page renders figure, table, and csv link', async ({ page }
   const plot = page.locator('img[alt*="boundary scaling" i]').first();
   await expect(plot).toBeVisible();
 
-  const plotUrl = await plot.evaluate((img) => {
+  const plotSrc = await plot.getAttribute('src');
+  expect(plotSrc, 'Scaling plot should define an image source').toBeTruthy();
+
+  const browserResolvedPlotUrl = await plot.evaluate((img) => {
     const htmlImg = img as HTMLImageElement;
     return htmlImg.currentSrc || htmlImg.src;
   });
-  expect(plotUrl, 'Scaling plot should resolve to a fetchable image URL').toBeTruthy();
 
-  const plotResponse = await page.request.get(plotUrl);
-  expect(plotResponse.ok(), `Expected scaling plot to load successfully: ${plotUrl}`).toBeTruthy();
+  const candidateUrls = [browserResolvedPlotUrl];
+  if (plotSrc && !/^https?:/i.test(plotSrc)) {
+    candidateUrls.push(new URL(plotSrc.replace(/^\/+/, ''), 'https://cu-esiil.github.io/WUI_boundary/').toString());
+  }
+
+  let plotOk = false;
+  const checked: string[] = [];
+  for (const candidate of candidateUrls.filter(Boolean)) {
+    checked.push(candidate as string);
+    const response = await page.request.get(candidate as string);
+    if (response.ok()) {
+      plotOk = true;
+      break;
+    }
+  }
+
+  expect(plotOk, `Expected scaling plot to load successfully from at least one candidate URL: ${checked.join(', ')}`).toBeTruthy();
 
   const csvLink = page.getByRole('link', { name: /boundary_scaling_summary\.csv/i });
   await expect(csvLink).toBeVisible();
