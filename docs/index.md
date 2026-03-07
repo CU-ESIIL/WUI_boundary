@@ -1,33 +1,72 @@
-# WUI_boundary
+# How long is the Wildland–Urban Interface boundary?
 
-`WUI_boundary` hosts the project website for scale-conditioned wildland-urban interface boundary analysis, including conceptual UI drafts and analytics scaffolding.
+The Wildland–Urban Interface (WUI) is one of the most consequential boundaries in wildfire science. Yet a simple question has no single answer: **how long is the WUI boundary?**
 
-[Project Patterns](examples.md){ .md-button .md-button--primary }
-[Draft 1 — WUI Boundary Story Lab](ui-drafts/draft-1.md){ .md-button .md-button--primary }
-[Boundary Analytics Scaffold](analytics/scaffold.md){ .md-button }
-[View Repository](https://github.com/CU-ESIIL/WUI_boundary){ .md-button }
+Our central claim is that boundary length is not a fixed scalar. It is a scale-conditioned quantity,
+\[
+L_d(\varepsilon),
+\]
+where **\(d\)** is the delineation choice (what counts as the boundary) and **\(\varepsilon\)** is the measurement scale (the effective ruler length or resolution).
+
+<div class="oasis-embed" markdown>
+  <iframe
+    title="Interactive Figure — Measuring the WUI boundary"
+    src="ui-drafts/draft-1/story-lab.html"
+    loading="lazy"
+    allowfullscreen>
+  </iframe>
+</div>
+
+[Enter the interactive experiments](interactive-experiments.md){ .md-button .md-button--primary }
+[Read the scaling intuition](why-length-depends-on-scale.md){ .md-button }
+
+## The question
+
+When WUI boundaries are used for exposure, risk, and planning decisions, perimeter length is often treated as if it were a stable property of the landscape. This site treats that assumption as a testable scientific hypothesis.
+
+## Why this is difficult
+
+Two distinct mechanisms change measured length:
+
+1. **Object-definition sensitivity:** changing delineation assumptions changes the boundary object itself.
+2. **Measurement-scale sensitivity:** changing resolution changes the measured length of a fixed boundary object.
+
+Because both mechanisms operate together, the reported length depends on both \(d\) and \(\varepsilon\).
+
+## What this site lets you test
+
+This manuscript-style site combines intuition, definitions, interactive figures, and reproducible synthetic outputs so you can inspect how \(L_d(\varepsilon)\) behaves under different assumptions.
+
+## Main takeaway
+
+There is no single WUI boundary length independent of delineation and measurement scale. Comparisons are only meaningful when \(d\) and \(\varepsilon\) are explicit.
+
+## Where to go next
 
 <div class="grid cards" markdown>
 
-- **UI Drafts**
+- **Why Length Depends on Scale**  
+  Build intuition for why complex boundaries produce different lengths at different ruler sizes.  
+  [Read the explainer](why-length-depends-on-scale.md)
 
-  ---
+- **What Counts as the WUI Boundary**  
+  See how delineation assumptions define different boundary objects before measurement starts.  
+  [Define \(d\)](what-counts-as-wui-boundary.md)
 
-  Access conceptual interface drafts and roadmap pages.
+- **Interactive Experiments**  
+  Explore figure-driven experiments comparing definition and measurement sensitivity.  
+  [Open the lab](interactive-experiments.md)
 
-- **Boundary Analytics**
+- **Scaling Results**  
+  Review synthetic demo outputs and the log-log scaling framework used to summarize \(L_d(\varepsilon)\).  
+  [View results](scaling-results.md)
 
-  ---
+- **Fire Science Implications**  
+  Connect geometric sensitivity to interpretation, comparability, and applied wildfire science.  
+  [Interpret implications](fire-science-implications.md)
 
-  Review the minimal scaffold for future reproducible real-data workflows.
-
-- **Project Documentation**
-
-  ---
-
-  Keep implementation notes and workflow guidance aligned with current repository state.
+- **Methods & Reproducibility**  
+  Inspect the current analysis scaffold, status, and reproducible execution workflow.  
+  [Review methods](methods-reproducibility.md)
 
 </div>
-
-!!! note "Prototype + scaffold split"
-    The Story Lab is a synthetic conceptual prototype. The analytics scaffold defines interfaces for future real-data implementation.

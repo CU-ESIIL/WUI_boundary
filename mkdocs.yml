@@ -1,5 +1,5 @@
-site_name: "WUI_boundary"
-site_description: "Scale-conditioned WUI boundary length documentation and prototype"
+site_name: "WUI Boundary Length Manuscript"
+site_description: "A living manuscript on how WUI boundary length depends on delineation and measurement scale"
 site_url: "https://cu-esiil.github.io/WUI_boundary/"
 
 repo_name: "CU-ESIIL/WUI_boundary"
@@ -7,16 +7,13 @@ repo_url: "https://github.com/CU-ESIIL/WUI_boundary"
 edit_uri: "edit/main/docs/"
 
 nav:
-  - Site:
-      - Home: index.md
-      - Project Patterns: examples.md
-  - UI Drafts:
-      - Draft 1 — WUI Boundary Story Lab: ui-drafts/draft-1.md
-      - Draft 2 — WUI Boundary Story Lab Remix: ui-drafts/draft-2.md
-      - Roadmap to Real Data: ui-drafts/roadmap-to-real-data.md
-  - Analytics:
-      - Boundary Analytics Scaffold: analytics/scaffold.md
-      - Minimal Demo Output: analytics/minimal-demo.md
+  - Home: index.md
+  - Why Length Depends on Scale: why-length-depends-on-scale.md
+  - What Counts as the WUI Boundary: what-counts-as-wui-boundary.md
+  - Interactive Experiments: interactive-experiments.md
+  - Scaling Results: scaling-results.md
+  - Fire Science Implications: fire-science-implications.md
+  - Methods & Reproducibility: methods-reproducibility.md
 
 theme:
   name: material

@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### Changed
+- Replaced the public MkDocs information architecture with a manuscript-style scientific narrative: Home, Why Length Depends on Scale, What Counts as the WUI Boundary, Interactive Experiments, Scaling Results, Fire Science Implications, and Methods & Reproducibility.
+- Rewrote `docs/index.md` as an abstract-plus-figure narrative homepage centered on the core claim that WUI boundary length is a function \(L_d(\varepsilon)\).
+- Added new core manuscript pages (`docs/why-length-depends-on-scale.md`, `docs/what-counts-as-wui-boundary.md`, `docs/interactive-experiments.md`, `docs/scaling-results.md`, `docs/fire-science-implications.md`, `docs/methods-reproducibility.md`) and migrated key content from prior drafts/scaffold pages.
+- Demoted legacy template-era pages under `docs/ui-drafts/` and `docs/analytics/` to internal archive stubs and removed `docs/examples.md` from the project.
+
 ### Added
 - New UI Drafts page `docs/ui-drafts/draft-2.md` and standalone app `docs/ui-drafts/draft-2/story-lab-remix.html` for Draft 2 — WUI Boundary Story Lab Remix, including iframe embed and full-page launch link.
 - QA audit report `outputs/qa/playwright-site-audit-2026-03-07.md` capturing Playwright page checks, link-scope review, screenshots, and conservative follow-up recommendations.
