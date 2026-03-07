@@ -4,7 +4,7 @@ import { attachDiagnostics, saveReviewScreenshot } from './utils';
 test('interactive experiments page renders iframe and fallback links', async ({ page }, testInfo) => {
   const diagnostics = attachDiagnostics(page, testInfo);
 
-  const response = await page.goto('/interactive-experiments/', { waitUntil: 'domcontentloaded' });
+  const response = await page.goto('interactive-experiments/', { waitUntil: 'domcontentloaded' });
   expect(response?.ok()).toBeTruthy();
 
   await expect(page.locator('h1')).toContainText(/Interactive experiments/i);

@@ -2,11 +2,11 @@ import { test, expect } from '@playwright/test';
 import { attachDiagnostics, saveReviewScreenshot } from './utils';
 
 const keyPages = [
-  { name: 'home', path: '/' },
-  { name: 'interactive-experiments', path: '/interactive-experiments/' },
-  { name: 'scaling-results', path: '/scaling-results/' },
-  { name: 'methods-reproducibility', path: '/methods-reproducibility/' },
-  { name: 'fire-science-implications', path: '/fire-science-implications/' },
+  { name: 'home', path: '' },
+  { name: 'interactive-experiments', path: 'interactive-experiments/' },
+  { name: 'scaling-results', path: 'scaling-results/' },
+  { name: 'methods-reproducibility', path: 'methods-reproducibility/' },
+  { name: 'fire-science-implications', path: 'fire-science-implications/' },
 ];
 
 for (const pageCheck of keyPages) {

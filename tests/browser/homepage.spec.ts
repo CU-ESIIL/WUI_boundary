@@ -4,7 +4,7 @@ import { attachDiagnostics, saveReviewScreenshot } from './utils';
 test('homepage loads and links to key analysis pages', async ({ page }, testInfo) => {
   const diagnostics = attachDiagnostics(page, testInfo);
 
-  const response = await page.goto('/', { waitUntil: 'domcontentloaded' });
+  const response = await page.goto('', { waitUntil: 'domcontentloaded' });
   expect(response?.ok()).toBeTruthy();
 
   await expect(page).toHaveTitle(/\S+/);

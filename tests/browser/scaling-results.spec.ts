@@ -4,7 +4,7 @@ import { attachDiagnostics, saveReviewScreenshot } from './utils';
 test('scaling results page renders figure, table, and csv link', async ({ page }, testInfo) => {
   const diagnostics = attachDiagnostics(page, testInfo);
 
-  const response = await page.goto('/scaling-results/', { waitUntil: 'domcontentloaded' });
+  const response = await page.goto('scaling-results/', { waitUntil: 'domcontentloaded' });
   expect(response?.ok()).toBeTruthy();
 
   await expect(page.locator('h1')).toContainText(/Scaling results/i);

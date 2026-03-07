@@ -3,6 +3,7 @@
 ## Unreleased
 
 ### Changed
+- Fixed Playwright navigation paths to use repository-relative routes (without leading `/`) so checks resolve under the GitHub Pages project site base path (`/WUI_boundary/`) in CI.
 - Added a Playwright-based deployed-site reviewer (tests + config + CI workflow) that validates key GitHub Pages routes, figures, tables, iframes, console/network sanity, and uploads screenshots/report artifacts for inspection.
 - Updated the Playwright site-review workflow Node setup to avoid npm cache lockfile requirements so CI can run without a committed JavaScript lockfile.
 - Audited and clarified synthetic analytics publication behavior across local runs, PR artifacts, and manual workflow dispatch in website-facing docs.
