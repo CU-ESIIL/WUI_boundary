@@ -24,13 +24,18 @@ import json
 import math
 import shutil
 import sys
+import time
 from pathlib import Path
 
 import requests
 
 ROOT = Path(__file__).resolve().parents[1]
 
-OVERPASS_URL = "https://overpass-api.de/api/interpreter"
+OVERPASS_URLS = [
+    "https://overpass-api.de/api/interpreter",
+    "https://overpass.kumi.systems/api/interpreter",
+    "https://lz4.overpass-api.de/api/interpreter",
+]
 DEFAULT_NLCD_URL = "https://prd-tnm.s3.amazonaws.com/StagedProducts/NLCD/data/2021/land_cover/nlcd_2021_land_cover_l48_20210604_cog.tif"
 
 
@@ -131,7 +136,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     return parser.parse_args(argv)
 
 
-def _query_overpass_buildings(bbox: tuple[float, float, float, float], timeout_s: int = 120) -> dict:
+def _query_overpass_buildings(
+    bbox: tuple[float, float, float, float],
+    timeout_s: int = 120,
+    max_attempts_per_endpoint: int = 2,
+) -> dict:
     min_lon, min_lat, max_lon, max_lat = bbox
     # Keep this modest and bbox-limited for a small no-keys pilot run.
     query = f"""
@@ -142,9 +151,29 @@ def _query_overpass_buildings(bbox: tuple[float, float, float, float], timeout_s
     );
     out geom;
     """
-    resp = requests.post(OVERPASS_URL, data=query, timeout=timeout_s + 30)
-    resp.raise_for_status()
-    return resp.json()
+
+    last_exc: Exception | None = None
+    for endpoint in OVERPASS_URLS:
+        for attempt in range(1, max_attempts_per_endpoint + 1):
+            try:
+                resp = requests.post(endpoint, data=query, timeout=timeout_s + 30)
+                if resp.status_code in {429, 502, 503, 504}:
+                    raise requests.HTTPError(
+                        f"Transient Overpass status {resp.status_code} at {endpoint}",
+                        response=resp,
+                    )
+                resp.raise_for_status()
+                return resp.json()
+            except (requests.Timeout, requests.ConnectionError, requests.HTTPError, ValueError) as exc:
+                last_exc = exc
+                if attempt < max_attempts_per_endpoint:
+                    time.sleep(2 * attempt)
+                continue
+
+    raise RuntimeError(
+        "Overpass request failed across all configured endpoints "
+        f"({', '.join(OVERPASS_URLS)})."
+    ) from last_exc
 
 
 def _build_building_gdf(overpass_json: dict, deps: dict):

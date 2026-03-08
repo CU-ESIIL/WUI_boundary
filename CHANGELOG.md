@@ -4,6 +4,7 @@
 
 ### Changed
 - Implemented a first empirical, no-keys streaming pilot runner at `scripts/run_streaming_wui_scaling.py` that fetches OSM buildings from Overpass, streams a bbox-limited NLCD window from a remote raster source, builds a WUI-like settlement–vegetation interface, runs fixed-boundary and resolution-rebuild scaling experiments, writes CSV/PNG/JSON outputs, and can publish docs-facing assets under `docs/assets/`.
+- Hardened Overpass acquisition in `scripts/run_streaming_wui_scaling.py` with retry-and-fallback behavior across multiple public Overpass endpoints so transient 504/timeout failures are retried before the run fails.
 - Rewrote `docs/real-data-experiments.md` into a manuscript-style real-data page with the required transition prose, explicit experiment framing, figure embeds, and CSV links for the empirical pilot outputs.
 - Updated manuscript cross-links and reproducibility guidance (`docs/index.md`, `docs/scaling-results.md`, `docs/implications-for-remote-sensing.md`, `docs/methods-reproducibility.md`) so the real-data pilot workflow, run command, outputs, and docs-asset publication pattern are discoverable and documented.
 
