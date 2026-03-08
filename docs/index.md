@@ -1,4 +1,4 @@
-# Measuring the Wildland–Urban Interface
+# How long is the Wildland–Urban Interface boundary?
 
 The Wildland–Urban Interface is one of the most consequential boundaries in wildfire science. It marks the places where settlement meets flammable landscape, where houses and infrastructure become entangled with vegetation capable of carrying fire, and where ecological process and human vulnerability are forced into direct contact. Maps of this interface now shape how exposure is estimated, how mitigation is prioritized, and how the geography of wildfire risk is described at regional and national scales.
 

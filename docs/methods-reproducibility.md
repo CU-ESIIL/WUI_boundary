@@ -1,10 +1,10 @@
 # Methods & reproducibility
 
-The current analytical pipeline is intentionally designed as a synthetic scaffold for studying the logic of \(L_d(\varepsilon)\) before full empirical ingestion. It lets the project test assumptions about delineation and measurement scale in a transparent environment where every transformation is inspectable and reproducible.
+The current analytical pipeline is a deliberately simplified scaffold for testing the logic of \(L_d(\varepsilon)\) before empirical WUI datasets are brought fully into the workflow. Rather than treating synthetic output as a substitute for real landscape analysis, the pipeline uses toy geometry to make the structure of the problem explicit and reproducible.
 
-This scaffold should be read as a methods prototype rather than a claim about final empirical WUI magnitudes. The synthetic boundary objects and scale sweeps are used to validate reasoning, figure generation, and reporting structure so that later real-data analyses can be interpreted within the same framework.
+This matters because the core claim of the project is methodological as much as geometric. Boundary length must be interpreted in relation to how the boundary object was defined and how the measurement scale was chosen. A small, transparent, synthetic pipeline is therefore useful not because it resolves the empirical question, but because it demonstrates the analytical wiring needed to ask that question clearly.
 
-Reproducibility is therefore treated as part of the scientific argument. The same commands used for local checks generate the docs-facing CSV and figure outputs, and the same checks are exercised in automated review.
+What follows documents the current execution pathway, the published outputs, and the local and continuous-integration routes through which figures and summary data are regenerated. The purpose of this page is practical, but it should be read in continuity with the rest of the site: reproducibility here serves interpretation, not just software maintenance.
 
 Install dependencies and run baseline checks:
 
@@ -49,3 +49,7 @@ Additional CLI options are available through:
 ```bash
 python scripts/run_minimal_boundary_scaling.py --help
 ```
+
+In pull requests, generated artifacts are attached for review in CI. Publication to GitHub Pages still occurs through the repository’s manual dispatch release workflow when maintainers decide to promote a validated revision.
+
+Playwright-backed local review remains part of the expected validation path for website-facing changes, and `scripts/pre_pr_site_review.sh` is the canonical entry point for that check.

@@ -1,6 +1,6 @@
 # Interactive experiments
 
-The conceptual claims developed in this site become easier to understand when they can be manipulated directly. The experiments presented here function as exploratory instruments for reasoning about \(L_d(\varepsilon)\), the measured boundary length that emerges from the interaction between delineation choice and measurement scale.
+The conceptual claims developed across this site become easier to understand when they can be manipulated directly. The experiments presented here function as exploratory instruments for reasoning about \(L_d(\varepsilon)\), the measured boundary length that emerges from the interaction between delineation choice and measurement scale.
 
 These figures should not be read as definitive empirical analyses. They are synthetic and conceptual by design. Their purpose is to isolate mechanisms that are otherwise difficult to see: how a boundary changes when its underlying definition is altered, how the same boundary appears different when measured with different effective ruler lengths, and how these two sources of variation may be mistaken for one another when they are not explicitly separated.
 
