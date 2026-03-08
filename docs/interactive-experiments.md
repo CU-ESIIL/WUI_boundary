@@ -1,13 +1,12 @@
 # Interactive experiments
 
-This is the core Story Lab for interrogating \(L_d(\varepsilon)\): how WUI boundary length changes when we change either the boundary definition or the effective measurement scale.
+The conceptual claims developed in this site become easier to understand when they can be manipulated directly. The experiments presented here function as exploratory instruments for reasoning about \(L_d(\varepsilon)\), the measured boundary length that emerges from the interaction between delineation choice and measurement scale.
 
-!!! info "Status"
-    **Conceptual + Synthetic demo.** The interactive figures are designed for scientific reasoning and communication. They do not yet ingest empirical geospatial datasets.
+These figures should not be read as definitive empirical analyses. They are synthetic and conceptual by design. Their purpose is to isolate mechanisms that are otherwise difficult to see: how a boundary changes when its underlying definition is altered, how the same boundary appears different when measured with different effective ruler lengths, and how these two sources of variation may be mistaken for one another when they are not explicitly separated.
 
-## Interactive Figure: Measuring the WUI boundary
+What the reader is invited to explore, then, is not merely a set of controls, but a spatial argument. As the assumptions change, the geometry of the boundary responds. The interface becomes smoother or more intricate, shorter or longer, more aggregated or more fragmented. In this way the figures translate an abstract methodological problem into a visible and manipulable one.
 
-This default embed now uses **Draft 3**, tuned for iframe and tablet widths so controls stay conceptually tied to the map response.
+The experiments are therefore best understood as part of the reasoning structure of the manuscript. They do not replace formal analysis, but they make the logic of that analysis easier to see.
 
 <div class="app-frame">
   <iframe
@@ -19,22 +18,6 @@ This default embed now uses **Draft 3**, tuned for iframe and tablet widths so c
 </div>
 
 [Open interactive figure in full page](/WUI_boundary/ui-drafts/draft-3/story-lab-responsive.html){ .md-button .md-button--primary }
-
-## Experiment set A: vary measurement scale \(\varepsilon\)
-
-Use the scale/resolution controls to test how measured perimeter changes as the effective ruler length changes while delineation is held fixed. This isolates measurement-scale sensitivity.
-
-## Experiment set B: vary delineation choice \(d\)
-
-Switch delineation assumptions to compare boundary objects produced by different WUI definitions. This isolates object-definition sensitivity.
-
-## Experiment set C: compare both sensitivities side by side
-
-Use the comparative panels to evaluate whether changes in measured length are dominated by changing the boundary object, changing the ruler, or both.
-
-## Previous prototypes (archived design variants)
-
-A second synthetic interface explores alternate layout and comparison interactions.
 
 <div class="app-frame">
   <iframe

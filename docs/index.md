@@ -1,14 +1,16 @@
-# How long is the Wildland–Urban Interface boundary?
+# Measuring the Wildland–Urban Interface
 
-<div class="esiil-hero" markdown>
+The Wildland–Urban Interface is one of the most consequential boundaries in wildfire science. It marks the places where settlement meets flammable landscape, where houses and infrastructure become entangled with vegetation capable of carrying fire, and where ecological process and human vulnerability are forced into direct contact. Maps of this interface now shape how exposure is estimated, how mitigation is prioritized, and how the geography of wildfire risk is described at regional and national scales.
 
-The Wildland–Urban Interface (WUI) is one of the most consequential boundaries in wildfire science. Yet a simple question has no single answer: **how long is the WUI boundary?**
+Yet beneath these applications lies a deceptively simple question. How long is the Wildland–Urban Interface?
 
-Our central claim is that boundary length is not a fixed scalar. It is a scale-conditioned quantity,
-\[
-L_d(\varepsilon),
-\]
-where **\(d\)** is the delineation choice (what counts as the boundary) and **\(\varepsilon\)** is the measurement scale (the effective ruler length or resolution).
+At first glance the problem appears straightforward. One might imagine drawing a line wherever development meets vegetation and then measuring the length of that line. But the apparent simplicity dissolves as soon as one asks what exactly is being measured. The WUI boundary is not a naturally given curve waiting quietly in the landscape to be recovered by a sufficiently careful algorithm. It is a spatial object that emerges from choices about how settlement is represented, how vegetation is classified, and how proximity between the two is interpreted.
+
+Even once the boundary has been defined, its measured length remains unstable. Irregular boundaries behave differently at different scales of observation. A coarse ruler smooths over small bends and irregularities, while a finer ruler begins to follow them. This is the logic behind the coastline paradox described by Mandelbrot: the more carefully certain kinds of boundaries are traced, the longer they appear to become. The Wildland–Urban Interface shares many of these geometric properties.
+
+For this reason the quantity examined throughout this site is written as \(L_d(\varepsilon)\), where \(d\) represents the delineation of the boundary and \(\varepsilon\) represents the scale at which that boundary is measured. The purpose of this manuscript-style site is not simply to report a perimeter value. It is to explore how the reported length of the WUI emerges from the interaction between landscape geometry, methodological choice, and measurement scale.
+
+The pages that follow move from first principles to implication. They begin by asking why complex boundaries resist simple measurement, then turn to the question of what counts as the boundary in the first place, then to interactive experiments and scaling results, and finally to the consequences for remote sensing and wildfire science. The argument is simple, but its implications are not: there is no single WUI boundary length independent of delineation and scale.
 
 <div class="oasis-embed" markdown>
   <iframe
@@ -21,63 +23,3 @@ where **\(d\)** is the delineation choice (what counts as the boundary) and **\(
 
 [Enter the interactive experiments](interactive-experiments.md){ .md-button .md-button--primary }
 [Read the scaling intuition](why-length-depends-on-scale.md){ .md-button }
-
-</div>
-
-
-!!! tip "Current synthetic output"
-    See the latest published figure and CSV on [Scaling Results](scaling-results.md).  
-    If those look stale, the workflow likely ran on a PR (artifact only) rather than a manual dispatch (commits docs assets).
-
-Satellite-like measurement scale is now treated explicitly as part of interpretation; see [Implications for remote sensing](implications-for-remote-sensing.md) for a manuscript-style discussion and synthetic scale demonstration.
-
-## The question
-
-When WUI boundaries are used for exposure, risk, and planning decisions, perimeter length is often treated as if it were a stable property of the landscape. This site treats that assumption as a testable scientific hypothesis.
-
-## Why this is difficult
-
-Two distinct mechanisms change measured length:
-
-1. **Object-definition sensitivity:** changing delineation assumptions changes the boundary object itself.
-2. **Measurement-scale sensitivity:** changing resolution changes the measured length of a fixed boundary object.
-
-Because both mechanisms operate together, the reported length depends on both \(d\) and \(\varepsilon\).
-
-## What this site lets you test
-
-This manuscript-style site combines intuition, definitions, interactive figures, and reproducible synthetic outputs so you can inspect how \(L_d(\varepsilon)\) behaves under different assumptions.
-
-## Main takeaway
-
-There is no single WUI boundary length independent of delineation and measurement scale. Comparisons are only meaningful when \(d\) and \(\varepsilon\) are explicit.
-
-## Where to go next
-
-<div class="grid cards" markdown>
-
-- **Why Length Depends on Scale**  
-  Build intuition for why complex boundaries produce different lengths at different ruler sizes.  
-  [Read the explainer](why-length-depends-on-scale.md)
-
-- **What Counts as the WUI Boundary**  
-  See how delineation assumptions define different boundary objects before measurement starts.  
-  [Define \(d\)](what-counts-as-wui-boundary.md)
-
-- **Interactive Experiments**  
-  Explore figure-driven experiments comparing definition and measurement sensitivity.  
-  [Open the lab](interactive-experiments.md)
-
-- **Scaling Results**  
-  Review synthetic demo outputs and the log-log scaling framework used to summarize \(L_d(\varepsilon)\).  
-  [View results](scaling-results.md)
-
-- **Fire Science Implications**  
-  Connect geometric sensitivity to interpretation, comparability, and applied wildfire science.  
-  [Interpret implications](fire-science-implications.md)
-
-- **Methods & Reproducibility**  
-  Inspect the current analysis scaffold, status, and reproducible execution workflow.  
-  [Review methods](methods-reproducibility.md)
-
-</div>
