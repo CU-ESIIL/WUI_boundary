@@ -1,5 +1,7 @@
 # How long is the Wildland–Urban Interface boundary?
 
+<div class="esiil-hero" markdown>
+
 The Wildland–Urban Interface (WUI) is one of the most consequential boundaries in wildfire science. Yet a simple question has no single answer: **how long is the WUI boundary?**
 
 Our central claim is that boundary length is not a fixed scalar. It is a scale-conditioned quantity,
@@ -19,6 +21,8 @@ where **\(d\)** is the delineation choice (what counts as the boundary) and **\(
 
 [Enter the interactive experiments](interactive-experiments.md){ .md-button .md-button--primary }
 [Read the scaling intuition](why-length-depends-on-scale.md){ .md-button }
+
+</div>
 
 
 !!! tip "Current synthetic output"

@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { attachDiagnostics, saveReviewScreenshot } from './utils';
+import { assertNo404Page, attachDiagnostics, saveReviewScreenshot } from './utils';
 
 test('homepage loads and links to key analysis pages', async ({ page }, testInfo) => {
   const diagnostics = attachDiagnostics(page, testInfo);
@@ -15,7 +15,7 @@ test('homepage loads and links to key analysis pages', async ({ page }, testInfo
   const article = page.locator('main article');
   await expect(article.locator('a[href="scaling-results/"]').first()).toBeVisible();
   await expect(article.locator('a[href="interactive-experiments/"]').first()).toBeVisible();
-  await expect(page.getByText(/page not found|404/i)).toHaveCount(0);
+  await assertNo404Page(page);
 
   await saveReviewScreenshot(page, testInfo, 'homepage');
   await diagnostics.assertAndAttach();

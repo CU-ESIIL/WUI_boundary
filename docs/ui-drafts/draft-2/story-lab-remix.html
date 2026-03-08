@@ -10,15 +10,15 @@
       --panel: rgba(14, 24, 40, 0.92);
       --panel-2: rgba(18, 31, 52, 0.94);
       --line: rgba(255,255,255,0.08);
-      --text: #edf5ff;
-      --muted: #a9b8cb;
-      --accent: #85d7ff;
-      --accent-2: #ffca7a;
+      --text: #e9f6fa;
+      --muted: #6f8798;
+      --accent: #42BCDC;
+      --accent-2: #49B47E;
       --accent-3: #8ff0b3;
-      --accent-4: #ff90bc;
-      --land: #d7cfb8;
+      --accent-4: #007135;
+      --land: #d8dfd8;
       --veg: #234a32;
-      --urban: #b59f84;
+      --urban: #a9b8aa;
       --shadow: 0 24px 64px rgba(0,0,0,.28);
       --radius: 24px;
     }
@@ -63,14 +63,14 @@
     h2 { font-size: 1rem; margin-bottom: 10px; }
     h3 { font-size: .92rem; margin-bottom: 6px; }
     p, li { color: var(--muted); line-height: 1.52; }
-    .lede { color: #e6f2ff; font-size: .97rem; }
+    .lede { color: #d9eef4; font-size: .97rem; }
     .tagrow, .legend, .chiprow, .toggle-row, .button-row { display: flex; gap: 8px; flex-wrap: wrap; }
     .tag, .chip {
       padding: 6px 10px;
       border-radius: 999px;
       background: rgba(255,255,255,.05);
       border: 1px solid rgba(255,255,255,.05);
-      color: #dceafe;
+      color: #d9eef4;
       font-size: .78rem;
     }
     .story-list { display: grid; gap: 10px; }
@@ -181,7 +181,7 @@
       border: 1px solid rgba(255,255,255,.05);
       border-radius: 18px;
       padding: 14px;
-      color: #dbe7f8;
+      color: #d9eef4;
       line-height: 1.55;
     }
     .analysis-stack { display: grid; gap: 18px; }
@@ -201,7 +201,7 @@
       border-radius: 14px;
       background: rgba(255,255,255,.04);
       border: 1px solid rgba(255,255,255,.05);
-      color: #dce8fb;
+      color: #d9eef4;
       font-size: .9rem;
     }
     @media (max-width: 1180px) {
@@ -286,9 +286,9 @@
         <p class="hero-sub">This remake adds a stronger comparative frame. Instead of one chart and one map, it gives you a full story stack: a synthetic landscape, a measurement-scaling curve, and a sensitivity panel that compares how much uncertainty comes from changing the WUI definition versus changing the ruler.</p>
         <div class="legend" style="margin-top:12px">
           <span class="chip"><span class="swatch" style="background:#234a32"></span>&nbsp;wildland vegetation</span>
-          <span class="chip"><span class="swatch" style="background:#85d7ff"></span>&nbsp;definition halo</span>
-          <span class="chip"><span class="swatch" style="background:#ff90bc"></span>&nbsp;structures in WUI</span>
-          <span class="chip"><span class="swatch" style="background:#ffca7a"></span>&nbsp;measurement boxes</span>
+          <span class="chip"><span class="swatch" style="background:#42BCDC"></span>&nbsp;definition halo</span>
+          <span class="chip"><span class="swatch" style="background:#007135"></span>&nbsp;structures in WUI</span>
+          <span class="chip"><span class="swatch" style="background:#49B47E"></span>&nbsp;measurement boxes</span>
           <span class="chip"><span class="swatch" style="background:#ffffff"></span>&nbsp;boundary trace</span>
         </div>
       </div>
@@ -745,8 +745,8 @@
 
         for (const h of houses) {
           const inWUI = wui.houses.includes(h);
-          mctx.fillStyle = inWUI ? '#ff90bc' : '#eef4fb';
-          mctx.strokeStyle = inWUI ? '#ffe7ef' : '#718099';
+          mctx.fillStyle = inWUI ? '#007135' : '#f3f7f6';
+          mctx.strokeStyle = inWUI ? '#9bd7bc' : '#486371';
           mctx.lineWidth = 1;
           mctx.beginPath();
           mctx.rect(h.x - h.size, h.y - h.size, h.size * 2, h.size * 2);
@@ -761,18 +761,18 @@
         mctx.strokeRect(lx + .5, ly + .5, lw, lh);
         const legend = [
           ['#234a32', 'wildland vegetation'],
-          ['#85d7ff', 'definition halo'],
+          ['#42BCDC', 'definition halo'],
           ['#ffffff', 'boundary trace'],
-          ['#ff90bc', 'structures in WUI'],
-          ['#eef4fb', 'other structures'],
-          ['#ffca7a', 'measurement boxes']
+          ['#007135', 'structures in WUI'],
+          ['#f3f7f6', 'other structures'],
+          ['#49B47E', 'measurement boxes']
         ];
         mctx.font = '12px Inter, sans-serif';
         legend.forEach((row, i) => {
           const yy = ly + 18 + i * 18;
           mctx.fillStyle = row[0];
           mctx.fillRect(lx + 12, yy - 8, 13, 13);
-          mctx.fillStyle = '#ecf3ff';
+          mctx.fillStyle = '#e9f6fa';
           mctx.fillText(row[1], lx + 33, yy + 2);
         });
       }
@@ -797,7 +797,7 @@
           sctx.beginPath(); sctx.moveTo(left, gy); sctx.lineTo(left + pw, gy); sctx.stroke();
         }
 
-        sctx.strokeStyle = '#85d7ff';
+        sctx.strokeStyle = '#42BCDC';
         sctx.lineWidth = 2.4;
         sctx.beginPath();
         data.forEach((d, i) => {
@@ -807,7 +807,7 @@
         });
         sctx.stroke();
 
-        sctx.fillStyle = '#eef5ff';
+        sctx.fillStyle = '#e9f6fa';
         data.forEach(d => {
           sctx.beginPath();
           sctx.arc(X(Math.log10(d.eps)), Y(Math.log10(d.len)), 3.5, 0, Math.PI * 2);
@@ -815,12 +815,12 @@
         });
 
         const current = data.reduce((best, d) => Math.abs(d.eps - currentEps) < Math.abs(best.eps - currentEps) ? d : best, data[0]);
-        sctx.fillStyle = '#ffca7a';
+        sctx.fillStyle = '#49B47E';
         sctx.beginPath();
         sctx.arc(X(Math.log10(current.eps)), Y(Math.log10(current.len)), 6.2, 0, Math.PI * 2);
         sctx.fill();
 
-        sctx.fillStyle = '#a9b8cb';
+        sctx.fillStyle = '#6f8798';
         sctx.font = '12px Inter, sans-serif';
         sctx.fillText('log10(measurement scale)', left + pw / 2 - 56, h - 14);
         sctx.save();
@@ -828,7 +828,7 @@
         sctx.rotate(-Math.PI / 2);
         sctx.fillText('log10(boundary length)', 0, 0);
         sctx.restore();
-        sctx.fillStyle = '#edf5ff';
+        sctx.fillStyle = '#e9f6fa';
         sctx.font = '13px Inter, sans-serif';
         sctx.fillText('D ≈ ' + dim.toFixed(3), w - 92, 22);
       }
@@ -875,7 +875,7 @@
         xctx.strokeStyle = 'rgba(255,255,255,.08)';
         xctx.stroke();
 
-        xctx.fillStyle = '#a9b8cb';
+        xctx.fillStyle = '#6f8798';
         xctx.font = '12px Inter, sans-serif';
         xctx.fillText('definition sensitivity', left + half / 2 - 44, h - 14);
         xctx.fillText('measurement sensitivity', left + half + 28 + half / 2 - 50, h - 14);
@@ -893,10 +893,10 @@
           if (i === 0) xctx.moveTo(x, y); else xctx.lineTo(x, y);
         });
         xctx.stroke();
-        xctx.fillStyle = '#c8f7d4';
+        xctx.fillStyle = '#b7e5cf';
         defSens.forEach(d => { xctx.beginPath(); xctx.arc(X1(d.x), Y(d.y), 3.5, 0, Math.PI * 2); xctx.fill(); });
 
-        xctx.strokeStyle = '#ffca7a';
+        xctx.strokeStyle = '#49B47E';
         xctx.lineWidth = 2.4;
         xctx.beginPath();
         measSens.forEach((d, i) => {
