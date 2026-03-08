@@ -36,7 +36,29 @@ OVERPASS_URLS = [
     "https://overpass.kumi.systems/api/interpreter",
     "https://lz4.overpass-api.de/api/interpreter",
 ]
-DEFAULT_NLCD_URL = "https://prd-tnm.s3.amazonaws.com/StagedProducts/NLCD/data/2021/land_cover/nlcd_2021_land_cover_l48_20210604_cog.tif"
+DEFAULT_NLCD_URLS = [
+    "https://prd-tnm.s3.amazonaws.com/StagedProducts/NLCD/data/2021/land_cover/nlcd_2021_land_cover_l48_20210604_cog.tif",
+    "https://s3-us-west-2.amazonaws.com/mrlc/nlcd_2021_land_cover_l48_20230630_cog.tif",
+]
+DEFAULT_NLCD_URL = DEFAULT_NLCD_URLS[0]
+
+
+
+
+def _candidate_nlcd_urls(nlcd_url: str) -> list[str]:
+    urls = [nlcd_url] + [u for u in DEFAULT_NLCD_URLS if u != nlcd_url]
+    deduped: list[str] = []
+    for url in urls:
+        if url not in deduped:
+            deduped.append(url)
+    return deduped
+
+
+def _series_union(series):
+    union_all = getattr(series, "union_all", None)
+    if callable(union_all):
+        return union_all()
+    return series.unary_union
 
 
 def _load_geospatial_deps() -> dict:
@@ -218,19 +240,32 @@ def _clip_nlcd_mask(
     rasterio = deps["rasterio"]
     from_bounds = deps["from_bounds"]
 
-    with rasterio.open(nlcd_url) as src:
-        left, bottom, right, top = rasterio.warp.transform_bounds(
-            "EPSG:4326", src.crs, bbox_lonlat[0], bbox_lonlat[1], bbox_lonlat[2], bbox_lonlat[3], densify_pts=21
-        )
-        window = from_bounds(left, bottom, right, top, src.transform)
-        window = window.round_offsets().round_lengths()
-        arr = src.read(1, window=window, boundless=True)
-        transform = src.window_transform(window)
-        res_x = abs(src.transform.a)
-        src_crs = src.crs
+    last_exc: Exception | None = None
+    attempted: list[str] = []
+    for candidate_url in _candidate_nlcd_urls(nlcd_url):
+        attempted.append(candidate_url)
+        try:
+            with rasterio.open(candidate_url) as src:
+                left, bottom, right, top = rasterio.warp.transform_bounds(
+                    "EPSG:4326", src.crs, bbox_lonlat[0], bbox_lonlat[1], bbox_lonlat[2], bbox_lonlat[3], densify_pts=21
+                )
+                window = from_bounds(left, bottom, right, top, src.transform)
+                window = window.round_offsets().round_lengths()
+                arr = src.read(1, window=window, boundless=True)
+                transform = src.window_transform(window)
+                res_x = abs(src.transform.a)
+                src_crs = src.crs
 
-    veg_mask = np.isin(arr, veg_classes)
-    return veg_mask, transform, float(res_x), src_crs
+            veg_mask = np.isin(arr, veg_classes)
+            return veg_mask, transform, float(res_x), src_crs
+        except Exception as exc:
+            last_exc = exc
+            continue
+
+    raise RuntimeError(
+        "Unable to open any NLCD source URL for streaming window extraction. "
+        f"Attempted: {attempted}"
+    ) from last_exc
 
 
 def _mask_to_polygons(mask, transform, deps):
@@ -360,10 +395,10 @@ def main(argv: list[str] | None = None) -> int:
     except Exception as exc:
         raise RuntimeError(f"Failed to build settlement geometry from Overpass: {exc}") from exc
 
-    centroid = buildings_wgs84.geometry.unary_union.centroid
+    centroid = _series_union(buildings_wgs84.geometry).centroid
     metric_crs = _utm_crs_for_lonlat(centroid.x, centroid.y, deps)
     buildings_metric = buildings_wgs84.to_crs(metric_crs)
-    settlement_union = buildings_metric.geometry.unary_union
+    settlement_union = _series_union(buildings_metric.geometry)
 
     try:
         veg_mask, veg_transform, base_res_m, nlcd_crs = _clip_nlcd_mask(bbox, args.nlcd_url, veg_classes, deps)

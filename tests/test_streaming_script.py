@@ -29,6 +29,23 @@ class StreamingScriptHelperTests(unittest.TestCase):
         self.assertEqual(fit["status"], "ok_fitted")
         self.assertIsNotNone(fit["slope"])
 
+
+    def test_candidate_nlcd_urls_dedupes(self) -> None:
+        urls = MODULE._candidate_nlcd_urls(MODULE.DEFAULT_NLCD_URLS[0])
+        self.assertEqual(urls[0], MODULE.DEFAULT_NLCD_URLS[0])
+        self.assertEqual(len(urls), len(set(urls)))
+
+    def test_series_union_prefers_union_all(self) -> None:
+        class _Series:
+            def union_all(self):
+                return "union_all"
+
+            @property
+            def unary_union(self):
+                return "unary_union"
+
+        self.assertEqual(MODULE._series_union(_Series()), "union_all")
+
     def test_overpass_query_retries_and_fallback(self) -> None:
         class _Resp:
             def __init__(self, status_code: int, payload: dict | None = None):
