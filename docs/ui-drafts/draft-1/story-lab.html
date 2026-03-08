@@ -9,16 +9,16 @@
     --bg:#08111c;
     --panel:#101a2b;
     --panel-2:#13213a;
-    --ink:#eef4ff;
-    --muted:#a9b6ca;
+    --ink:#e9f6fa;
+    --muted:#6f8798;
     --line:#22324f;
-    --accent:#8fd3ff;
-    --accent-2:#ffbf69;
+    --accent:#42BCDC;
+    --accent-2:#49B47E;
     --accent-3:#9ae6b4;
-    --accent-4:#ff8fab;
+    --accent-4:#007135;
     --veg:#244b32;
-    --land:#d7cdb6;
-    --town:#bca98f;
+    --land:#d8dfd8;
+    --town:#a9b8aa;
     --shadow:0 18px 50px rgba(0,0,0,.28);
     --radius:22px;
   }
@@ -53,16 +53,16 @@
   h1,h2,h3,p{margin:0}
   h1{font-size:1.36rem;line-height:1.15;margin-bottom:10px}
   h2{font-size:1rem;margin-bottom:10px}
-  h3{font-size:.93rem;margin-bottom:7px;color:#f7fbff}
+  h3{font-size:.93rem;margin-bottom:7px;color:#f6fbfc}
   p,li{font-size:.92rem;line-height:1.5;color:var(--muted)}
-  .lede{color:#dde9fb;font-size:.96rem}
+  .lede{color:#d9eef4;font-size:.96rem}
   .pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
   .pill{
     padding:6px 10px;
     border-radius:999px;
     background:#18253d;
     border:1px solid rgba(255,255,255,.05);
-    color:#d9e8ff;
+    color:#d9eef4;
     font-size:.78rem;
   }
   .story-steps{display:grid;gap:10px;margin-top:12px}
@@ -90,14 +90,14 @@
   }
   .control label{
     display:flex;justify-content:space-between;gap:12px;
-    font-size:.9rem;color:#eef5ff;margin-bottom:8px
+    font-size:.9rem;color:#e9f6fa;margin-bottom:8px
   }
   .value{color:var(--accent);font-weight:700}
-  input[type="range"]{width:100%;accent-color:#8fd3ff}
+  input[type="range"]{width:100%;accent-color:#42BCDC}
   .button-row{display:flex;flex-wrap:wrap;gap:8px}
   button{
     appearance:none;border:none;cursor:pointer;
-    background:#203150;color:#eef5ff;font-weight:700;
+    background:#234A65;color:#e9f6fa;font-weight:700;
     padding:10px 12px;border-radius:14px;
   }
   button.active{background:#2b5d91}
@@ -132,7 +132,7 @@
   .narrative{padding:0 14px 16px}
   .narrative-box{
     background:#121f35;border:1px solid rgba(255,255,255,.05);
-    border-radius:16px;padding:14px;color:#dce8fb;font-size:.92rem;line-height:1.5;
+    border-radius:16px;padding:14px;color:#d9eef4;font-size:.92rem;line-height:1.5;
   }
   .analysis-grid{display:grid;gap:18px}
   .analysis-list{display:grid;gap:10px;padding:14px}
@@ -227,9 +227,9 @@
       <p class="hero-sub">This app is designed to carry the room through a scientific story. At first, the WUI boundary looks like a straightforward quantity. But the science unfolds when people realize there are two different scale sensitivities hiding inside the problem: one changes the map, and one changes the measurement.</p>
       <div class="legend">
         <div class="legend-item"><span class="swatch" style="background:#244b32"></span>wildland vegetation</div>
-        <div class="legend-item"><span class="swatch" style="background:#8fd3ff"></span>definition halo</div>
-        <div class="legend-item"><span class="swatch" style="background:#ff8fab"></span>structures in WUI</div>
-        <div class="legend-item"><span class="swatch" style="background:#ffbf69"></span>measurement boxes</div>
+        <div class="legend-item"><span class="swatch" style="background:#42BCDC"></span>definition halo</div>
+        <div class="legend-item"><span class="swatch" style="background:#007135"></span>structures in WUI</div>
+        <div class="legend-item"><span class="swatch" style="background:#49B47E"></span>measurement boxes</div>
         <div class="legend-item"><span class="swatch" style="background:#ffffff"></span>extracted boundary</div>
       </div>
     </div>
@@ -583,7 +583,7 @@
   function drawMap(boundary, houses, wui, measurement, radiusPx, eps){
     mctx.clearRect(0,0,W,H);
 
-    mctx.fillStyle = '#d7cdb6';
+    mctx.fillStyle = '#d8dfd8';
     mctx.fillRect(0,0,W,H);
 
     mctx.beginPath();
@@ -606,7 +606,7 @@
       }
     }
 
-    mctx.fillStyle = '#bca98f';
+    mctx.fillStyle = '#a9b8aa';
     mctx.fillRect(W*0.58,0,W*0.42,H);
     for(let i=0;i<80;i++){
       const y = 20 + i*7 + (i%3)*1.2;
@@ -646,8 +646,8 @@
 
     for(const h of houses){
       const inWUI = wui.houses.includes(h);
-      mctx.fillStyle = inWUI ? '#ff8fab' : '#f1f5f9';
-      mctx.strokeStyle = inWUI ? '#ffe4ea' : '#64748b';
+      mctx.fillStyle = inWUI ? '#007135' : '#f3f7f6';
+      mctx.strokeStyle = inWUI ? '#9bd7bc' : '#486371';
       mctx.lineWidth = 1;
       mctx.beginPath();
       mctx.rect(h.x-h.size, h.y-h.size, h.size*2, h.size*2);
@@ -662,17 +662,17 @@
     mctx.strokeRect(lx+.5,ly+.5,lw,lh);
     const legend = [
       ['#244b32','wildland vegetation'],
-      ['#8fd3ff','definition halo'],
+      ['#42BCDC','definition halo'],
       ['#ffffff','boundary'],
-      ['#ff8fab','structures in WUI'],
-      ['#f1f5f9','other structures']
+      ['#007135','structures in WUI'],
+      ['#f3f7f6','other structures']
     ];
     mctx.font = '12px Inter, sans-serif';
     legend.forEach((row,i) => {
       const yy = ly + 18 + i*18;
       mctx.fillStyle = row[0];
       mctx.fillRect(lx+12, yy-8, 13, 13);
-      mctx.fillStyle = '#ebf3ff';
+      mctx.fillStyle = '#e9f6fa';
       mctx.fillText(row[1], lx+33, yy+2);
     });
   }
@@ -698,7 +698,7 @@
       sctx.beginPath(); sctx.moveTo(left, gy); sctx.lineTo(left+pw, gy); sctx.stroke();
     }
 
-    sctx.strokeStyle = '#8fd3ff';
+    sctx.strokeStyle = '#42BCDC';
     sctx.lineWidth = 2.4;
     sctx.beginPath();
     data.forEach((d,i) => {
@@ -708,7 +708,7 @@
     });
     sctx.stroke();
 
-    sctx.fillStyle = '#eaf5ff';
+    sctx.fillStyle = '#e9f6fa';
     data.forEach(d => {
       sctx.beginPath();
       sctx.arc(X(Math.log10(d.eps)), Y(Math.log10(d.len)), 3.6, 0, Math.PI*2);
@@ -716,12 +716,12 @@
     });
 
     const current = data.reduce((best,d) => Math.abs(d.eps-currentEps) < Math.abs(best.eps-currentEps) ? d : best, data[0]);
-    sctx.fillStyle = '#ffbf69';
+    sctx.fillStyle = '#49B47E';
     sctx.beginPath();
     sctx.arc(X(Math.log10(current.eps)), Y(Math.log10(current.len)), 6, 0, Math.PI*2);
     sctx.fill();
 
-    sctx.fillStyle = '#a9b6ca';
+    sctx.fillStyle = '#6f8798';
     sctx.font = '12px Inter, sans-serif';
     sctx.fillText('log10(measurement scale)', left + pw/2 - 55, h - 14);
     sctx.save();
@@ -729,7 +729,7 @@
     sctx.rotate(-Math.PI/2);
     sctx.fillText('log10(boundary length)', 0, 0);
     sctx.restore();
-    sctx.fillStyle = '#eef4ff';
+    sctx.fillStyle = '#e9f6fa';
     sctx.font = '13px Inter, sans-serif';
     sctx.fillText('D ≈ ' + dim.toFixed(3), w - 94, 22);
   }
@@ -761,16 +761,16 @@
     });
     rctx.stroke();
 
-    rctx.fillStyle = '#d9f99d';
+    rctx.fillStyle = '#b7e5cf';
     data.forEach(d => {
       rctx.beginPath(); rctx.arc(X(d.r), Y(d.area), 3.5, 0, Math.PI*2); rctx.fill();
     });
 
     const current = data.reduce((best,d) => Math.abs(d.r-currentRadius) < Math.abs(best.r-currentRadius) ? d : best, data[0]);
-    rctx.fillStyle = '#ffbf69';
+    rctx.fillStyle = '#49B47E';
     rctx.beginPath(); rctx.arc(X(current.r), Y(current.area), 6, 0, Math.PI*2); rctx.fill();
 
-    rctx.fillStyle = '#a9b6ca';
+    rctx.fillStyle = '#6f8798';
     rctx.font = '12px Inter, sans-serif';
     rctx.fillText('definition radius (m)', left + pw/2 - 45, h - 12);
     rctx.save();

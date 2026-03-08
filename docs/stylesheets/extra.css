@@ -1,10 +1,87 @@
-/* Central extension point for lightweight, reusable visual tweaks. */
+/* ESIIL scientific theme tokens and MkDocs Material overrides. */
 
 :root {
-  --oasis-accent: #135d7f;
+  --brand-primary: #234A65;
+  --brand-accent: #42BCDC;
+  --brand-green: #007135;
+  --brand-light-green: #49B47E;
+  --brand-text: #161A19;
+  --brand-gray: #E3E3E3;
+  --brand-surface: #ffffff;
+  --brand-surface-soft: #f8fbfc;
+  --brand-visited: #2f6e95;
+  --brand-focus: #42BCDC;
 }
 
-/* Keep homepage hero content a bit more breathable. */
+[data-md-color-scheme="default"] {
+  --md-primary-fg-color: var(--brand-primary);
+  --md-primary-fg-color--light: #2d5f82;
+  --md-primary-fg-color--dark: #1a3a52;
+  --md-accent-fg-color: var(--brand-accent);
+  --md-accent-fg-color--transparent: rgba(66, 188, 220, 0.14);
+  --md-default-fg-color: var(--brand-text);
+  --md-default-fg-color--light: #4d5653;
+  --md-default-fg-color--lighter: #79827f;
+  --md-default-fg-color--lightest: var(--brand-gray);
+  --md-default-bg-color: var(--brand-surface);
+}
+
+html,
+body {
+  color: var(--brand-text);
+}
+
+/* Header, navigation, and top-level chrome */
+.md-header,
+.md-tabs {
+  background-color: var(--brand-primary);
+}
+
+.md-header__button,
+.md-tabs__link,
+.md-nav__title,
+.md-nav__link,
+.md-search__icon,
+.md-header__topic {
+  color: #fff;
+}
+
+.md-tabs__link:hover,
+.md-tabs__link:focus,
+.md-nav__link:hover,
+.md-nav__link:focus,
+.md-nav__link--active,
+.md-header__button:hover,
+.md-header__button:focus {
+  color: var(--brand-accent);
+}
+
+.md-search__form {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.md-main {
+  background: var(--brand-surface-soft);
+}
+
+.md-content {
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-gray);
+  border-radius: 0.7rem;
+  box-shadow: 0 0.35rem 1rem rgba(35, 74, 101, 0.08);
+  padding-bottom: 1rem;
+}
+
+/* Typographic tone for scientific readability */
+.md-content h1,
+.md-typeset h1,
+.md-typeset h2,
+.md-typeset h3,
+.md-typeset h4 {
+  color: var(--brand-primary);
+  letter-spacing: 0.01em;
+}
+
 .md-content h1 {
   margin-bottom: 0.5rem;
 }
@@ -14,18 +91,108 @@
   max-width: 68ch;
 }
 
-/* Subtle polish for Material buttons used across docs. */
+.md-typeset a {
+  color: var(--brand-accent);
+  text-decoration-color: rgba(66, 188, 220, 0.4);
+}
+
+.md-typeset a:hover,
+.md-typeset a:focus-visible {
+  color: var(--brand-green);
+  text-decoration-color: var(--brand-green);
+}
+
+.md-typeset a:visited {
+  color: var(--brand-visited);
+}
+
+/* Buttons and interaction states */
 .md-button {
   border-radius: 999px;
+  border-color: var(--brand-primary);
+  color: var(--brand-primary);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
 }
 
-.oasis-hover-button {
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+.md-button--primary {
+  background: linear-gradient(90deg, var(--brand-accent), var(--brand-light-green));
+  border: none;
+  color: #0f2825;
+  font-weight: 600;
 }
 
-.oasis-hover-button:hover {
+.md-button:hover,
+.md-button:focus-visible {
   transform: translateY(-1px);
-  box-shadow: 0 0.3rem 0.9rem rgba(19, 93, 127, 0.22);
+  box-shadow: 0 0.3rem 0.9rem rgba(35, 74, 101, 0.2);
+  filter: saturate(1.08);
+}
+
+.md-button[disabled],
+.md-button[aria-disabled="true"] {
+  opacity: 0.5;
+  box-shadow: none;
+  transform: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--brand-focus);
+  outline-offset: 2px;
+}
+
+
+.esiil-hero {
+  background: linear-gradient(180deg, rgba(35, 74, 101, 0.06), rgba(73, 180, 126, 0.05));
+  border: 1px solid var(--brand-gray);
+  border-left: 4px solid var(--brand-primary);
+  border-radius: 0.8rem;
+  padding: 1rem 1rem 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.esiil-hero p {
+  max-width: 72ch;
+}
+
+/* Homepage and card grid */
+.md-typeset .grid.cards > ul > li {
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-gray);
+  border-top: 4px solid var(--brand-primary);
+  border-radius: 0.7rem;
+  box-shadow: 0 0.3rem 0.8rem rgba(35, 74, 101, 0.08);
+}
+
+.md-typeset .grid.cards > ul > li:nth-child(even) {
+  border-top-color: var(--brand-green);
+}
+
+/* Admonitions and scientific callouts */
+.md-typeset .admonition,
+.md-typeset details {
+  border: 1px solid var(--brand-gray);
+  border-left: 4px solid var(--brand-primary);
+  box-shadow: 0 0.2rem 0.7rem rgba(22, 26, 25, 0.06);
+}
+
+.md-typeset .admonition-title,
+.md-typeset summary {
+  background: rgba(35, 74, 101, 0.08);
+}
+
+.md-typeset .admonition.tip,
+.md-typeset details.tip {
+  border-left-color: var(--brand-green);
+}
+
+.md-typeset .admonition.info,
+.md-typeset details.info {
+  border-left-color: var(--brand-accent);
+}
+
+.md-typeset .admonition.warning,
+.md-typeset details.warning {
+  border-left-color: var(--brand-light-green);
 }
 
 /* Reusable responsive embed wrapper for iframes and maps. */
@@ -33,9 +200,11 @@
   position: relative;
   width: 100%;
   padding-top: 56.25%;
-  border-radius: 0.5rem;
+  border-radius: 0.65rem;
   overflow: hidden;
-  box-shadow: 0 0.2rem 0.8rem rgba(0, 0, 0, 0.12);
+  border: 1px solid var(--brand-gray);
+  box-shadow: 0 0.25rem 0.9rem rgba(35, 74, 101, 0.1);
+  background: var(--brand-surface);
 }
 
 .oasis-embed iframe {
@@ -50,10 +219,12 @@
 .app-frame {
   width: 100%;
   min-height: 1050px;
-  border: 1px solid var(--md-default-fg-color--lightest);
+  border: 1px solid var(--brand-gray);
+  border-top: 4px solid var(--brand-primary);
   border-radius: 16px;
   overflow: visible;
-  background: #fff;
+  background: var(--brand-surface);
+  box-shadow: 0 0.25rem 0.9rem rgba(35, 74, 101, 0.1);
 }
 
 .app-frame iframe {
@@ -61,8 +232,8 @@
   width: 100%;
   min-height: 1050px;
   border: 0;
-  border-radius: 16px;
-  background: #fff;
+  border-radius: 12px;
+  background: var(--brand-surface);
 }
 
 @media (max-width: 76.1875em) {
@@ -87,25 +258,25 @@
 .scaling-results-plot {
   display: block;
   width: 100%;
-  max-width: 980px;
-  border: 1px solid var(--md-default-fg-color--lightest);
+  max-width: 1100px;
+  border: 1px solid var(--brand-gray);
   border-radius: 0.5rem;
-  background: #fff;
+  background: var(--brand-surface);
 }
 
 .scaling-plot-axis {
-  stroke: var(--md-default-fg-color--light);
+  stroke: var(--md-default-fg-color--lighter);
   stroke-width: 1.25;
 }
 
 .scaling-plot-line {
   fill: none;
-  stroke: #2a6ac0;
+  stroke: var(--brand-primary);
   stroke-width: 2.6;
 }
 
 .scaling-plot-point {
-  fill: #2a6ac0;
+  fill: var(--brand-green);
 }
 
 .scaling-table-wrap {
@@ -121,14 +292,14 @@
 
 .scaling-results-table th,
 .scaling-results-table td {
-  border: 1px solid var(--md-default-fg-color--lightest);
+  border: 1px solid var(--brand-gray);
   padding: 0.45rem 0.55rem;
   text-align: left;
   white-space: nowrap;
 }
 
 .scaling-results-table thead th {
-  background: rgba(19, 93, 127, 0.08);
+  background: rgba(35, 74, 101, 0.08);
 }
 
 .scaling-table-caption,

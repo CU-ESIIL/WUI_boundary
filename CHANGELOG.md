@@ -3,6 +3,7 @@
 ## Unreleased
 
 ### Changed
+- Replaced the default Material purple-leaning visual presentation with an ESIIL scientific brand theme by adding reusable color tokens, MkDocs palette overrides, branded nav/link/button states, and refreshed content-surface/card/admonition styling across key manuscript pages.
 - Updated Playwright homepage link assertions to target article-body links by href and made scaling plot asset checks resilient to MkDocs relative-asset resolution by testing both browser-resolved and project-root candidate URLs.
 - Fixed Playwright homepage link assertions to target links inside `main` content and fixed scaling plot fetch checks to use browser-resolved image URLs (`currentSrc`/`src`) under MkDocs base URL behavior.
 - Relaxed brittle Playwright content assertions by broadening the homepage H1 check and validating scaling plot asset fetch success instead of relying on `naturalWidth` for SVG rendering.
