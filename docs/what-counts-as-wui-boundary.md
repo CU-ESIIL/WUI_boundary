@@ -1,32 +1,11 @@
 # What counts as the WUI boundary
 
-Before perimeter is measured, the boundary object must be defined. In this project, that object-definition choice is denoted by \(d\).
+Before any perimeter can be measured, the boundary object itself must be delineated. This is not a trivial preprocessing step. In WUI research, choices about settlement representation, vegetation classification, adjacency logic, and neighborhood scale shape the geometry of the interface that is ultimately measured. The canonical U.S. mapping framework demonstrated how powerful these definitional choices can be for both scientific interpretation and policy relevance ([Radeloff et al., 2005](https://doi.org/10.1890/04-1413)).
 
-## Object-definition sensitivity (choice of \(d\))
+For this reason, the symbol \(d\) in \(L_d(\varepsilon)\) is treated here as a substantive part of the result. Different defensible delineation rules can produce different boundary objects, even when they are derived from the same broad region and period. A reported perimeter is therefore always conditional on a specific delineation bundle, not a direct reading of a pre-existing natural curve.
 
-Different delineation rules can all be scientifically defensible, but they do not produce the same boundary geometry. Examples include differences in:
+This perspective is consistent with later syntheses emphasizing that WUI outcomes depend on data source, classification strategy, and implementation detail, and with recent global mapping efforts that scale those same decisions to cross-continental analyses ([Stewart et al., 2007](https://doi.org/10.1093/jof/105.4.201); [Schug et al., 2023](references.md#schug-et-al-2023)). Once delineation is recognized as part of the scientific object, disagreement in perimeter length across studies can be interpreted more carefully as a mixture of landscape variation and methodological variation.
 
-- settlement representation (points, polygons, gridded proxies),
-- vegetation thresholds,
-- neighborhood radius or connectivity assumptions,
-- adjacency rules used to identify interface zones.
-
-Changing these assumptions changes the boundary object itself.
-
-## Distinguishing two sources of variation
-
-The full perimeter quantity is
-\[
-L_d(\varepsilon).
-\]
-
-- Holding \(d\) fixed and varying \(\varepsilon\) reveals **measurement-scale sensitivity**.
-- Holding \(\varepsilon\) fixed and varying \(d\) reveals **object-definition sensitivity**.
-
-Both are scientifically important and should be reported separately whenever possible.
-
-## Why this separation is essential
-
-Without distinguishing object-definition and measurement-scale effects, disagreements in reported perimeter can be mistaken for ecological differences when they may instead be methodological.
+The remaining pages use this distinction to separate two effects that are often conflated: how measured length changes when \(d\) changes, and how measured length changes when \(\varepsilon\) changes for a fixed \(d\). The interactive and scaling sections then make that distinction visible in figure form.
 
 [Next: Interactive experiments](interactive-experiments.md){ .md-button .md-button--primary }

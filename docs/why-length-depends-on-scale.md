@@ -1,28 +1,11 @@
 # Why length depends on scale
 
-Boundary length depends on how closely we trace irregular structure. A coarse ruler skips fine bends; a fine ruler follows them. As ruler length shrinks, measured perimeter typically grows.
+The core geometric intuition of this manuscript is that irregular boundaries do not have a single, scale-free perimeter. As Mandelbrot's coastline argument showed, measured length depends on the ruler used to trace the boundary, because different ruler lengths resolve different levels of geometric detail ([Mandelbrot, 1967](https://doi.org/10.1126/science.156.3775.636)). The same logic applies to boundaries that emerge from coupled human and ecological systems, including the Wildland–Urban Interface.
 
-In this project, ruler length is represented as measurement scale \(\varepsilon\), and measured WUI perimeter is represented as \(L_d(\varepsilon)\).
+When a coarse effective ruler is used, narrow inlets, protrusions, and small indentations are bridged over and the measured line is shorter. As ruler length becomes finer, those irregularities become legible and are incorporated into the trace, increasing the reported perimeter. This is why the project reports boundary length as \(L_d(\varepsilon)\): a measured quantity indexed by delineation choice \(d\) and measurement scale \(\varepsilon\), rather than as a single scalar detached from method.
 
-## A coastline-style intuition for WUI boundaries
+In practical terms, scale dependence means that two studies can measure the same underlying boundary object and still report different lengths if they use different effective resolutions. Those differences are not necessarily errors. They are expected consequences of how irregular geometry is observed and measured. The scientific task is therefore not to eliminate this dependence, but to make it explicit and interpretable.
 
-WUI boundaries are not smooth circles. They are spatial mosaics formed where settlement and wildland patterns interlock. Their edges include pockets, fingers, and disconnected fragments. Because of this complexity, perimeter is scale-conditioned rather than absolute.
-
-## What changes when \(\varepsilon\) changes
-
-For a fixed delineation \(d\):
-
-- large \(\varepsilon\) smooths local detail and tends to produce shorter perimeter estimates;
-- small \(\varepsilon\) resolves more structure and tends to produce longer estimates.
-
-This is **measurement-scale sensitivity**. It reflects how we measure an object, not necessarily a change in the object itself.
-
-## Why this matters before any WUI-specific model
-
-If two studies use different effective resolutions, their perimeter estimates are not directly comparable, even when they describe the same mapped boundary object. Scale must therefore be reported as part of the result.
-
-## Transition to WUI delineation choices
-
-Measurement-scale sensitivity explains variation within a fixed object. The next step is object-definition sensitivity: different delineation choices \(d\) can produce different boundary objects before measurement begins.
+This geometric issue becomes especially important in wildfire applications because WUI boundaries are rarely smooth. Settlement patterns, road networks, vegetation patches, and topographic constraints create highly articulated edges in which fine detail can substantially influence perimeter estimates. Recognizing this behavior motivates the next step of the argument: before examining measurement scale, one must define what boundary object is being measured in the first place.
 
 [Next: What counts as the WUI boundary?](what-counts-as-wui-boundary.md){ .md-button .md-button--primary }

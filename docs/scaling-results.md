@@ -1,90 +1,25 @@
 # Scaling results
 
-This page presents the **current synthetic demonstration output** for the boundary-scaling workflow. The goal is to show, in a transparent way, how measured boundary length changes with measurement scale, even before empirical WUI data are introduced.
+Once the boundary object has been defined and measurement scale has been made explicit, the next step is to examine how the reported perimeter changes across a range of scales. The figure on this page summarizes that relationship for the current demonstration analysis.
 
-!!! warning "Status: synthetic demo (not empirical)"
-    The figure and table below are generated from synthetic geometry and a toy measurement routine. They are useful for understanding the workflow and interpretation, but they are **not** empirical WUI estimates.
+Each point represents a measurement of the same boundary traced with a different effective ruler length. Coarser rulers smooth over many small irregularities, producing shorter perimeter estimates. Finer rulers follow these irregularities more closely and therefore accumulate additional length. The figure should therefore be read not as a search for a single correct perimeter, but as a compact representation of how measured length changes across observational scales.
 
-## What this figure shows
+The present demonstration remains synthetic and conceptual. Its purpose is not to estimate a definitive empirical scaling law for the Wildland–Urban Interface, but to show how perimeter behaves when scale is treated as an explicit variable. In that sense the figure is less an answer than a statement of method: boundary length is meaningful only in relation to how the boundary was defined and how finely it was measured.
 
-The figure reports the relationship \(L_d(\varepsilon)\): measured boundary length as a function of measurement scale.
+The slope and form of the relationship matter because they summarize scale sensitivity. A steeper decline toward coarser ruler lengths indicates that the measured perimeter is strongly dependent on the observational scale used to trace it. A flatter relationship would suggest weaker sensitivity over the same range. In either case, the central scientific point remains the same: perimeter is not independent of scale.
 
-- \(\varepsilon\) (x-axis) is the effective measurement scale (think “ruler length” or resolution).
-- \(L_d(\varepsilon)\) (y-axis) is the measured boundary length for one delineation bundle \(d\).
-- Each plotted point is one evaluated measurement scale.
-
-In this synthetic run, there is **one delineation bundle** (`parcel_v0.35_r120_touches`), so the figure shows a single line with points.
-
-For a focused discussion of how satellite pixel size acts as an effective ruler and why this matters for interpretation, see [Implications for remote sensing](implications-for-remote-sensing.md).
+Read alongside the remote-sensing discussion, this result becomes more than a geometric curiosity. It implies that satellite products of different spatial resolution may return systematically different interface lengths even when they are nominally describing the same landscape. The current figure is synthetic, but the interpretive logic it illustrates is directly relevant to empirical WUI mapping.
 
 <img src="/WUI_boundary/assets/figures/boundary_scaling_plot.svg" alt="Synthetic WUI boundary scaling relationship with labeled axes and annotation" loading="lazy" class="scaling-results-plot" />
 
-*Figure 1. Synthetic demonstration of how measured boundary length \(L_d(\varepsilon)\) changes across a set of measurement scales \(\varepsilon\). Each point is one scale step for a single synthetic delineation bundle. The fitted log-log slope shown in the figure summarizes scale sensitivity over this tested range. Because this is synthetic output, treat the pattern as a workflow/interpretation example rather than an empirical estimate of real-world WUI boundary behavior.*
-
-## How to read this figure
-
-- **X-axis (measurement scale, \(\varepsilon\))**: values increase from finer to coarser measurement scale.
-- **Y-axis (measured boundary length, \(L_d(\varepsilon)\))**: the boundary length computed at each \(\varepsilon\).
-- **Line + points**: one synthetic delineation scenario measured repeatedly across the scale grid.
-- **Slope annotation**: a compact summary of scale sensitivity on a log-log fit; more negative/steeper values indicate stronger dependence of measured length on scale over the tested range.
-
-The current run shows a mild downward trend: measured boundary length decreases slightly as the effective ruler becomes coarser.
-
-## Main takeaway (plain language)
-
-Boundary length is **not** a single immutable number. It depends on:
-
-1. how the boundary is delineated (the choice of \(d\)), and
-2. the scale used to measure it (\(\varepsilon\)).
-
-A steeper relationship means reported length is more sensitive to scale choice; a flatter relationship means it is less sensitive over the tested range. This sensitivity is exactly why project reporting emphasizes \(L_d(\varepsilon)\) rather than a single perimeter scalar.
-
-## Summary table and column guide
+*Figure 1. Measurements of a single delineated boundary across progressively coarser effective ruler lengths. The downward trend shows that measured perimeter shortens as scale becomes coarser, and the fitted relationship summarizes the strength of this scale sensitivity over the tested range.*
 
 Raw synthetic output is available at [`docs/assets/data/boundary_scaling_summary.csv`](/WUI_boundary/assets/data/boundary_scaling_summary.csv).
-
-### Reader-friendly column meanings
-
-| Website label | Raw CSV column | Meaning |
-| --- | --- | --- |
-| Delineation scenario | `delineation_id` | The boundary delineation bundle used for this run. |
-| Boundary object ID | `boundary_object_id` | Identifier for the synthetic boundary geometry that was measured. |
-| Measurement scale, \(\varepsilon\) | `epsilon` | Effective ruler length / resolution used for that row. |
-| Measured boundary length | `perimeter` | Measured perimeter value at that \(\varepsilon\). |
-| Fit status | `fit_status` | Whether the log-log fit succeeded. |
-| Fitted slope (log-log) | `loglog_slope` | Scale-sensitivity slope estimate from the log-log fit. |
-
-### Quick preview
 
 | Delineation scenario | Boundary object ID | Measurement scale, \(\varepsilon\) | Measured boundary length | Fit status | Fitted slope (log-log) |
 | --- | --- | ---: | ---: | --- | ---: |
 | parcel_v0.35_r120_touches | synthetic_wui_boundary_001 | 1.0 | 738.9227 | ok_fitted | -0.003054 |
 | parcel_v0.35_r120_touches | synthetic_wui_boundary_001 | 13.4286 | 737.1697 | ok_fitted | -0.003054 |
 | parcel_v0.35_r120_touches | synthetic_wui_boundary_001 | 30.0 | 730.3127 | ok_fitted | -0.003054 |
-
-## Refresh and reproducibility
-
-### Last generated by / refresh model
-
-This page is refreshed by the synthetic demo run and publication workflow documented below.
-
-Website-visible assets on this page are refreshed from `docs/assets/`:
-
-- `docs/assets/figures/boundary_scaling_plot.svg`
-- `docs/assets/data/boundary_scaling_summary.csv`
-
-How those files are updated:
-
-1. **Local run (immediate in your checkout)**
-   - `python scripts/run_minimal_boundary_scaling.py`
-   - Writes both `outputs/minimal_demo/*` and `docs/assets/*` locally.
-2. **Pull request workflow run**
-   - `.github/workflows/boundary-scaling-demo.yml` runs tests + demo and uploads `outputs/minimal_demo/` as an artifact.
-   - PR runs do **not** commit refreshed docs assets back to the branch.
-3. **Manual GitHub Actions run (`workflow_dispatch`)**
-   - Runs the same analysis, then commits refreshed docs assets back to the branch (unless there is no diff).
-   - This path updates what GitHub Pages publishes from the repository.
-
-If this figure looks stale, verify whether a manual workflow dispatch was run and committed after the most recent code changes.
 
 [Next: Fire science implications](fire-science-implications.md){ .md-button .md-button--primary }

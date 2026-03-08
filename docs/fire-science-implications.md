@@ -1,26 +1,13 @@
 # Fire science implications
 
-Boundary scaling is not a geometric curiosity. It directly affects how WUI exposure and risk metrics are interpreted.
+The significance of this project extends beyond geometric curiosity. In wildfire science, perimeter statistics are often treated as stable descriptors of exposure. The length of the Wildland–Urban Interface may be used, explicitly or implicitly, to estimate how much opportunity exists for fire to encounter development, how complex the interface may be for suppression and mitigation, or how extensively communities are interwoven with flammable vegetation. Yet these interpretations become unstable if boundary length itself changes with delineation choice and measurement scale.
 
-## Comparability across datasets and studies
+This is the central implication of the analysis developed across this site. A reported WUI perimeter is not simply a property of the landscape. It is a property of the landscape as represented through a particular set of definitional choices and measured at a particular effective ruler length. In the notation used throughout this manuscript, it is an evaluation of \(L_d(\varepsilon)\), not a free-standing scalar that exists independently of method.
 
-Perimeter-based indicators can shift when either delineation \(d\) or measurement scale \(\varepsilon\) changes. Reported differences between regions, years, or methods are therefore not interpretable unless these choices are documented.
+That distinction matters whenever perimeter estimates are compared across studies, regions, or time. Two analyses may appear to disagree about the extent or complexity of the interface not because the underlying landscapes differ in any profound ecological sense, but because the boundary objects were constructed differently or measured at different scales. A change in reported length may therefore reflect not only a change in fire-relevant landscape structure, but also a change in the observational and analytical machinery through which that structure was rendered legible.
 
-## Implications for WUI exposure metrics
+The same caution applies to time series. Remote-sensing products improve in spatial resolution, thematic detail, and classification strategy over time. If later datasets resolve finer irregularity in the boundary than earlier ones, the reported interface may appear to lengthen even in the absence of proportional ecological or developmental change. Some of the observed difference may belong to the evolving measurement system rather than to the evolving landscape.
 
-Many downstream metrics normalize by perimeter or depend on edge length. If \(L_d(\varepsilon)\) is treated as fixed when it is not, exposure estimates can be biased by methodological settings rather than fire-relevant landscape structure.
+For wildfire science, the consequence is not that perimeter should be abandoned, but that it should be interpreted more carefully. The length of the WUI boundary remains meaningful, but only when the terms of its construction and measurement are made explicit. Comparisons become scientifically defensible when delineation choice and measurement scale are treated as part of the result rather than hidden technical details.
 
-## Implications for wildfire interpretation
-
-When linking boundary geometry to ignition likelihood, suppression complexity, or evacuation planning, analysts should distinguish:
-
-- signals driven by genuine spatial pattern differences;
-- signals introduced by definition and measurement choices.
-
-## Implications for planning and policy
-
-Agencies comparing WUI conditions across jurisdictions should align delineation assumptions and effective resolution before drawing conclusions from perimeter-length differences.
-
-The practical recommendation is straightforward: treat WUI boundary length as a reported function \(L_d(\varepsilon)\), not a single universal number.
-
-[Next: Methods & reproducibility](methods-reproducibility.md){ .md-button .md-button--primary }
+The broader lesson is that the WUI is best understood not as a single immutable boundary, but as a scale-dependent interface between settlement and vegetation. Once that is recognized, perimeter becomes less a static descriptor and more a measurable expression of how human development and flammable landscape are interwoven across scales.
