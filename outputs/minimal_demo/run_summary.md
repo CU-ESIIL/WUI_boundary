@@ -8,3 +8,4 @@ This run is synthetic and intended only to demonstrate executability.
 - scaling fit status: `ok_fitted`
 - estimated log-log slope: `-0.0030544255291827015`
 - docs publish step: enabled
+- satellite-like resolution demo: enabled
