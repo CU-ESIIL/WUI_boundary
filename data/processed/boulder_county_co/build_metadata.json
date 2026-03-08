@@ -1,0 +1,15 @@
+{
+  "region_id": "boulder_county_co",
+  "input_manifest": "data/raw/boulder_county_co/dataset_manifest.json",
+  "output_boundary": "data/processed/boulder_county_co/sample_wui_boundary.geojson",
+  "implemented_steps": [
+    "raw manifest intake",
+    "region-scope boundary placeholder generation",
+    "processed artifact export"
+  ],
+  "stubbed_steps": [
+    "settlement footprint clipping",
+    "vegetation mask generation",
+    "topology cleanup and edge extraction"
+  ]
+}

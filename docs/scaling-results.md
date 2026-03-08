@@ -22,6 +22,6 @@ The current synthetic summary data are available at [`docs/assets/data/boundary_
 | parcel_v0.35_r120_touches | synthetic_wui_boundary_001 | 13.4286 | 737.1697 | ok_fitted | -0.003054 |
 | parcel_v0.35_r120_touches | synthetic_wui_boundary_001 | 30.0 | 730.3127 | ok_fitted | -0.003054 |
 
-To refresh this figure and table from the current pipeline, run the reproducibility workflow documented on the methods page, including `scripts/pre_pr_site_review.sh` for website-facing validation.
+To refresh this figure and table from the current pipeline, run the reproducibility workflow documented on the methods page, including `scripts/pre_pr_site_review.sh` for website-facing validation. To follow the transition path toward empirically derived boundaries, continue to [Real-data experiments](real-data-experiments.md), and for reproducibility-oriented workflow prompts see [Reproducible prompts](reproducible-prompts.md).
 
 [Next: Fire science implications](fire-science-implications.md){ .md-button .md-button--primary }
