@@ -38,22 +38,43 @@ body {
 }
 
 .md-header__button,
-.md-tabs__link,
-.md-nav__title,
-.md-nav__link,
 .md-search__icon,
-.md-header__topic {
+.md-header__topic,
+.md-tabs__link {
   color: #fff;
 }
 
 .md-tabs__link:hover,
 .md-tabs__link:focus,
-.md-nav__link:hover,
-.md-nav__link:focus,
-.md-nav__link--active,
 .md-header__button:hover,
 .md-header__button:focus {
   color: var(--brand-accent);
+}
+
+/* Keep manuscript sidebar nav visible and readable in desktop mode. */
+.md-sidebar .md-nav__title,
+.md-sidebar .md-nav__link {
+  color: var(--brand-text);
+}
+
+.md-sidebar .md-nav__link:hover,
+.md-sidebar .md-nav__link:focus-visible {
+  color: var(--brand-primary);
+  background: rgba(35, 74, 101, 0.08);
+  border-radius: 0.35rem;
+}
+
+.md-sidebar .md-nav__link--active {
+  color: var(--brand-primary);
+  font-weight: 700;
+}
+
+@media (min-width: 76.25em) {
+  .md-sidebar--primary {
+    opacity: 1;
+    transform: none;
+    visibility: visible;
+  }
 }
 
 .md-search__form {
@@ -218,7 +239,7 @@ body {
 /* Large inline app frame for Story Lab experiments. */
 .app-frame {
   width: 100%;
-  min-height: 1050px;
+  min-height: 980px;
   border: 1px solid var(--brand-gray);
   border-top: 4px solid var(--brand-primary);
   border-radius: 16px;
@@ -230,7 +251,7 @@ body {
 .app-frame iframe {
   display: block;
   width: 100%;
-  min-height: 1050px;
+  min-height: 980px;
   border: 0;
   border-radius: 12px;
   background: var(--brand-surface);
@@ -239,14 +260,14 @@ body {
 @media (max-width: 76.1875em) {
   .app-frame,
   .app-frame iframe {
-    min-height: 900px;
+    min-height: 860px;
   }
 }
 
 @media (max-width: 44.9375em) {
   .app-frame,
   .app-frame iframe {
-    min-height: 720px;
+    min-height: 760px;
   }
 }
 
