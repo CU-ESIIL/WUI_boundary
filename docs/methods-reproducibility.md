@@ -20,7 +20,43 @@ Run the website validation gate for docs and UI-facing changes:
 scripts/pre_pr_site_review.sh
 ```
 
-The local analysis run refreshes the published assets used by the manuscript pages:
+## Streaming real-data pilot (OSM + NLCD, no keys)
+
+The repository now includes `scripts/run_streaming_wui_scaling.py`, a first empirical WUI-like pilot that pairs OSM building footprints (Overpass API) with a streamed NLCD raster subset. The workflow requires network access but no API keys or secrets.
+
+Run a small-area pilot and publish docs-facing assets:
+
+```bash
+python scripts/run_streaming_wui_scaling.py \
+  --bbox "-105.292,40.004,-105.236,40.047" \
+  --outdir outputs/real_data_demo \
+  --adj-buffer 250 \
+  --epsilons "5,10,20,30,60,120" \
+  --resolutions "30,60,90,120,150" \
+  --veg-classes "41,42,43,52" \
+  --publish-doc-assets
+```
+
+Primary run outputs are written under `outputs/real_data_demo/`:
+
+```text
+fixed_boundary_scaling.csv
+fixed_boundary_scaling.png
+resolution_rebuild_scaling.csv
+resolution_rebuild_scaling.png
+run_summary.json
+```
+
+When `--publish-doc-assets` is supplied, the script refreshes docs-facing publication assets:
+
+```text
+docs/assets/figures/real_fixed_boundary_scaling.png
+docs/assets/figures/real_resolution_rebuild_scaling.png
+docs/assets/data/real_fixed_boundary_scaling.csv
+docs/assets/data/real_resolution_rebuild_scaling.csv
+```
+
+The local analysis run refreshes the published synthetic assets used by the manuscript pages:
 
 ```text
 docs/assets/figures/boundary_scaling_plot.svg
@@ -48,6 +84,7 @@ Additional CLI options are available through:
 
 ```bash
 python scripts/run_minimal_boundary_scaling.py --help
+python scripts/run_streaming_wui_scaling.py --help
 ```
 
 In pull requests, generated artifacts are attached for review in CI. Publication to GitHub Pages still occurs through the repository’s manual dispatch release workflow when maintainers decide to promote a validated revision.
@@ -55,4 +92,3 @@ In pull requests, generated artifacts are attached for review in CI. Publication
 Playwright-backed local review remains part of the expected validation path for website-facing changes, and `scripts/pre_pr_site_review.sh` is the canonical entry point for that check.
 
 For prompt-level reconstruction of the workflow narrative and implementation sequence, see [Reproducible prompts](reproducible-prompts.md). For the synthetic-to-empirical handoff now scaffolded in code, see [Real-data experiments](real-data-experiments.md). The staged development context for both is summarized in the [Project roadmap](project-roadmap.md).
-

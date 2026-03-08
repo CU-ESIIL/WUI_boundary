@@ -19,3 +19,5 @@ The purpose of the figure on this page is not to claim a final empirical law for
 *Figure. Conceptual scaling curve using synthetic boundary geometry, showing measured interface length across effective ruler lengths analogous to 500 m, 250 m, 100 m, 30 m, 10 m, and 1 m remote-sensing products. Coarser resolution smooths boundary detail and shortens measured perimeter, while finer resolution resolves additional structure and increases measured perimeter.*
 
 A tabular summary of the conceptual figure is available at [`docs/assets/data/satellite_resolution_scaling_summary.csv`](/WUI_boundary/assets/data/satellite_resolution_scaling_summary.csv).
+
+A corresponding empirical bridge implementation, based on open OSM building footprints and streamed NLCD vegetation subsets, is documented in [Real-data experiments](real-data-experiments.md).

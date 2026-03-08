@@ -11,6 +11,7 @@ Even once the boundary has been defined, its measured length remains unstable. I
 For this reason the quantity examined throughout this site is written as \(L_d(\varepsilon)\), where \(d\) represents the delineation of the boundary and \(\varepsilon\) represents the scale at which that boundary is measured. The purpose of this manuscript-style site is not simply to report a perimeter value. It is to explore how the reported length of the WUI emerges from the interaction between landscape geometry, methodological choice, and measurement scale.
 
 The pages that follow move from first principles to implication. They begin by asking why complex boundaries resist simple measurement, then turn to the question of what counts as the boundary in the first place, then to interactive experiments and scaling results, and finally to the consequences for remote sensing and wildfire science. The argument is simple, but its implications are not: there is no single WUI boundary length independent of delineation and scale.
+The manuscript now also includes a first empirical pilot that streams open settlement and vegetation inputs into the same analytical frame; see [Real-data experiments](real-data-experiments.md).
 
 <div class="oasis-embed" markdown>
   <iframe
