@@ -3,6 +3,14 @@
 ## Unreleased
 
 ### Changed
+- Implemented a first empirical, no-keys streaming pilot runner at `scripts/run_streaming_wui_scaling.py` that fetches OSM buildings from Overpass, streams a bbox-limited NLCD window from a remote raster source, builds a WUI-like settlement–vegetation interface, runs fixed-boundary and resolution-rebuild scaling experiments, writes CSV/PNG/JSON outputs, and can publish docs-facing assets under `docs/assets/`.
+- Rewrote `docs/real-data-experiments.md` into a manuscript-style real-data page with the required transition prose, explicit experiment framing, figure embeds, and CSV links for the empirical pilot outputs.
+- Updated manuscript cross-links and reproducibility guidance (`docs/index.md`, `docs/scaling-results.md`, `docs/implications-for-remote-sensing.md`, `docs/methods-reproducibility.md`) so the real-data pilot workflow, run command, outputs, and docs-asset publication pattern are discoverable and documented.
+
+### Added
+- Added `tests/test_streaming_script.py` with lightweight parser/fit smoke tests for the streaming pilot script helper logic.
+
+### Changed
 - Expanded manuscript navigation and cross-links to include new pages for real-data experiments, reproducible prompts, visual figure placeholders, and a staged project roadmap.
 - Updated homepage site-review assertions to accept either a direct `scaling-results` link or the current `why-length-depends-on-scale` progression link, aligning tests with deployed manuscript navigation while preserving interactive-link coverage.
 - Relaxed homepage and scaling-results Playwright link/refresh selectors to match stable route fragments and fallback next-page navigation, preventing false negatives on deployed URL variants that differ in suffixes or heading prose.
