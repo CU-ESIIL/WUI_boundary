@@ -8,7 +8,7 @@ edit_uri: "edit/main/docs/"
 
 nav:
   - Home: index.md
-  - Why Length Depends on Scale: why-length-depends-on-scale.md
+  - The Measurement Problem: measurement-problem.md
   - What Counts as the WUI Boundary: what-counts-as-wui-boundary.md
   - Interactive Experiments: interactive-experiments.md
   - Scaling Results: scaling-results.md

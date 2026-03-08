@@ -1,81 +1,13 @@
-# How long is the Wildland–Urban Interface boundary?
+# How long is the Wildland–Urban Interface?
 
-<div class="esiil-hero" markdown>
+The Wildland–Urban Interface is one of the most consequential boundaries in wildfire science. It marks the places where human settlement meets flammable landscapes, where houses and infrastructure intersect with vegetation capable of carrying fire. Maps of the WUI are now widely used to estimate exposure, guide mitigation planning, and frame national conversations about wildfire risk.
 
-The Wildland–Urban Interface (WUI) is one of the most consequential boundaries in wildfire science. Yet a simple question has no single answer: **how long is the WUI boundary?**
+Yet a surprisingly simple question sits beneath all of these applications. How long is the Wildland–Urban Interface?
 
-Our central claim is that boundary length is not a fixed scalar. It is a scale-conditioned quantity,
-\[
-L_d(\varepsilon),
-\]
-where **\(d\)** is the delineation choice (what counts as the boundary) and **\(\varepsilon\)** is the measurement scale (the effective ruler length or resolution).
+At first glance this appears to be a straightforward measurement problem. One might imagine drawing a line around the places where development and vegetation meet and then computing the length of that line. But this intuition quickly unravels when examined more closely. The WUI boundary is not a single natural curve waiting quietly in the landscape to be discovered by a sufficiently careful algorithm. It is a spatial object produced by decisions about how settlements are represented, how vegetation is classified, and how proximity between them is interpreted.
 
-<div class="oasis-embed" markdown>
-  <iframe
-    title="Interactive Figure — Measuring the WUI boundary"
-    src="ui-drafts/draft-1/story-lab.html"
-    loading="lazy"
-    allowfullscreen>
-  </iframe>
-</div>
+Even after those decisions are made, the length of the resulting boundary depends on the scale at which it is measured. Coarse measurement smooths over small bends and irregularities, while finer measurement follows every indentation. In geography this phenomenon is well known through the coastline paradox: the more precisely certain kinds of boundaries are measured, the longer they appear to become.
 
-[Enter the interactive experiments](interactive-experiments.md){ .md-button .md-button--primary }
-[Read the scaling intuition](why-length-depends-on-scale.md){ .md-button }
+This project explores how those two realities interact. The length of the WUI boundary is not a fixed scalar. It depends both on how the boundary is defined and on how it is measured. Throughout the site we write this quantity as L_d(ε), where d represents the delineation of the boundary and ε represents the scale of measurement.
 
-</div>
-
-
-!!! tip "Current synthetic output"
-    See the latest published figure and CSV on [Scaling Results](scaling-results.md).  
-    If those look stale, the workflow likely ran on a PR (artifact only) rather than a manual dispatch (commits docs assets).
-
-## The question
-
-When WUI boundaries are used for exposure, risk, and planning decisions, perimeter length is often treated as if it were a stable property of the landscape. This site treats that assumption as a testable scientific hypothesis.
-
-## Why this is difficult
-
-Two distinct mechanisms change measured length:
-
-1. **Object-definition sensitivity:** changing delineation assumptions changes the boundary object itself.
-2. **Measurement-scale sensitivity:** changing resolution changes the measured length of a fixed boundary object.
-
-Because both mechanisms operate together, the reported length depends on both \(d\) and \(\varepsilon\).
-
-## What this site lets you test
-
-This manuscript-style site combines intuition, definitions, interactive figures, and reproducible synthetic outputs so you can inspect how \(L_d(\varepsilon)\) behaves under different assumptions.
-
-## Main takeaway
-
-There is no single WUI boundary length independent of delineation and measurement scale. Comparisons are only meaningful when \(d\) and \(\varepsilon\) are explicit.
-
-## Where to go next
-
-<div class="grid cards" markdown>
-
-- **Why Length Depends on Scale**  
-  Build intuition for why complex boundaries produce different lengths at different ruler sizes.  
-  [Read the explainer](why-length-depends-on-scale.md)
-
-- **What Counts as the WUI Boundary**  
-  See how delineation assumptions define different boundary objects before measurement starts.  
-  [Define \(d\)](what-counts-as-wui-boundary.md)
-
-- **Interactive Experiments**  
-  Explore figure-driven experiments comparing definition and measurement sensitivity.  
-  [Open the lab](interactive-experiments.md)
-
-- **Scaling Results**  
-  Review synthetic demo outputs and the log-log scaling framework used to summarize \(L_d(\varepsilon)\).  
-  [View results](scaling-results.md)
-
-- **Fire Science Implications**  
-  Connect geometric sensitivity to interpretation, comparability, and applied wildfire science.  
-  [Interpret implications](fire-science-implications.md)
-
-- **Methods & Reproducibility**  
-  Inspect the current analysis scaffold, status, and reproducible execution workflow.  
-  [Review methods](methods-reproducibility.md)
-
-</div>
+The goal of this site is not simply to report a number. Instead it invites the reader to explore a deeper question: how does the reported length of the Wildland–Urban Interface change as we alter the assumptions used to construct and measure it?
