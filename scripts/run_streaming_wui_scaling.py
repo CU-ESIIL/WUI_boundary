@@ -63,6 +63,20 @@ def _series_union(series):
     return series.unary_union
 
 
+
+
+def _vegetation_mask_from_classes(arr, veg_classes, np):
+    mask = np.isin(arr, veg_classes)
+    if mask.any():
+        return mask, "requested_classes"
+
+    # Fallback for services that return remapped/visualized class rasters where
+    # original NLCD class IDs are not preserved in-band.
+    arr_int = arr.astype("int64", copy=False)
+    fallback_mask = arr_int > 0
+    return fallback_mask, "nonzero_fallback"
+
+
 def _load_geospatial_deps() -> dict:
     """Import geospatial dependencies lazily with a clear error message."""
     try:
@@ -246,31 +260,46 @@ def _fetch_nlcd_wms_mask(
     rasterio = deps["rasterio"]
 
     width_px, height_px = _estimate_wms_shape(bbox_lonlat)
-    params = {
-        "service": "WMS",
-        "version": "1.1.1",
-        "request": "GetMap",
-        "layers": "mrlc_display:NLCD_2021_Land_Cover_L48",
-        "styles": "",
-        "srs": "EPSG:4326",
-        "bbox": f"{bbox_lonlat[0]},{bbox_lonlat[1]},{bbox_lonlat[2]},{bbox_lonlat[3]}",
-        "width": str(width_px),
-        "height": str(height_px),
-        "format": "image/geotiff",
-        "transparent": "false",
-    }
-    resp = requests.get(MRLC_WMS_ENDPOINT, params=params, timeout=180)
-    resp.raise_for_status()
+    layer_candidates = [
+        "mrlc_download:NLCD_2021_Land_Cover_L48",
+        "mrlc_display:NLCD_2021_Land_Cover_L48",
+    ]
 
-    with rasterio.MemoryFile(io.BytesIO(resp.content).getvalue()) as memfile:
-        with memfile.open() as src:
-            arr = src.read(1)
-            transform = src.transform
-            res_x = abs(src.transform.a)
-            src_crs = src.crs
+    last_result = None
+    for layer_name in layer_candidates:
+        params = {
+            "service": "WMS",
+            "version": "1.1.1",
+            "request": "GetMap",
+            "layers": layer_name,
+            "styles": "",
+            "srs": "EPSG:4326",
+            "bbox": f"{bbox_lonlat[0]},{bbox_lonlat[1]},{bbox_lonlat[2]},{bbox_lonlat[3]}",
+            "width": str(width_px),
+            "height": str(height_px),
+            "format": "image/geotiff",
+            "transparent": "false",
+        }
+        resp = requests.get(MRLC_WMS_ENDPOINT, params=params, timeout=180)
+        resp.raise_for_status()
 
-    veg_mask = np.isin(arr, veg_classes)
-    return veg_mask, transform, float(res_x), src_crs
+        with rasterio.MemoryFile(io.BytesIO(resp.content).getvalue()) as memfile:
+            with memfile.open() as src:
+                arr = src.read(1)
+                transform = src.transform
+                res_x = abs(src.transform.a)
+                src_crs = src.crs
+
+        veg_mask, mode = _vegetation_mask_from_classes(arr, veg_classes, np)
+        last_result = (veg_mask, transform, float(res_x), src_crs, mode)
+        if mode == "requested_classes":
+            return veg_mask, transform, float(res_x), src_crs
+
+    if last_result is None:
+        raise RuntimeError("WMS fallback returned no readable raster payload.")
+
+    veg_mask, transform, res_x, src_crs, _ = last_result
+    return veg_mask, transform, res_x, src_crs
 
 
 def _utm_crs_for_lonlat(lon: float, lat: float, deps: dict):
@@ -306,7 +335,7 @@ def _clip_nlcd_mask(
                 res_x = abs(src.transform.a)
                 src_crs = src.crs
 
-            veg_mask = np.isin(arr, veg_classes)
+            veg_mask, _ = _vegetation_mask_from_classes(arr, veg_classes, np)
             return veg_mask, transform, float(res_x), src_crs
         except Exception as exc:
             last_exc = exc

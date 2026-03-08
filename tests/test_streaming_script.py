@@ -5,6 +5,11 @@ import importlib.util
 import unittest
 from unittest import mock
 
+try:
+    import numpy as _np_for_tests
+except Exception:
+    _np_for_tests = None
+
 
 SPEC = importlib.util.spec_from_file_location(
     "run_streaming_wui_scaling", Path(__file__).resolve().parents[1] / "scripts" / "run_streaming_wui_scaling.py"
@@ -29,6 +34,14 @@ class StreamingScriptHelperTests(unittest.TestCase):
         self.assertEqual(fit["status"], "ok_fitted")
         self.assertIsNotNone(fit["slope"])
 
+
+    @unittest.skipIf(_np_for_tests is None, "numpy unavailable in test environment")
+    def test_vegetation_mask_fallback_for_remapped_values(self) -> None:
+        arr = _np_for_tests.array([[120, 125], [0, 200]], dtype="uint8")
+        mask, mode = MODULE._vegetation_mask_from_classes(arr, [41, 42, 43, 52], _np_for_tests)
+        self.assertEqual(mode, "nonzero_fallback")
+        self.assertTrue(mask[0, 0])
+        self.assertFalse(mask[1, 0])
 
     def test_estimate_wms_shape_bounds(self) -> None:
         width_px, height_px = MODULE._estimate_wms_shape((-105.292, 40.004, -105.236, 40.047))
