@@ -3,6 +3,8 @@
 ## Unreleased
 
 ### Changed
+- Upgraded the synthetic boundary-scaling figure generator to emit a publication-style SVG with an internal title, explicit axis labels, readable tick labels, and an in-plot annotation panel for delineation, fitted slope, and number of evaluated scales.
+- Rewrote `docs/scaling-results.md` as a manuscript-like results narrative with a clear synthetic-status callout, figure caption, "how to read" guidance, plain-language interpretation, and reader-friendly summary-table column definitions.
 - Restored desktop manuscript navigation visibility by scoping white nav text overrides to header/tab chrome and adding explicit readable primary-sidebar link/active states in the ESIIL theme CSS.
 - Switched the Interactive Experiments primary embed/full-page launch to a new Draft 3 iframe-optimized app and preserved Draft 1/2 links as archived variants.
 - Narrowed Playwright console-error filtering to ignore the known deployed scaling plot 404 at `/WUI_boundary/scaling-results/assets/figures/boundary_scaling_plot.svg` while preserving strict failure behavior for unrelated console errors.
