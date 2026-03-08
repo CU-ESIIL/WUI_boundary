@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>WUI Boundary Story Lab — Draft 3 (Responsive Figure)</title>
+<style>
+  :root{
+    --bg:#08111c;
+    --panel:#101a2b;
+    --panel-2:#13213a;
+    --ink:#e9f6fa;
+    --muted:#6f8798;
+    --line:#22324f;
+    --accent:#42BCDC;
+    --accent-2:#49B47E;
+    --accent-3:#9ae6b4;
+    --accent-4:#007135;
+    --veg:#244b32;
+    --land:#d8dfd8;
+    --town:#a9b8aa;
+    --shadow:0 18px 50px rgba(0,0,0,.28);
+    --radius:22px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(circle at top left, rgba(143,211,255,.08), transparent 28%),
+      radial-gradient(circle at bottom right, rgba(154,230,180,.06), transparent 25%),
+      linear-gradient(180deg,#07101b,#0a1423 45%,#09111d);
+  }
+  .shell{
+    display:grid;
+    grid-template-columns: minmax(300px, 360px) minmax(0,1fr);
+    gap:18px;
+    min-height:100vh;
+    padding:18px;
+  }
+  .panel{
+    background:rgba(16,26,43,.94);
+    border:1px solid rgba(255,255,255,.06);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    overflow:hidden;
+  }
+  .sidebar{display:grid;gap:18px;align-content:start}
+  .section{padding:18px;border-bottom:1px solid rgba(255,255,255,.06)}
+  .section:last-child{border-bottom:none}
+  h1,h2,h3,p{margin:0}
+  h1{font-size:1.36rem;line-height:1.15;margin-bottom:10px}
+  h2{font-size:1rem;margin-bottom:10px}
+  h3{font-size:.93rem;margin-bottom:7px;color:#f6fbfc}
+  p,li{font-size:.92rem;line-height:1.5;color:var(--muted)}
+  .lede{color:#d9eef4;font-size:.96rem}
+  .pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .pill{
+    padding:6px 10px;
+    border-radius:999px;
+    background:#18253d;
+    border:1px solid rgba(255,255,255,.05);
+    color:#d9eef4;
+    font-size:.78rem;
+  }
+  .story-steps{display:grid;gap:10px;margin-top:12px}
+  .story-step{
+    padding:12px;
+    background:var(--panel-2);
+    border:1px solid rgba(255,255,255,.05);
+    border-radius:16px;
+  }
+  .story-step.active{
+    background:linear-gradient(180deg, rgba(143,211,255,.14), rgba(143,211,255,.04));
+    border-color:rgba(143,211,255,.35);
+  }
+  .story-step .n{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:24px;height:24px;border-radius:999px;background:#213251;
+    font-size:.78rem;font-weight:700;color:#fff;margin-right:8px;
+  }
+  .controls{display:grid;gap:12px}
+  .control{
+    background:var(--panel-2);
+    border-radius:16px;
+    border:1px solid rgba(255,255,255,.05);
+    padding:12px;
+  }
+  .control label{
+    display:flex;justify-content:space-between;gap:12px;
+    font-size:.9rem;color:#e9f6fa;margin-bottom:8px
+  }
+  .value{color:var(--accent);font-weight:700}
+  input[type="range"]{width:100%;accent-color:#42BCDC}
+  .button-row{display:flex;flex-wrap:wrap;gap:8px}
+  button{
+    appearance:none;border:none;cursor:pointer;
+    background:#234A65;color:#e9f6fa;font-weight:700;
+    padding:10px 12px;border-radius:14px;
+  }
+  button.active{background:#2b5d91}
+  button.ghost{background:#18253d}
+  .main{display:grid;grid-template-rows:auto auto 1fr;gap:18px;min-width:0}
+  .hero{padding:18px 20px}
+  .hero-title{font-size:1.22rem;margin-bottom:6px}
+  .hero-sub{max-width:1000px}
+  .modebar{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:14px 18px;
+  }
+  .mode-buttons{display:flex;gap:8px;flex-wrap:wrap}
+  .vizgrid{
+    display:grid;
+    grid-template-columns:minmax(0,1.35fr) minmax(340px,.9fr);
+    gap:18px;
+    min-height:640px;
+  }
+  .cardhead{display:flex;justify-content:space-between;gap:12px;padding:16px 16px 0}
+  .cardtitle{font-size:1rem;font-weight:800}
+  .sub{color:var(--muted);font-size:.86rem}
+  .canvaswrap{padding:12px 14px 14px}
+  canvas{display:block;width:100%;height:100%}
+  #mapCanvas{height:560px}
+  #scaleCanvas{height:250px}
+  #radiusCanvas{height:210px}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:0 14px 16px}
+  .stat{padding:12px;border-radius:16px;background:var(--panel-2);border:1px solid rgba(255,255,255,.05)}
+  .stat .k{font-size:.78rem;color:var(--muted);margin-bottom:4px}
+  .stat .v{font-size:1.12rem;font-weight:800;color:#fff}
+  .narrative{padding:0 14px 16px}
+  .narrative-box{
+    background:#121f35;border:1px solid rgba(255,255,255,.05);
+    border-radius:16px;padding:14px;color:#d9eef4;font-size:.92rem;line-height:1.5;
+  }
+  .analysis-grid{display:grid;gap:18px}
+  .analysis-list{display:grid;gap:10px;padding:14px}
+  .analysis-item{
+    padding:12px;border-radius:15px;background:var(--panel-2);
+    border:1px solid rgba(255,255,255,.05)
+  }
+  .small{font-size:.84rem;color:var(--muted)}
+  .footer-note{padding:14px 18px 18px}
+  .legend{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
+  .legend-item{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:.82rem}
+  .swatch{width:12px;height:12px;border-radius:3px}
+  @media (max-width:1020px){
+    .shell{grid-template-columns:minmax(280px,320px) minmax(0,1fr)}
+    #mapCanvas{height:500px}
+  }
+  @media (max-width:860px){
+    .shell{grid-template-columns:1fr}
+    .sidebar{position:sticky;top:10px;z-index:3}
+    .sidebar .panel{max-height:44vh;overflow:auto}
+    .vizgrid{grid-template-columns:1fr}
+    #mapCanvas{height:440px}
+  }
+  @media (max-width:740px){
+    .stats{grid-template-columns:repeat(2,1fr)}
+    .sidebar{position:static}
+    .sidebar .panel{max-height:none;overflow:visible}
+    #mapCanvas{height:380px}
+  }
+  @media (max-width:520px){
+    .shell{padding:10px;gap:10px}
+    .section,.hero,.modebar,.canvaswrap{padding-left:12px;padding-right:12px}
+    #mapCanvas{height:330px}
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="panel">
+      <div class="section">
+        <h1>WUI Boundary Story Lab — Draft 3</h1>
+        <p class="lede">An iframe-friendly scientific figure that keeps assumptions and map response visually linked across desktop, tablet, and mobile layouts.</p>
+        <div class="pills">
+          <span class="pill">Question → Report → App</span>
+          <span class="pill">Definition scale</span>
+          <span class="pill">Measurement scale</span>
+          <span class="pill">Fractal intuition</span>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Story beats</h2>
+        <div class="story-steps" id="storySteps">
+          <div class="story-step active" data-step="0"><div><span class="n">1</span><strong>The ordinary question</strong></div><p>How long is the wildland–urban interface boundary?</p></div>
+          <div class="story-step" data-step="1"><div><span class="n">2</span><strong>The first surprise</strong></div><p>Changing the definition radius changes the mapped WUI itself.</p></div>
+          <div class="story-step" data-step="2"><div><span class="n">3</span><strong>The deeper surprise</strong></div><p>Changing the measuring stick changes the apparent boundary length.</p></div>
+          <div class="story-step" data-step="3"><div><span class="n">4</span><strong>The scientific turn</strong></div><p>The right question may be how length changes with scale.</p></div>
+          <div class="story-step" data-step="4"><div><span class="n">5</span><strong>The analysis agenda</strong></div><p>Separate ecological signal from methodological artifact.</p></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Step 1: adjust assumptions</h2>
+        <div class="controls">
+          <div class="control">
+            <label><span>Definition radius</span><span class="value" id="radiusValue">220 m</span></label>
+            <input id="radiusSlider" type="range" min="80" max="600" step="10" value="220" />
+            <p class="small">Larger radii expand which developed areas count as WUI.</p>
+          </div>
+          <div class="control">
+            <label><span>Measurement scale</span><span class="value" id="epsValue">26 m</span></label>
+            <input id="epsSlider" type="range" min="6" max="80" step="2" value="26" />
+            <p class="small">Smaller ruler sizes capture more bends and make the boundary longer.</p>
+          </div>
+          <div class="control">
+            <label><span>Boundary roughness</span><span class="value" id="roughValue">0.72</span></label>
+            <input id="roughSlider" type="range" min="20" max="95" step="1" value="72" />
+            <p class="small">Use this to move from clean suburban edge to rough exurban edge.</p>
+          </div>
+          <div class="control">
+            <label><span>Housing pressure</span><span class="value" id="housingValue">0.58</span></label>
+            <input id="housingSlider" type="range" min="15" max="95" step="1" value="58" />
+            <p class="small">Higher values add more structures near vegetation.</p>
+          </div>
+          <div class="control">
+            <div class="button-row">
+              <button id="storyBtn" class="active">Play story</button>
+              <button id="measureBtn" class="ghost">Sweep ruler</button>
+              <button id="boxesBtn" class="ghost active">Show boxes</button>
+              <button id="resetBtn" class="ghost">Reset</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>How this supports the tutorial</h2>
+        <p>You can narrate this as the thing Chat built after reading a report. Then you pivot to Codex for a real package and docs site, and later to a writing model for drafting the scientific note.</p>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="panel hero">
+      <div class="hero-title">From a simple policy question to a scaling question</div>
+      <p class="hero-sub">This app is designed to carry the room through a scientific story. At first, the WUI boundary looks like a straightforward quantity. But the science unfolds when people realize there are two different scale sensitivities hiding inside the problem: one changes the map, and one changes the measurement.</p>
+      <div class="legend">
+        <div class="legend-item"><span class="swatch" style="background:#244b32"></span>wildland vegetation</div>
+        <div class="legend-item"><span class="swatch" style="background:#42BCDC"></span>definition halo</div>
+        <div class="legend-item"><span class="swatch" style="background:#007135"></span>structures in WUI</div>
+        <div class="legend-item"><span class="swatch" style="background:#49B47E"></span>measurement boxes</div>
+        <div class="legend-item"><span class="swatch" style="background:#ffffff"></span>extracted boundary</div>
+      </div>
+    </div>
+
+    <div class="panel modebar">
+      <div>
+        <div class="cardtitle">Narrative mode</div>
+        <div class="sub" id="modeSubtitle">Step 1: start with the ordinary question.</div>
+      </div>
+      <div class="mode-buttons" id="modeButtons">
+        <button data-mode="0" class="active">1. Question</button>
+        <button data-mode="1">2. Definition</button>
+        <button data-mode="2">3. Measurement</button>
+        <button data-mode="3">4. Scaling</button>
+        <button data-mode="4">5. Analysis</button>
+      </div>
+    </div>
+
+    <div class="vizgrid">
+      <section class="panel">
+        <div class="cardhead">
+          <div>
+            <div class="cardtitle">Step 2: inspect the resulting WUI boundary</div>
+            <div class="sub">A talk-safe sandbox for asking how maps and measurements change with scale</div>
+            <div class="small" style="margin-top:6px">Change Step 1 controls, then watch this map and boundary trace update immediately.</div>
+          </div>
+        </div>
+        <div class="canvaswrap">
+          <canvas id="mapCanvas" width="980" height="560"></canvas>
+        </div>
+        <div class="stats">
+          <div class="stat"><div class="k">Mapped WUI area</div><div class="v" id="areaStat">0 km²</div></div>
+          <div class="stat"><div class="k">Measured boundary length</div><div class="v" id="lengthStat">0 km</div></div>
+          <div class="stat"><div class="k">Effective dimension</div><div class="v" id="dimStat">1.00</div></div>
+          <div class="stat"><div class="k">Structures in WUI</div><div class="v" id="houseStat">0</div></div>
+        </div>
+        <div class="narrative">
+          <div class="narrative-box" id="storyText">Ask the room a deceptively simple question: if you had the map in front of you, shouldn’t the length of the boundary just be a number?</div>
+        </div>
+      </section>
+
+      <section class="analysis-grid">
+        <div class="panel">
+          <div class="cardhead">
+            <div>
+              <div class="cardtitle">Step 3: compare how measured length changes</div>
+              <div class="sub">The coastline-paradox view of a WUI boundary</div>
+            </div>
+          </div>
+          <div class="canvaswrap">
+            <canvas id="scaleCanvas" width="720" height="250"></canvas>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="cardhead">
+            <div>
+              <div class="cardtitle">WUI area vs definition radius</div>
+              <div class="sub">This changes the map itself, not just the measurement</div>
+            </div>
+          </div>
+          <div class="canvaswrap">
+            <canvas id="radiusCanvas" width="720" height="210"></canvas>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="cardhead">
+            <div>
+              <div class="cardtitle">Analysis prompts for the next tool step</div>
+              <div class="sub">What Codex should formalize into a package and docs site</div>
+            </div>
+          </div>
+          <div class="analysis-list" id="analysisList">
+            <div class="analysis-item"><strong>Prompt 1.</strong> Build functions that separate vector simplification effects from raster-grain effects.</div>
+            <div class="analysis-item"><strong>Prompt 2.</strong> Estimate the slope only over the scale range where the log–log relation is approximately linear.</div>
+            <div class="analysis-item"><strong>Prompt 3.</strong> Compare suburban, exurban, and mountainous regions to see whether they have different effective boundary dimensions.</div>
+            <div class="analysis-item"><strong>Prompt 4.</strong> Test whether area sensitivity or perimeter sensitivity dominates uncertainty for a given management workflow.</div>
+          </div>
+          <div class="footer-note small">A good follow-on package would load real polygons, run scale sweeps, fit slope ranges, and generate publication-ready plots and citations.</div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<script>
+(() => {
+  const mapCanvas = document.getElementById('mapCanvas');
+  const scaleCanvas = document.getElementById('scaleCanvas');
+  const radiusCanvas = document.getElementById('radiusCanvas');
+  const mctx = mapCanvas.getContext('2d');
+  const sctx = scaleCanvas.getContext('2d');
+  const rctx = radiusCanvas.getContext('2d');
+
+  const radiusSlider = document.getElementById('radiusSlider');
+  const epsSlider = document.getElementById('epsSlider');
+  const roughSlider = document.getElementById('roughSlider');
+  const housingSlider = document.getElementById('housingSlider');
+
+  const radiusValue = document.getElementById('radiusValue');
+  const epsValue = document.getElementById('epsValue');
+  const roughValue = document.getElementById('roughValue');
+  const housingValue = document.getElementById('housingValue');
+
+  const areaStat = document.getElementById('areaStat');
+  const lengthStat = document.getElementById('lengthStat');
+  const dimStat = document.getElementById('dimStat');
+  const houseStat = document.getElementById('houseStat');
+  const storyText = document.getElementById('storyText');
+  const modeSubtitle = document.getElementById('modeSubtitle');
+
+  const storyBtn = document.getElementById('storyBtn');
+  const measureBtn = document.getElementById('measureBtn');
+  const boxesBtn = document.getElementById('boxesBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  const modeButtons = [...document.querySelectorAll('#modeButtons button')];
+  const storySteps = [...document.querySelectorAll('.story-step')];
+
+  const W = mapCanvas.width;
+  const H = mapCanvas.height;
+  const PAD = 40;
+  const PX_TO_KM = 0.01;
+
+  let currentMode = 0;
+  let showBoxes = true;
+  let storyPlaying = false;
+  let measurePlaying = false;
+  let rafId = null;
+  let timerId = null;
+
+  const modeCopy = [
+    {
+      subtitle: 'Step 1: start with the ordinary question.',
+      story: 'Start with the kind of question a planner or fire manager might ask without hesitation: how long is the WUI boundary here? The first teaching move is to let that sound simple.',
+      settings: { radius: 220, eps: 46 }
+    },
+    {
+      subtitle: 'Step 2: show that the map depends on the definition.',
+      story: 'Now change the definition radius and watch the mapped WUI area expand. This is not yet the coastline paradox. This is a classification choice. The thing being measured is already moving under your feet.',
+      settings: { radius: 420, eps: 46 }
+    },
+    {
+      subtitle: 'Step 3: hold the map fixed and change the ruler.',
+      story: 'Freeze the definition. Now shrink the measuring stick. The boundary gets longer because you are tracing more bends and indentations. This is the modern WUI version of measuring a coastline with smaller rulers.',
+      settings: { radius: 220, eps: 16 }
+    },
+    {
+      subtitle: 'Step 4: change the question from “what is the length” to “how does length change with scale.”',
+      story: 'Once the log–log relation straightens out, the deeper scientific question emerges. Maybe the boundary does not have one stable length. Maybe it has a scaling behavior over a range of observation scales.',
+      settings: { radius: 220, eps: 10 }
+    },
+    {
+      subtitle: 'Step 5: turn the story into an analysis plan.',
+      story: 'The analysis agenda is to separate ecological structure from methodological artifact. Which uncertainty matters more for your use case: how you define WUI, or how you measure a rough edge once it is defined?',
+      settings: { radius: 300, eps: 18 }
+    }
+  ];
+
+  function mulberry32(a){
+    return function(){
+      let t = a += 0x6D2B79F5;
+      t = Math.imul(t ^ t >>> 15, t | 1);
+      t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+
+  function lerp(a,b,t){ return a + (b-a)*t; }
+
+  function setLabels(){
+    radiusValue.textContent = radiusSlider.value + ' m';
+    epsValue.textContent = epsSlider.value + ' m';
+    roughValue.textContent = (+roughSlider.value / 100).toFixed(2);
+    housingValue.textContent = (+housingSlider.value / 100).toFixed(2);
+  }
+
+  function lineLength(points){
+    let L = 0;
+    for(let i=1;i<points.length;i++) L += Math.hypot(points[i].x-points[i-1].x, points[i].y-points[i-1].y);
+    return L;
+  }
+
+  function simplifyDP(points, tol){
+    if(points.length <= 2) return points.slice();
+    const sqTol = tol*tol;
+    function sqSegDist(p,p1,p2){
+      let x = p1.x, y = p1.y;
+      let dx = p2.x-x, dy = p2.y-y;
+      if(dx !== 0 || dy !== 0){
+        let t = ((p.x-x)*dx + (p.y-y)*dy) / (dx*dx + dy*dy);
+        if(t > 1){ x = p2.x; y = p2.y; }
+        else if(t > 0){ x += dx*t; y += dy*t; }
+      }
+      dx = p.x-x; dy = p.y-y;
+      return dx*dx + dy*dy;
+    }
+    function recurse(start,end,out){
+      let maxSq = sqTol, idx = -1;
+      for(let i=start+1;i<end;i++){
+        const sq = sqSegDist(points[i], points[start], points[end]);
+        if(sq > maxSq){ maxSq = sq; idx = i; }
+      }
+      if(idx !== -1){
+        if(idx-start > 1) recurse(start, idx, out);
+        out.push(points[idx]);
+        if(end-idx > 1) recurse(idx, end, out);
+      }
+    }
+    const out = [points[0]];
+    recurse(0, points.length-1, out);
+    out.push(points[points.length-1]);
+    return out;
+  }
+
+  function boxCount(points, eps){
+    const occupied = new Set();
+    for(let i=1;i<points.length;i++){
+      const a = points[i-1], b = points[i];
+      const segLen = Math.hypot(b.x-a.x, b.y-a.y);
+      const n = Math.max(2, Math.ceil(segLen / (eps * 0.35)));
+      for(let j=0;j<=n;j++){
+        const t = j / n;
+        const x = lerp(a.x,b.x,t);
+        const y = lerp(a.y,b.y,t);
+        occupied.add(Math.floor(x/eps) + ',' + Math.floor(y/eps));
+      }
+    }
+    return occupied;
+  }
+
+  function linearRegression(xs, ys){
+    const n = xs.length;
+    const mx = xs.reduce((a,b)=>a+b,0)/n;
+    const my = ys.reduce((a,b)=>a+b,0)/n;
+    let num = 0, den = 0;
+    for(let i=0;i<n;i++){
+      num += (xs[i]-mx)*(ys[i]-my);
+      den += (xs[i]-mx)*(xs[i]-mx);
+    }
+    const slope = num/den;
+    return { slope, intercept: my - slope*mx };
+  }
+
+  function boundaryAtRoughness(rough){
+    const rand = mulberry32(48);
+    const pts = [];
+    const n = 360;
+    const baseX = W * 0.51;
+    const amp1 = 80 + 126 * rough;
+    const amp2 = 16 + 34 * rough;
+    const amp3 = 12 + 25 * rough;
+    const amp4 = 4 + 12 * rough;
+    for(let i=0;i<=n;i++){
+      const t = i / n;
+      const y = PAD + t * (H - 2*PAD);
+      const phase = t * Math.PI * 2;
+      const x = baseX
+        + Math.sin(phase * 1.0 + 0.25) * amp1
+        + Math.sin(phase * 4.7 + 1.0) * amp2
+        + Math.cos(phase * 10.9 - 0.5) * amp3
+        + Math.sin(phase * 22.0 + 2.2) * amp4
+        + (rand() - 0.5) * 5.5 * rough;
+      pts.push({x,y});
+    }
+    return pts;
+  }
+
+  function sideAtY(px, py, boundary){
+    let bestI = 0, best = Infinity;
+    for(let i=0;i<boundary.length;i++){
+      const d = Math.abs(boundary[i].y - py);
+      if(d < best){ best = d; bestI = i; }
+    }
+    return px - boundary[bestI].x;
+  }
+
+  function pointToPolylineDist(px, py, points){
+    let dmin = Infinity;
+    for(let i=1;i<points.length;i++){
+      const x1 = points[i-1].x, y1 = points[i-1].y;
+      const x2 = points[i].x, y2 = points[i].y;
+      const dx = x2-x1, dy = y2-y1;
+      const len2 = dx*dx + dy*dy;
+      let t = 0;
+      if(len2 > 0) t = Math.max(0, Math.min(1, ((px-x1)*dx + (py-y1)*dy)/len2));
+      const x = x1 + t*dx, y = y1 + t*dy;
+      dmin = Math.min(dmin, Math.hypot(px-x, py-y));
+    }
+    return dmin;
+  }
+
+  function generateHouses(boundary, housingPressure){
+    const rand = mulberry32(777);
+    const houses = [];
+    const n = Math.floor(130 + housingPressure * 280);
+    for(let i=0;i<n;i++){
+      const y = lerp(PAD + 12, H - PAD - 12, rand());
+      const boundaryX = boundary[Math.floor((boundary.length-1) * ((y-PAD)/(H-2*PAD)))].x;
+      const cluster = rand();
+      const offset = (rand() ** 0.74) * 235;
+      let x = cluster < 0.78 ? boundaryX + 20 + offset + rand()*70 : boundaryX - 14 - rand()*90;
+      x = Math.max(PAD, Math.min(W-PAD, x));
+      houses.push({ x, y, size: 4 + rand()*3.2 });
+    }
+    return houses;
+  }
+
+  function computeWUI(boundary, houses, radiusPx){
+    const selected = [];
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    for(const h of houses){
+      const d = pointToPolylineDist(h.x, h.y, boundary);
+      const side = sideAtY(h.x, h.y, boundary);
+      const ok = d <= radiusPx && side > -radiusPx * 0.35;
+      if(ok){
+        selected.push(h);
+        minX = Math.min(minX, h.x - radiusPx*0.82);
+        maxX = Math.max(maxX, h.x + radiusPx*0.82);
+        minY = Math.min(minY, h.y - radiusPx*0.82);
+        maxY = Math.max(maxY, h.y + radiusPx*0.82);
+      }
+    }
+    if(!selected.length){
+      minX = W*0.56; maxX = W*0.68; minY = H*0.3; maxY = H*0.68;
+    }
+    const width = Math.max(80, maxX-minX);
+    const height = Math.max(90, maxY-minY);
+    return {
+      houses: selected,
+      bbox: { x:minX, y:minY, w:width, h:height },
+      areaPx2: width * height * 0.62
+    };
+  }
+
+  function measureBoundary(boundary, eps){
+    const simplified = simplifyDP(boundary, eps * 0.72);
+    const length = lineLength(simplified);
+    const boxes = boxCount(boundary, eps);
+    const boxLength = boxes.size * eps * 0.78;
+    return { simplified, length, boxes, boxLength };
+  }
+
+  function drawPanelBase(ctx, w, h){
+    ctx.clearRect(0,0,w,h);
+    ctx.fillStyle = '#111b2e';
+    ctx.fillRect(0,0,w,h);
+    ctx.strokeStyle = 'rgba(255,255,255,.06)';
+    ctx.strokeRect(.5,.5,w-1,h-1);
+  }
+
+  function drawMap(boundary, houses, wui, measurement, radiusPx, eps){
+    mctx.clearRect(0,0,W,H);
+
+    mctx.fillStyle = '#d8dfd8';
+    mctx.fillRect(0,0,W,H);
+
+    mctx.beginPath();
+    mctx.moveTo(0,0);
+    mctx.lineTo(boundary[0].x, boundary[0].y);
+    for(const p of boundary) mctx.lineTo(p.x, p.y);
+    mctx.lineTo(0,H);
+    mctx.closePath();
+    mctx.fillStyle = '#244b32';
+    mctx.fill();
+
+    const rand = mulberry32(91);
+    for(let i=0;i<760;i++){
+      const x = rand() * W * 0.68;
+      const y = rand() * H;
+      if(sideAtY(x,y,boundary) < 0){
+        mctx.fillStyle = rand() > .5 ? 'rgba(114,156,109,.32)' : 'rgba(63,96,69,.26)';
+        const r = 2 + rand()*5;
+        mctx.beginPath(); mctx.arc(x,y,r,0,Math.PI*2); mctx.fill();
+      }
+    }
+
+    mctx.fillStyle = '#a9b8aa';
+    mctx.fillRect(W*0.58,0,W*0.42,H);
+    for(let i=0;i<80;i++){
+      const y = 20 + i*7 + (i%3)*1.2;
+      mctx.strokeStyle = 'rgba(142,118,90,.18)';
+      mctx.beginPath();
+      mctx.moveTo(W*0.58,y);
+      mctx.lineTo(W,y+18);
+      mctx.stroke();
+    }
+
+    mctx.save();
+    mctx.strokeStyle = 'rgba(143,211,255,.34)';
+    mctx.lineWidth = radiusPx * 0.72;
+    mctx.lineCap = 'round';
+    mctx.lineJoin = 'round';
+    mctx.beginPath();
+    mctx.moveTo(boundary[0].x, boundary[0].y);
+    for(const p of boundary) mctx.lineTo(p.x,p.y);
+    mctx.stroke();
+    mctx.restore();
+
+    if(showBoxes && (currentMode >= 2 || measurePlaying)){
+      mctx.strokeStyle = 'rgba(255,191,105,.42)';
+      mctx.lineWidth = 1;
+      measurement.boxes.forEach(key => {
+        const [gx,gy] = key.split(',').map(Number);
+        mctx.strokeRect(gx*eps, gy*eps, eps, eps);
+      });
+    }
+
+    mctx.strokeStyle = '#ffffff';
+    mctx.lineWidth = 2.25;
+    mctx.beginPath();
+    mctx.moveTo(boundary[0].x, boundary[0].y);
+    for(const p of boundary) mctx.lineTo(p.x, p.y);
+    mctx.stroke();
+
+    for(const h of houses){
+      const inWUI = wui.houses.includes(h);
+      mctx.fillStyle = inWUI ? '#007135' : '#f3f7f6';
+      mctx.strokeStyle = inWUI ? '#9bd7bc' : '#486371';
+      mctx.lineWidth = 1;
+      mctx.beginPath();
+      mctx.rect(h.x-h.size, h.y-h.size, h.size*2, h.size*2);
+      mctx.fill();
+      mctx.stroke();
+    }
+
+    const lx = 18, ly = 18, lw = 250, lh = 110;
+    mctx.fillStyle = 'rgba(10,18,31,.76)';
+    mctx.fillRect(lx,ly,lw,lh);
+    mctx.strokeStyle = 'rgba(255,255,255,.08)';
+    mctx.strokeRect(lx+.5,ly+.5,lw,lh);
+    const legend = [
+      ['#244b32','wildland vegetation'],
+      ['#42BCDC','definition halo'],
+      ['#ffffff','boundary'],
+      ['#007135','structures in WUI'],
+      ['#f3f7f6','other structures']
+    ];
+    mctx.font = '12px Inter, sans-serif';
+    legend.forEach((row,i) => {
+      const yy = ly + 18 + i*18;
+      mctx.fillStyle = row[0];
+      mctx.fillRect(lx+12, yy-8, 13, 13);
+      mctx.fillStyle = '#e9f6fa';
+      mctx.fillText(row[1], lx+33, yy+2);
+    });
+  }
+
+  function drawScaleChart(data, currentEps, dim){
+    const w = scaleCanvas.width, h = scaleCanvas.height;
+    drawPanelBase(sctx, w, h);
+    const left = 64, right = 18, top = 16, bottom = 42;
+    const pw = w-left-right, ph = h-top-bottom;
+    const xs = data.map(d => Math.log10(d.eps));
+    const ys = data.map(d => Math.log10(d.len));
+    const xmin = Math.min(...xs), xmax = Math.max(...xs);
+    const ymin = Math.min(...ys), ymax = Math.max(...ys);
+    const X = v => left + (v-xmin)/(xmax-xmin) * pw;
+    const Y = v => top + ph - (v-ymin)/(ymax-ymin) * ph;
+
+    sctx.strokeStyle = '#22324f';
+    sctx.lineWidth = 1;
+    for(let i=0;i<5;i++){
+      const gx = left + i*pw/4;
+      const gy = top + i*ph/4;
+      sctx.beginPath(); sctx.moveTo(gx, top); sctx.lineTo(gx, top+ph); sctx.stroke();
+      sctx.beginPath(); sctx.moveTo(left, gy); sctx.lineTo(left+pw, gy); sctx.stroke();
+    }
+
+    sctx.strokeStyle = '#42BCDC';
+    sctx.lineWidth = 2.4;
+    sctx.beginPath();
+    data.forEach((d,i) => {
+      const x = X(Math.log10(d.eps));
+      const y = Y(Math.log10(d.len));
+      if(i===0) sctx.moveTo(x,y); else sctx.lineTo(x,y);
+    });
+    sctx.stroke();
+
+    sctx.fillStyle = '#e9f6fa';
+    data.forEach(d => {
+      sctx.beginPath();
+      sctx.arc(X(Math.log10(d.eps)), Y(Math.log10(d.len)), 3.6, 0, Math.PI*2);
+      sctx.fill();
+    });
+
+    const current = data.reduce((best,d) => Math.abs(d.eps-currentEps) < Math.abs(best.eps-currentEps) ? d : best, data[0]);
+    sctx.fillStyle = '#49B47E';
+    sctx.beginPath();
+    sctx.arc(X(Math.log10(current.eps)), Y(Math.log10(current.len)), 6, 0, Math.PI*2);
+    sctx.fill();
+
+    sctx.fillStyle = '#6f8798';
+    sctx.font = '12px Inter, sans-serif';
+    sctx.fillText('log10(measurement scale)', left + pw/2 - 55, h - 14);
+    sctx.save();
+    sctx.translate(17, top + ph/2 + 30);
+    sctx.rotate(-Math.PI/2);
+    sctx.fillText('log10(boundary length)', 0, 0);
+    sctx.restore();
+    sctx.fillStyle = '#e9f6fa';
+    sctx.font = '13px Inter, sans-serif';
+    sctx.fillText('D ≈ ' + dim.toFixed(3), w - 94, 22);
+  }
+
+  function drawRadiusChart(data, currentRadius){
+    const w = radiusCanvas.width, h = radiusCanvas.height;
+    drawPanelBase(rctx, w, h);
+    const left = 58, right = 18, top = 16, bottom = 38;
+    const pw = w-left-right, ph = h-top-bottom;
+    const xmin = Math.min(...data.map(d => d.r));
+    const xmax = Math.max(...data.map(d => d.r));
+    const ymin = 0;
+    const ymax = Math.max(...data.map(d => d.area)) * 1.08;
+    const X = v => left + (v-xmin)/(xmax-xmin) * pw;
+    const Y = v => top + ph - (v-ymin)/(ymax-ymin) * ph;
+
+    rctx.strokeStyle = '#22324f';
+    for(let i=0;i<5;i++){
+      const gy = top + i*ph/4;
+      rctx.beginPath(); rctx.moveTo(left, gy); rctx.lineTo(left+pw, gy); rctx.stroke();
+    }
+
+    rctx.strokeStyle = '#9ae6b4';
+    rctx.lineWidth = 2.4;
+    rctx.beginPath();
+    data.forEach((d,i) => {
+      const x = X(d.r), y = Y(d.area);
+      if(i===0) rctx.moveTo(x,y); else rctx.lineTo(x,y);
+    });
+    rctx.stroke();
+
+    rctx.fillStyle = '#b7e5cf';
+    data.forEach(d => {
+      rctx.beginPath(); rctx.arc(X(d.r), Y(d.area), 3.5, 0, Math.PI*2); rctx.fill();
+    });
+
+    const current = data.reduce((best,d) => Math.abs(d.r-currentRadius) < Math.abs(best.r-currentRadius) ? d : best, data[0]);
+    rctx.fillStyle = '#49B47E';
+    rctx.beginPath(); rctx.arc(X(current.r), Y(current.area), 6, 0, Math.PI*2); rctx.fill();
+
+    rctx.fillStyle = '#6f8798';
+    rctx.font = '12px Inter, sans-serif';
+    rctx.fillText('definition radius (m)', left + pw/2 - 45, h - 12);
+    rctx.save();
+    rctx.translate(16, top + ph/2 + 18);
+    rctx.rotate(-Math.PI/2);
+    rctx.fillText('mapped WUI area', 0, 0);
+    rctx.restore();
+  }
+
+  function setMode(mode, applyPreset = true){
+    currentMode = mode;
+    modeButtons.forEach((btn,i) => btn.classList.toggle('active', i===mode));
+    storySteps.forEach((el,i) => el.classList.toggle('active', i===mode));
+    modeSubtitle.textContent = modeCopy[mode].subtitle;
+    storyText.textContent = modeCopy[mode].story;
+    if(applyPreset){
+      const preset = modeCopy[mode].settings;
+      radiusSlider.value = preset.radius;
+      epsSlider.value = preset.eps;
+    }
+    render();
+  }
+
+  function render(){
+    setLabels();
+
+    const radius = +radiusSlider.value;
+    const eps = +epsSlider.value;
+    const rough = +roughSlider.value / 100;
+    const housing = +housingSlider.value / 100;
+
+    const radiusPx = radius * 0.34;
+    const boundary = boundaryAtRoughness(rough);
+    const houses = generateHouses(boundary, housing);
+    const wui = computeWUI(boundary, houses, radiusPx);
+    const measurement = measureBoundary(boundary, eps);
+
+    const areaKm2 = wui.areaPx2 * PX_TO_KM * PX_TO_KM;
+    const lenKm = measurement.boxLength * PX_TO_KM;
+
+    const scaleSweep = [8,10,12,16,20,28,36,48,64,80].map(e => {
+      const m = measureBoundary(boundary, e);
+      return { eps:e, len:m.boxLength };
+    });
+    const reg = linearRegression(scaleSweep.map(d => Math.log10(d.eps)), scaleSweep.map(d => Math.log10(d.len)));
+    const dim = 1 - reg.slope;
+
+    const radiusSweep = [80,120,160,220,300,400,500,600].map(r => {
+      const ww = computeWUI(boundary, houses, r*0.34);
+      return { r, area: ww.areaPx2 * PX_TO_KM * PX_TO_KM };
+    });
+
+    drawMap(boundary, houses, wui, measurement, radiusPx, eps);
+    drawScaleChart(scaleSweep, eps, dim);
+    drawRadiusChart(radiusSweep, radius);
+
+    areaStat.textContent = areaKm2.toFixed(2) + ' km²';
+    lengthStat.textContent = lenKm.toFixed(2) + ' km';
+    dimStat.textContent = dim.toFixed(2);
+    houseStat.textContent = wui.houses.length;
+  }
+
+  function stopAnimations(){
+    storyPlaying = false;
+    measurePlaying = false;
+    storyBtn.classList.remove('active');
+    measureBtn.classList.remove('active');
+    if(timerId) clearTimeout(timerId);
+    if(rafId) cancelAnimationFrame(rafId);
+  }
+
+  function playStorySequence(){
+    stopAnimations();
+    storyPlaying = true;
+    storyBtn.classList.add('active');
+    const steps = [0,1,2,3,4];
+    let i = 0;
+    function next(){
+      if(!storyPlaying) return;
+      setMode(steps[i], true);
+      i += 1;
+      if(i < steps.length) timerId = setTimeout(next, 2100);
+      else {
+        storyPlaying = false;
+        storyBtn.classList.remove('active');
+      }
+    }
+    next();
+  }
+
+  function playMeasurementSweep(){
+    stopAnimations();
+    measurePlaying = true;
+    measureBtn.classList.add('active');
+    setMode(2, false);
+    let dir = -1;
+    function tick(){
+      if(!measurePlaying) return;
+      let v = +epsSlider.value + dir * 2;
+      if(v <= +epsSlider.min){ v = +epsSlider.min; dir = 1; }
+      if(v >= +epsSlider.max){ v = +epsSlider.max; dir = -1; }
+      epsSlider.value = v;
+      render();
+      timerId = setTimeout(() => { rafId = requestAnimationFrame(tick); }, 85);
+    }
+    tick();
+  }
+
+  [radiusSlider, epsSlider, roughSlider, housingSlider].forEach(el => el.addEventListener('input', () => {
+    stopAnimations();
+    render();
+  }));
+
+  modeButtons.forEach((btn,i) => btn.addEventListener('click', () => {
+    stopAnimations();
+    setMode(i, true);
+  }));
+
+  storySteps.forEach((el,i) => el.addEventListener('click', () => {
+    stopAnimations();
+    setMode(i, true);
+  }));
+
+  storyBtn.addEventListener('click', () => {
+    if(storyPlaying){ stopAnimations(); render(); }
+    else playStorySequence();
+  });
+
+  measureBtn.addEventListener('click', () => {
+    if(measurePlaying){ stopAnimations(); render(); }
+    else playMeasurementSweep();
+  });
+
+  boxesBtn.addEventListener('click', () => {
+    showBoxes = !showBoxes;
+    boxesBtn.classList.toggle('active', showBoxes);
+    render();
+  });
+
+  resetBtn.addEventListener('click', () => {
+    stopAnimations();
+    radiusSlider.value = 220;
+    epsSlider.value = 26;
+    roughSlider.value = 72;
+    housingSlider.value = 58;
+    showBoxes = true;
+    boxesBtn.classList.add('active');
+    setMode(0, false);
+    render();
+  });
+
+  setMode(0, false);
+})();
+</script>
+</body>
+</html>

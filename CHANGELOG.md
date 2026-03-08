@@ -3,6 +3,8 @@
 ## Unreleased
 
 ### Changed
+- Restored desktop manuscript navigation visibility by scoping white nav text overrides to header/tab chrome and adding explicit readable primary-sidebar link/active states in the ESIIL theme CSS.
+- Switched the Interactive Experiments primary embed/full-page launch to a new Draft 3 iframe-optimized app and preserved Draft 1/2 links as archived variants.
 - Narrowed Playwright console-error filtering to ignore the known deployed scaling plot 404 at `/WUI_boundary/scaling-results/assets/figures/boundary_scaling_plot.svg` while preserving strict failure behavior for unrelated console errors.
 - Fixed scaling-results published asset paths to use project-rooted `/WUI_boundary/assets/...` URLs so the plot image no longer 404s under the `/scaling-results/` route in deployed-site Playwright checks.
 - Hardened deployed-site Playwright QA checks by ignoring known unauthenticated GitHub API 403 console noise and replacing broad `404` text scans with explicit 404-page heading checks, preventing false negatives on content pages.
@@ -28,6 +30,7 @@
 - Demoted legacy template-era pages under `docs/ui-drafts/` and `docs/analytics/` to internal archive stubs and removed `docs/examples.md` from the project.
 
 ### Added
+- Added `docs/ui-drafts/draft-3/story-lab-responsive.html`, a third Story Lab draft tuned for iframe/tablet/mobile layouts with later single-column breakpoints and tighter control-to-map educational grouping.
 - Added `pyproject.toml` so the repository supports editable installs via `pip install -e .` for the documented demo workflow.
 - Added `scripts/run_minimal_demo.py` as a concise entry point that calls the existing minimal boundary-scaling runner.
 - New UI Drafts page `docs/ui-drafts/draft-2.md` and standalone app `docs/ui-drafts/draft-2/story-lab-remix.html` for Draft 2 — WUI Boundary Story Lab Remix, including iframe embed and full-page launch link.
