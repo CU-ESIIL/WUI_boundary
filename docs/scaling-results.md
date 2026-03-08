@@ -14,12 +14,14 @@ Read alongside the remote-sensing discussion, this result becomes more than a ge
 
 *Figure 1. Measurements of a single delineated boundary across progressively coarser effective ruler lengths. The downward trend shows that measured perimeter shortens as scale becomes coarser, and the fitted relationship summarizes the strength of this scale sensitivity over the tested range.*
 
-Raw synthetic output is available at [`docs/assets/data/boundary_scaling_summary.csv`](/WUI_boundary/assets/data/boundary_scaling_summary.csv).
+The current synthetic summary data are available at [`docs/assets/data/boundary_scaling_summary.csv`](/WUI_boundary/assets/data/boundary_scaling_summary.csv).
 
 | Delineation scenario | Boundary object ID | Measurement scale, \(\varepsilon\) | Measured boundary length | Fit status | Fitted slope (log-log) |
 | --- | --- | ---: | ---: | --- | ---: |
 | parcel_v0.35_r120_touches | synthetic_wui_boundary_001 | 1.0 | 738.9227 | ok_fitted | -0.003054 |
 | parcel_v0.35_r120_touches | synthetic_wui_boundary_001 | 13.4286 | 737.1697 | ok_fitted | -0.003054 |
 | parcel_v0.35_r120_touches | synthetic_wui_boundary_001 | 30.0 | 730.3127 | ok_fitted | -0.003054 |
+
+To refresh this figure and table from the current pipeline, run the reproducibility workflow documented on the methods page, including `scripts/pre_pr_site_review.sh` for website-facing validation.
 
 [Next: Fire science implications](fire-science-implications.md){ .md-button .md-button--primary }
