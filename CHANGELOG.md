@@ -3,6 +3,7 @@
 ## Unreleased
 
 ### Changed
+- Updated homepage site-review assertions to accept either a direct `scaling-results` link or the current `why-length-depends-on-scale` progression link, aligning tests with deployed manuscript navigation while preserving interactive-link coverage.
 - Relaxed homepage and scaling-results Playwright link/refresh selectors to match stable route fragments and fallback next-page navigation, preventing false negatives on deployed URL variants that differ in suffixes or heading prose.
 - Broadened deployed-site Playwright assertions to accept both legacy and updated manuscript homepage headings and to detect refresh/reproducibility guidance from either section headings or equivalent prose, reducing false negatives when production content lags branch updates.
 - Replaced narrative prose across the manuscript-facing docs pages with a cohesive scholarly monograph voice, preserving interactive embeds, figure/table assets, CSV links, and manuscript navigation while removing residual scaffold phrasing and outline-style narrative bullets.
