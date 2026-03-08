@@ -53,3 +53,6 @@ python scripts/run_minimal_boundary_scaling.py --help
 In pull requests, generated artifacts are attached for review in CI. Publication to GitHub Pages still occurs through the repository’s manual dispatch release workflow when maintainers decide to promote a validated revision.
 
 Playwright-backed local review remains part of the expected validation path for website-facing changes, and `scripts/pre_pr_site_review.sh` is the canonical entry point for that check.
+
+For prompt-level reconstruction of the workflow narrative and implementation sequence, see [Reproducible prompts](reproducible-prompts.md). For the synthetic-to-empirical handoff now scaffolded in code, see [Real-data experiments](real-data-experiments.md). The staged development context for both is summarized in the [Project roadmap](project-roadmap.md).
+

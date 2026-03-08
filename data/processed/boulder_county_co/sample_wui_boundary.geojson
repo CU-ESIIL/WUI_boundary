@@ -1,0 +1,40 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "region_id": "boulder_county_co",
+        "status": "prototype_boundary_placeholder",
+        "method_note": "Placeholder geometry generated from region bounding box. Replace with settlement-vegetation-derived boundary extraction."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -105.43,
+              39.88
+            ],
+            [
+              -105.05,
+              39.88
+            ],
+            [
+              -105.05,
+              40.15
+            ],
+            [
+              -105.43,
+              40.15
+            ],
+            [
+              -105.43,
+              39.88
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

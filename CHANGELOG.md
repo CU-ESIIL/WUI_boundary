@@ -3,6 +3,7 @@
 ## Unreleased
 
 ### Changed
+- Expanded manuscript navigation and cross-links to include new pages for real-data experiments, reproducible prompts, visual figure placeholders, and a staged project roadmap.
 - Updated homepage site-review assertions to accept either a direct `scaling-results` link or the current `why-length-depends-on-scale` progression link, aligning tests with deployed manuscript navigation while preserving interactive-link coverage.
 - Relaxed homepage and scaling-results Playwright link/refresh selectors to match stable route fragments and fallback next-page navigation, preventing false negatives on deployed URL variants that differ in suffixes or heading prose.
 - Broadened deployed-site Playwright assertions to accept both legacy and updated manuscript homepage headings and to detect refresh/reproducibility guidance from either section headings or equivalent prose, reducing false negatives when production content lags branch updates.
@@ -42,6 +43,8 @@
 - Demoted legacy template-era pages under `docs/ui-drafts/` and `docs/analytics/` to internal archive stubs and removed `docs/examples.md` from the project.
 
 ### Added
+- Added real-data pipeline scaffold scripts (`scripts/download_sample_data.py`, `scripts/build_sample_wui_boundary.py`, `scripts/run_real_boundary_scaling.py`) plus versioned `data/raw/` and `data/processed/` directories for pilot-region workflows.
+- Added new manuscript pages `docs/reproducible-prompts.md`, `docs/real-data-experiments.md`, `docs/visual-figures.md`, and `docs/project-roadmap.md` with reproducibility text, empirical-transition framing, and manual image-upload slots under `docs/assets/images/`.
 - Added `scripts/pre_pr_site_review.sh` as a one-command local pre-PR website validation workflow that runs demo build steps, `mkdocs build --strict`, Playwright dependency setup, and Playwright tests.
 - Added Codex skill guidance at `codex/skills/site-review/SKILL.md` for iterative website review/fix loops using local Playwright artifacts.
 - Added `docs/ui-drafts/draft-3/story-lab-responsive.html`, a third Story Lab draft tuned for iframe/tablet/mobile layouts with later single-column breakpoints and tighter control-to-map educational grouping.

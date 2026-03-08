@@ -1,0 +1,34 @@
+{
+  "region_id": "boulder_county_co",
+  "bbox_wgs84": [
+    -105.43,
+    39.88,
+    -105.05,
+    40.15
+  ],
+  "notes": "Prototype clip box for initial real-data pipeline wiring.",
+  "datasets": [
+    {
+      "name": "settlement_osm_geofabrik_colorado",
+      "kind": "settlement",
+      "provider": "Geofabrik OpenStreetMap extracts",
+      "license": "Open Database License (ODbL)",
+      "source_url": "https://download.geofabrik.de/north-america/us/colorado-latest-free.shp.zip",
+      "target_filename": "colorado-latest-free.shp.zip",
+      "status": "configured",
+      "target_path": "data/raw/boulder_county_co/colorado-latest-free.shp.zip",
+      "download_status": "not_requested"
+    },
+    {
+      "name": "vegetation_nlcd_landcover_conus",
+      "kind": "vegetation",
+      "provider": "MRLC NLCD",
+      "license": "Public domain (US federal data)",
+      "source_url": "https://www.mrlc.gov/geoserver/mrlc_download/wcs",
+      "target_filename": "nlcd_wcs_request_placeholder.txt",
+      "status": "stub_requires_request_parameters",
+      "target_path": "data/raw/boulder_county_co/nlcd_wcs_request_placeholder.txt",
+      "download_status": "not_requested"
+    }
+  ]
+}
