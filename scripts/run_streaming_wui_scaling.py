@@ -167,6 +167,18 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument("--nlcd-url", default=DEFAULT_NLCD_URL, help="Remote NLCD raster URL (COG recommended)")
     parser.add_argument(
+        "--network-timeout-s",
+        type=int,
+        default=90,
+        help="Per-request network timeout in seconds for Overpass/NLCD fetches",
+    )
+    parser.add_argument(
+        "--max-network-attempts",
+        type=int,
+        default=2,
+        help="Retry attempts per network source before fallback",
+    )
+    parser.add_argument(
         "--publish-doc-assets",
         action="store_true",
         help="Copy key outputs to docs/assets/{figures,data} for website publication",
@@ -178,6 +190,7 @@ def _query_overpass_buildings(
     bbox: tuple[float, float, float, float],
     timeout_s: int = 120,
     max_attempts_per_endpoint: int = 2,
+    request_timeout_s: int = 150,
 ) -> dict:
     min_lon, min_lat, max_lon, max_lat = bbox
     # Keep this modest and bbox-limited for a small no-keys pilot run.
@@ -194,7 +207,7 @@ def _query_overpass_buildings(
     for endpoint in OVERPASS_URLS:
         for attempt in range(1, max_attempts_per_endpoint + 1):
             try:
-                resp = requests.post(endpoint, data=query, timeout=timeout_s + 30)
+                resp = requests.post(endpoint, data=query, timeout=request_timeout_s)
                 if resp.status_code in {429, 502, 503, 504}:
                     raise requests.HTTPError(
                         f"Transient Overpass status {resp.status_code} at {endpoint}",
@@ -255,6 +268,8 @@ def _fetch_nlcd_wms_mask(
     bbox_lonlat: tuple[float, float, float, float],
     veg_classes: list[int],
     deps: dict,
+    network_timeout_s: int = 180,
+    max_attempts_per_layer: int = 2,
 ):
     np = deps["np"]
     rasterio = deps["rasterio"]
@@ -280,20 +295,27 @@ def _fetch_nlcd_wms_mask(
             "format": "image/geotiff",
             "transparent": "false",
         }
-        resp = requests.get(MRLC_WMS_ENDPOINT, params=params, timeout=180)
-        resp.raise_for_status()
+        for attempt in range(1, max_attempts_per_layer + 1):
+            try:
+                resp = requests.get(MRLC_WMS_ENDPOINT, params=params, timeout=network_timeout_s)
+                resp.raise_for_status()
 
-        with rasterio.MemoryFile(io.BytesIO(resp.content).getvalue()) as memfile:
-            with memfile.open() as src:
-                arr = src.read(1)
-                transform = src.transform
-                res_x = abs(src.transform.a)
-                src_crs = src.crs
+                with rasterio.MemoryFile(io.BytesIO(resp.content).getvalue()) as memfile:
+                    with memfile.open() as src:
+                        arr = src.read(1)
+                        transform = src.transform
+                        res_x = abs(src.transform.a)
+                        src_crs = src.crs
 
-        veg_mask, mode = _vegetation_mask_from_classes(arr, veg_classes, np)
-        last_result = (veg_mask, transform, float(res_x), src_crs, mode)
-        if mode == "requested_classes":
-            return veg_mask, transform, float(res_x), src_crs
+                veg_mask, mode = _vegetation_mask_from_classes(arr, veg_classes, np)
+                last_result = (veg_mask, transform, float(res_x), src_crs, mode)
+                if mode == "requested_classes":
+                    return veg_mask, transform, float(res_x), src_crs
+                break
+            except Exception:
+                if attempt < max_attempts_per_layer:
+                    time.sleep(attempt)
+                continue
 
     if last_result is None:
         raise RuntimeError("WMS fallback returned no readable raster payload.")
@@ -314,6 +336,8 @@ def _clip_nlcd_mask(
     nlcd_url: str,
     veg_classes: list[int],
     deps: dict,
+    network_timeout_s: int = 120,
+    max_attempts_per_source: int = 2,
 ):
     np = deps["np"]
     rasterio = deps["rasterio"]
@@ -323,26 +347,42 @@ def _clip_nlcd_mask(
     attempted: list[str] = []
     for candidate_url in _candidate_nlcd_urls(nlcd_url):
         attempted.append(candidate_url)
-        try:
-            with rasterio.open(candidate_url) as src:
-                left, bottom, right, top = rasterio.warp.transform_bounds(
-                    "EPSG:4326", src.crs, bbox_lonlat[0], bbox_lonlat[1], bbox_lonlat[2], bbox_lonlat[3], densify_pts=21
-                )
-                window = from_bounds(left, bottom, right, top, src.transform)
-                window = window.round_offsets().round_lengths()
-                arr = src.read(1, window=window, boundless=True)
-                transform = src.window_transform(window)
-                res_x = abs(src.transform.a)
-                src_crs = src.crs
+        for attempt in range(1, max_attempts_per_source + 1):
+            try:
+                with rasterio.Env(GDAL_HTTP_TIMEOUT=str(network_timeout_s)):
+                    with rasterio.open(candidate_url) as src:
+                        left, bottom, right, top = rasterio.warp.transform_bounds(
+                            "EPSG:4326",
+                            src.crs,
+                            bbox_lonlat[0],
+                            bbox_lonlat[1],
+                            bbox_lonlat[2],
+                            bbox_lonlat[3],
+                            densify_pts=21,
+                        )
+                        window = from_bounds(left, bottom, right, top, src.transform)
+                        window = window.round_offsets().round_lengths()
+                        arr = src.read(1, window=window, boundless=True)
+                        transform = src.window_transform(window)
+                        res_x = abs(src.transform.a)
+                        src_crs = src.crs
 
-            veg_mask, _ = _vegetation_mask_from_classes(arr, veg_classes, np)
-            return veg_mask, transform, float(res_x), src_crs
-        except Exception as exc:
-            last_exc = exc
-            continue
+                veg_mask, _ = _vegetation_mask_from_classes(arr, veg_classes, np)
+                return veg_mask, transform, float(res_x), src_crs
+            except Exception as exc:
+                last_exc = exc
+                if attempt < max_attempts_per_source:
+                    time.sleep(attempt)
+                continue
 
     try:
-        return _fetch_nlcd_wms_mask(bbox_lonlat, veg_classes, deps)
+        return _fetch_nlcd_wms_mask(
+            bbox_lonlat,
+            veg_classes,
+            deps,
+            network_timeout_s=network_timeout_s,
+            max_attempts_per_layer=max_attempts_per_source,
+        )
     except Exception as wms_exc:
         raise RuntimeError(
             "Unable to open any NLCD source URL for streaming window extraction, and WMS fallback also failed. "
@@ -472,7 +512,12 @@ def main(argv: list[str] | None = None) -> int:
     outdir.mkdir(parents=True, exist_ok=True)
 
     try:
-        overpass_json = _query_overpass_buildings(bbox)
+        overpass_json = _query_overpass_buildings(
+            bbox,
+            timeout_s=max(30, args.network_timeout_s),
+            max_attempts_per_endpoint=max(1, args.max_network_attempts),
+            request_timeout_s=max(30, args.network_timeout_s),
+        )
         buildings_wgs84 = _build_building_gdf(overpass_json, deps)
     except Exception as exc:
         raise RuntimeError(f"Failed to build settlement geometry from Overpass: {exc}") from exc
@@ -483,7 +528,14 @@ def main(argv: list[str] | None = None) -> int:
     settlement_union = _series_union(buildings_metric.geometry)
 
     try:
-        veg_mask, veg_transform, base_res_m, nlcd_crs = _clip_nlcd_mask(bbox, args.nlcd_url, veg_classes, deps)
+        veg_mask, veg_transform, base_res_m, nlcd_crs = _clip_nlcd_mask(
+            bbox,
+            args.nlcd_url,
+            veg_classes,
+            deps,
+            network_timeout_s=max(30, args.network_timeout_s),
+            max_attempts_per_source=max(1, args.max_network_attempts),
+        )
     except Exception as exc:
         raise RuntimeError(
             "Failed to stream/clip NLCD raster window. Check --nlcd-url and network access."

@@ -25,6 +25,11 @@ class StreamingScriptHelperTests(unittest.TestCase):
         self.assertEqual(len(bbox), 4)
         self.assertLess(bbox[0], bbox[2])
 
+    def test_parse_args_network_defaults(self) -> None:
+        args = MODULE.parse_args([])
+        self.assertGreaterEqual(args.network_timeout_s, 30)
+        self.assertGreaterEqual(args.max_network_attempts, 1)
+
     def test_number_parsers(self) -> None:
         self.assertEqual(MODULE._parse_int_list("41,42,52"), [41, 42, 52])
         self.assertEqual(MODULE._parse_float_list("5,10,20"), [5.0, 10.0, 20.0])
