@@ -7,13 +7,13 @@ This page shows the **currently published synthetic demo output** for the bounda
 
 ## Current published result
 
-<img src="assets/figures/boundary_scaling_plot.svg" alt="Synthetic WUI boundary scaling relationship" loading="lazy" class="scaling-results-plot" />
+<img src="/WUI_boundary/assets/figures/boundary_scaling_plot.svg" alt="Synthetic WUI boundary scaling relationship" loading="lazy" class="scaling-results-plot" />
 
 **Plain-language interpretation:** in the current synthetic run, measured perimeter decreases slightly as measurement scale \(\varepsilon\) gets coarser, which is expected for a smoothed boundary representation. The key point is structural: reported boundary length depends on both delineation choice \(d\) and measurement scale \(\varepsilon\), i.e., \(L_d(\varepsilon)\).
 
 ## Quick CSV preview
 
-The full table is published at [`docs/assets/data/boundary_scaling_summary.csv`](assets/data/boundary_scaling_summary.csv).
+The full table is published at [`docs/assets/data/boundary_scaling_summary.csv`](/WUI_boundary/assets/data/boundary_scaling_summary.csv).
 
 | delineation_id | boundary_object_id | epsilon | perimeter | fit_status | loglog_slope |
 | --- | --- | ---: | ---: | --- | ---: |

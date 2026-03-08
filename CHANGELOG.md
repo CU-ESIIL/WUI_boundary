@@ -3,6 +3,7 @@
 ## Unreleased
 
 ### Changed
+- Fixed scaling-results published asset paths to use project-rooted `/WUI_boundary/assets/...` URLs so the plot image no longer 404s under the `/scaling-results/` route in deployed-site Playwright checks.
 - Hardened deployed-site Playwright QA checks by ignoring known unauthenticated GitHub API 403 console noise and replacing broad `404` text scans with explicit 404-page heading checks, preventing false negatives on content pages.
 - Replaced the default Material purple-leaning visual presentation with an ESIIL scientific brand theme by adding reusable color tokens, MkDocs palette overrides, branded nav/link/button states, and refreshed content-surface/card/admonition styling across key manuscript pages.
 - Updated Playwright homepage link assertions to target article-body links by href and made scaling plot asset checks resilient to MkDocs relative-asset resolution by testing both browser-resolved and project-root candidate URLs.
