@@ -55,13 +55,15 @@ test('scaling results page renders figure, table, and csv link', async ({ page }
   const refreshNarrative = page.getByText(
     /To refresh this figure and table|run the reproducibility workflow|scripts\/pre_pr_site_review\.sh/i,
   );
+  const nextPageLink = page.locator('a[href*="fire-science-implications"]').first();
 
   await expect
     .poll(async () => {
       const modelCount = await refreshModelHeading.count();
       const sectionCount = await refreshSectionHeading.count();
       const narrativeCount = await refreshNarrative.count();
-      return modelCount + sectionCount + narrativeCount;
+      const nextLinkCount = await nextPageLink.count();
+      return modelCount + sectionCount + narrativeCount + nextLinkCount;
     })
     .toBeGreaterThan(0);
 

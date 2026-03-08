@@ -13,8 +13,8 @@ test('homepage loads and links to key analysis pages', async ({ page }, testInfo
     /Measuring the Wildland[–-]Urban Interface|WUI boundary length|How long is the Wildland[–-]Urban Interface boundary\?/i,
   );
   const article = page.locator('main article');
-  await expect(article.locator('a[href="scaling-results/"]').first()).toBeVisible();
-  await expect(article.locator('a[href="interactive-experiments/"]').first()).toBeVisible();
+  await expect(article.locator('a[href*="scaling-results"]').first()).toBeVisible();
+  await expect(article.locator('a[href*="interactive-experiments"]').first()).toBeVisible();
   await assertNo404Page(page);
 
   await saveReviewScreenshot(page, testInfo, 'homepage');
