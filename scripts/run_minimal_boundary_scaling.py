@@ -134,11 +134,17 @@ def _draw_scaling_plot(plot_path: Path, epsilon_values: list[float], perimeter_v
 
 
 
-def _draw_scaling_svg(plot_path: Path, epsilon_values: list[float], perimeter_values: list[float]) -> None:
-    """Draw a minimal SVG line plot for website display without binary assets."""
-    width, height = 900, 540
-    margin_left, margin_right = 90, 40
-    margin_top, margin_bottom = 50, 70
+def _draw_scaling_svg(
+    plot_path: Path,
+    epsilon_values: list[float],
+    perimeter_values: list[float],
+    delineation_label: str,
+    fit_slope: float,
+) -> None:
+    """Draw a publication-style SVG line plot for website display."""
+    width, height = 980, 620
+    margin_left, margin_right = 120, 50
+    margin_top, margin_bottom = 95, 95
 
     x0, x1 = margin_left, width - margin_right
     y0, y1 = margin_top, height - margin_bottom
@@ -159,6 +165,16 @@ def _draw_scaling_svg(plot_path: Path, epsilon_values: list[float], perimeter_va
     points = [to_xy(xv, yv) for xv, yv in zip(epsilon_values, perimeter_values, strict=False)]
     polyline = " ".join(f"{x:.2f},{y:.2f}" for x, y in points)
 
+    x_ticks = [xmin + (xmax - xmin) * i / 5 for i in range(6)]
+    y_ticks = [ymin + (ymax - ymin) * i / 4 for i in range(5)]
+
+    def _fmt_tick(value: float) -> str:
+        if abs(value) >= 100:
+            return f"{value:.0f}"
+        if abs(value) >= 10:
+            return f"{value:.1f}"
+        return f"{value:.2f}"
+
     grid_h = "\n".join(
         f'<line x1="{x0}" y1="{y}" x2="{x1}" y2="{y}" stroke="#e1e1e1" stroke-width="1" />'
         for y in (y0 + (y1 - y0) * i / 4 for i in range(5))
@@ -168,17 +184,42 @@ def _draw_scaling_svg(plot_path: Path, epsilon_values: list[float], perimeter_va
         for x in (x0 + (x1 - x0) * i / 5 for i in range(6))
     )
     dots = "\n".join(
-        f'<circle cx="{x:.2f}" cy="{y:.2f}" r="3.5" fill="#2a6ac0" />' for x, y in points
+        f'<circle cx="{x:.2f}" cy="{y:.2f}" r="3.8" fill="#234A65" />' for x, y in points
+    )
+    x_tick_labels = "\n".join(
+        (
+            f'<text x="{to_xy(tick, ymin)[0]:.2f}" y="{y1 + 32}" text-anchor="middle" '
+            f'font-size="15" fill="#334">{_fmt_tick(tick)}</text>'
+        )
+        for tick in x_ticks
+    )
+    y_tick_labels = "\n".join(
+        (
+            f'<text x="{x0 - 14}" y="{to_xy(xmin, tick)[1] + 5:.2f}" text-anchor="end" '
+            f'font-size="15" fill="#334">{_fmt_tick(tick)}</text>'
+        )
+        for tick in y_ticks
     )
 
     svg = f"""<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-label="Synthetic WUI boundary scaling plot">
   <rect x="0" y="0" width="{width}" height="{height}" fill="#ffffff" />
+  <text x="{x0}" y="42" font-size="30" font-weight="700" fill="#234A65">Synthetic WUI boundary scaling demo</text>
+  <text x="{x0}" y="68" font-size="16" fill="#445">Boundary length decreases slightly as epsilon gets coarser in this synthetic run.</text>
   {grid_h}
   {grid_v}
   <line x1="{x0}" y1="{y1}" x2="{x1}" y2="{y1}" stroke="#505050" stroke-width="1.5" />
   <line x1="{x0}" y1="{y0}" x2="{x0}" y2="{y1}" stroke="#505050" stroke-width="1.5" />
-  <polyline fill="none" stroke="#2a6ac0" stroke-width="2.5" points="{polyline}" />
+  {x_tick_labels}
+  {y_tick_labels}
+  <polyline fill="none" stroke="#234A65" stroke-width="2.8" points="{polyline}" />
   {dots}
+  <text x="{(x0 + x1) / 2:.2f}" y="{height - 38}" text-anchor="middle" font-size="17" fill="#1f2e38">Measurement scale, epsilon (effective ruler length / resolution)</text>
+  <text x="32" y="{(y0 + y1) / 2:.2f}" text-anchor="middle" font-size="17" fill="#1f2e38" transform="rotate(-90 32 {(y0 + y1) / 2:.2f})">Measured boundary length, L_d(epsilon)</text>
+  <rect x="{x0 + 18}" y="{y0 + 16}" width="470" height="74" fill="#ffffff" opacity="0.96" stroke="#d9dee2" rx="8" />
+  <line x1="{x0 + 32}" y1="{y0 + 43}" x2="{x0 + 86}" y2="{y0 + 43}" stroke="#234A65" stroke-width="2.8" />
+  <circle cx="{x0 + 59}" cy="{y0 + 43}" r="4" fill="#234A65" />
+  <text x="{x0 + 96}" y="{y0 + 48}" font-size="14" fill="#233">Synthetic delineation: {delineation_label}</text>
+  <text x="{x0 + 32}" y="{y0 + 72}" font-size="14" fill="#233">Log-log slope estimate: {fit_slope:.4f}; evaluated scales: {len(epsilon_values)}</text>
 </svg>
 """
     plot_path.write_text(svg, encoding="utf-8")
@@ -290,7 +331,13 @@ def run(args: argparse.Namespace | None = None) -> None:
     _draw_scaling_plot(plot_path, measurement["epsilon_values"], measurement["perimeter_values"])
 
     plot_svg_path = output_dir / "boundary_scaling_plot.svg"
-    _draw_scaling_svg(plot_svg_path, measurement["epsilon_values"], measurement["perimeter_values"])
+    _draw_scaling_svg(
+        plot_svg_path,
+        measurement["epsilon_values"],
+        measurement["perimeter_values"],
+        bundle.short_id(),
+        fit.slope,
+    )
 
     docs_plot_path = docs_figure_dir / "boundary_scaling_plot.svg"
     docs_csv_path = docs_data_dir / "boundary_scaling_summary.csv"
