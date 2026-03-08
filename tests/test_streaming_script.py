@@ -30,6 +30,13 @@ class StreamingScriptHelperTests(unittest.TestCase):
         self.assertIsNotNone(fit["slope"])
 
 
+    def test_estimate_wms_shape_bounds(self) -> None:
+        width_px, height_px = MODULE._estimate_wms_shape((-105.292, 40.004, -105.236, 40.047))
+        self.assertGreaterEqual(width_px, 32)
+        self.assertGreaterEqual(height_px, 32)
+        self.assertLessEqual(width_px, 4096)
+        self.assertLessEqual(height_px, 4096)
+
     def test_candidate_nlcd_urls_dedupes(self) -> None:
         urls = MODULE._candidate_nlcd_urls(MODULE.DEFAULT_NLCD_URLS[0])
         self.assertEqual(urls[0], MODULE.DEFAULT_NLCD_URLS[0])

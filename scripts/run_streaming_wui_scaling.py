@@ -20,6 +20,7 @@ Scientific scope and honesty notes:
 from __future__ import annotations
 
 import argparse
+import io
 import json
 import math
 import shutil
@@ -41,6 +42,7 @@ DEFAULT_NLCD_URLS = [
     "https://s3-us-west-2.amazonaws.com/mrlc/nlcd_2021_land_cover_l48_20230630_cog.tif",
 ]
 DEFAULT_NLCD_URL = DEFAULT_NLCD_URLS[0]
+MRLC_WMS_ENDPOINT = "https://www.mrlc.gov/geoserver/mrlc_display/wms"
 
 
 
@@ -223,6 +225,54 @@ def _build_building_gdf(overpass_json: dict, deps: dict):
     return gdf
 
 
+def _estimate_wms_shape(bbox_lonlat: tuple[float, float, float, float]) -> tuple[int, int]:
+    min_lon, min_lat, max_lon, max_lat = bbox_lonlat
+    mean_lat = (min_lat + max_lat) / 2.0
+    meters_per_deg_lat = 111320.0
+    meters_per_deg_lon = 111320.0 * max(0.2, math.cos(math.radians(mean_lat)))
+    width_m = max((max_lon - min_lon) * meters_per_deg_lon, 30.0)
+    height_m = max((max_lat - min_lat) * meters_per_deg_lat, 30.0)
+    width_px = max(32, min(4096, int(round(width_m / 30.0))))
+    height_px = max(32, min(4096, int(round(height_m / 30.0))))
+    return width_px, height_px
+
+
+def _fetch_nlcd_wms_mask(
+    bbox_lonlat: tuple[float, float, float, float],
+    veg_classes: list[int],
+    deps: dict,
+):
+    np = deps["np"]
+    rasterio = deps["rasterio"]
+
+    width_px, height_px = _estimate_wms_shape(bbox_lonlat)
+    params = {
+        "service": "WMS",
+        "version": "1.1.1",
+        "request": "GetMap",
+        "layers": "mrlc_display:NLCD_2021_Land_Cover_L48",
+        "styles": "",
+        "srs": "EPSG:4326",
+        "bbox": f"{bbox_lonlat[0]},{bbox_lonlat[1]},{bbox_lonlat[2]},{bbox_lonlat[3]}",
+        "width": str(width_px),
+        "height": str(height_px),
+        "format": "image/geotiff",
+        "transparent": "false",
+    }
+    resp = requests.get(MRLC_WMS_ENDPOINT, params=params, timeout=180)
+    resp.raise_for_status()
+
+    with rasterio.MemoryFile(io.BytesIO(resp.content).getvalue()) as memfile:
+        with memfile.open() as src:
+            arr = src.read(1)
+            transform = src.transform
+            res_x = abs(src.transform.a)
+            src_crs = src.crs
+
+    veg_mask = np.isin(arr, veg_classes)
+    return veg_mask, transform, float(res_x), src_crs
+
+
 def _utm_crs_for_lonlat(lon: float, lat: float, deps: dict):
     CRS = deps["CRS"]
     zone = int((lon + 180.0) / 6.0) + 1
@@ -262,10 +312,13 @@ def _clip_nlcd_mask(
             last_exc = exc
             continue
 
-    raise RuntimeError(
-        "Unable to open any NLCD source URL for streaming window extraction. "
-        f"Attempted: {attempted}"
-    ) from last_exc
+    try:
+        return _fetch_nlcd_wms_mask(bbox_lonlat, veg_classes, deps)
+    except Exception as wms_exc:
+        raise RuntimeError(
+            "Unable to open any NLCD source URL for streaming window extraction, and WMS fallback also failed. "
+            f"Attempted COG URLs: {attempted}. WMS endpoint: {MRLC_WMS_ENDPOINT}."
+        ) from wms_exc
 
 
 def _mask_to_polygons(mask, transform, deps):
