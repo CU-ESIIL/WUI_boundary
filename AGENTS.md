@@ -29,6 +29,16 @@
 - Prefer early-stage checks such as smoke tests, import tests, CLI tests, schema checks, or example-based checks.
 - If tests are deferred, document the gap; do not imply coverage that does not exist.
 
+## Pre-PR Website Validation Gate (Required)
+- For any change affecting docs content, website styling, interactive HTML, JavaScript, iframe embeds, MkDocs configuration, or published website assets, Codex must run local website validation before considering the task complete.
+- Local website validation must include all of the following:
+  1. relevant build/analysis steps for website-facing outputs,
+  2. `mkdocs build`,
+  3. Playwright tests.
+- Use `scripts/pre_pr_site_review.sh` as the default one-command workflow for this validation.
+- If any Playwright test fails, Codex must inspect failure artifacts (screenshots, traces, reports), fix the issue, and rerun the full local validation until it passes.
+- Codex must not prepare, propose, or request a PR until these local checks are passing.
+
 ## Package and Structure Separation Policy
 - Keep website structure and package structure clearly separated.
 - Do not automatically repurpose `docs/` for package-native docs or build artifacts.
