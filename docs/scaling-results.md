@@ -15,6 +15,8 @@ The figure reports the relationship \(L_d(\varepsilon)\): measured boundary leng
 
 In this synthetic run, there is **one delineation bundle** (`parcel_v0.35_r120_touches`), so the figure shows a single line with points.
 
+For a focused discussion of how satellite pixel size acts as an effective ruler and why this matters for interpretation, see [Implications for remote sensing](implications-for-remote-sensing.md).
+
 <img src="/WUI_boundary/assets/figures/boundary_scaling_plot.svg" alt="Synthetic WUI boundary scaling relationship with labeled axes and annotation" loading="lazy" class="scaling-results-plot" />
 
 *Figure 1. Synthetic demonstration of how measured boundary length \(L_d(\varepsilon)\) changes across a set of measurement scales \(\varepsilon\). Each point is one scale step for a single synthetic delineation bundle. The fitted log-log slope shown in the figure summarizes scale sensitivity over this tested range. Because this is synthetic output, treat the pattern as a workflow/interpretation example rather than an empirical estimate of real-world WUI boundary behavior.*

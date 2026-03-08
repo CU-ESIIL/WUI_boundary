@@ -258,7 +258,104 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         action="store_true",
         help="Do not copy outputs into docs/assets (useful for local experiments)",
     )
+    parser.add_argument(
+        "--include-satellite-demo",
+        action="store_true",
+        help="Also generate satellite-like resolution scaling outputs and docs assets.",
+    )
     return parser.parse_args(argv)
+
+
+def _draw_satellite_scaling_svg(
+    plot_path: Path,
+    epsilon_values: list[float],
+    perimeter_values: list[float],
+    fit_slope: float | None,
+    fit_intercept: float | None,
+) -> None:
+    """Draw a publication-style SVG for satellite-like measurement scales."""
+    width, height = 980, 620
+    margin_left, margin_right = 120, 55
+    margin_top, margin_bottom = 98, 95
+
+    x0, x1 = margin_left, width - margin_right
+    y0, y1 = margin_top, height - margin_bottom
+
+    xmin, xmax = min(epsilon_values), max(epsilon_values)
+    ymin, ymax = min(perimeter_values), max(perimeter_values)
+    ypad = (ymax - ymin) * 0.09 if ymax > ymin else 1.0
+    ymin -= ypad
+    ymax += ypad
+
+    def to_xy(xv: float, yv: float) -> tuple[float, float]:
+        xn = 0.0 if xmax == xmin else (xv - xmin) / (xmax - xmin)
+        yn = 0.0 if ymax == ymin else (yv - ymin) / (ymax - ymin)
+        px = x0 + xn * (x1 - x0)
+        py = y1 - yn * (y1 - y0)
+        return px, py
+
+    points = [to_xy(xv, yv) for xv, yv in zip(epsilon_values, perimeter_values, strict=False)]
+    polyline = " ".join(f"{x:.2f},{y:.2f}" for x, y in points)
+
+    def _fmt_y(value: float) -> str:
+        if abs(value) >= 100:
+            return f"{value:.0f}"
+        return f"{value:.1f}"
+
+    y_ticks = [ymin + (ymax - ymin) * i / 4 for i in range(5)]
+    grid_h = "\n".join(
+        f'<line x1="{x0}" y1="{y}" x2="{x1}" y2="{y}" stroke="#e1e1e1" stroke-width="1" />'
+        for y in (y0 + (y1 - y0) * i / 4 for i in range(5))
+    )
+    grid_v = "\n".join(
+        f'<line x1="{to_xy(scale, ymin)[0]:.2f}" y1="{y0}" x2="{to_xy(scale, ymin)[0]:.2f}" y2="{y1}" stroke="#e1e1e1" stroke-width="1" />'
+        for scale in epsilon_values
+    )
+    dots = "\n".join(
+        f'<circle cx="{x:.2f}" cy="{y:.2f}" r="4.2" fill="#234A65" />' for x, y in points
+    )
+    x_tick_labels = "\n".join(
+        (
+            f'<text x="{to_xy(scale, ymin)[0]:.2f}" y="{y1 + 32}" text-anchor="middle" '
+            f'font-size="14" fill="#334">{int(scale)} m</text>'
+        )
+        for scale in epsilon_values
+    )
+    y_tick_labels = "\n".join(
+        (
+            f'<text x="{x0 - 14}" y="{to_xy(xmin, tick)[1] + 5:.2f}" text-anchor="end" '
+            f'font-size="15" fill="#334">{_fmt_y(tick)}</text>'
+        )
+        for tick in y_ticks
+    )
+
+    fit_text = (
+        f"log-log fit slope = {fit_slope:.4f}, intercept = {fit_intercept:.4f}"
+        if fit_slope is not None and fit_intercept is not None
+        else "log-log fit unavailable for this synthetic run"
+    )
+
+    svg = f"""<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-label="Satellite-like resolution scaling plot for synthetic WUI boundary">
+  <rect x="0" y="0" width="{width}" height="{height}" fill="#ffffff" />
+  <text x="{x0}" y="42" font-size="30" font-weight="700" fill="#234A65">Synthetic satellite-like resolution scaling</text>
+  <text x="{x0}" y="68" font-size="16" fill="#445">Coarser pixel sizes act like larger rulers and smooth measured perimeter.</text>
+  {grid_h}
+  {grid_v}
+  <line x1="{x0}" y1="{y1}" x2="{x1}" y2="{y1}" stroke="#505050" stroke-width="1.5" />
+  <line x1="{x0}" y1="{y0}" x2="{x0}" y2="{y1}" stroke="#505050" stroke-width="1.5" />
+  {x_tick_labels}
+  {y_tick_labels}
+  <polyline fill="none" stroke="#234A65" stroke-width="2.9" points="{polyline}" />
+  {dots}
+  <text x="{(x0 + x1) / 2:.2f}" y="{height - 38}" text-anchor="middle" font-size="17" fill="#1f2e38">Satellite-like measurement scale / pixel size (meters)</text>
+  <text x="32" y="{(y0 + y1) / 2:.2f}" text-anchor="middle" font-size="17" fill="#1f2e38" transform="rotate(-90 32 {(y0 + y1) / 2:.2f})">Measured synthetic boundary length, L_d(epsilon)</text>
+  <rect x="{x0 + 20}" y="{y0 + 18}" width="610" height="92" fill="#ffffff" opacity="0.96" stroke="#d9dee2" rx="8" />
+  <text x="{x0 + 34}" y="{y0 + 48}" font-size="14" fill="#233">Synthetic demonstration only (not empirical satellite inference).</text>
+  <text x="{x0 + 34}" y="{y0 + 72}" font-size="14" fill="#233">{fit_text}</text>
+  <text x="{x0 + 34}" y="{y0 + 95}" font-size="14" fill="#233">Finer scales resolve more irregularity; coarser scales shorten apparent interface.</text>
+</svg>
+"""
+    plot_path.write_text(svg, encoding="utf-8")
 
 
 def run(args: argparse.Namespace | None = None) -> None:
@@ -341,9 +438,79 @@ def run(args: argparse.Namespace | None = None) -> None:
 
     docs_plot_path = docs_figure_dir / "boundary_scaling_plot.svg"
     docs_csv_path = docs_data_dir / "boundary_scaling_summary.csv"
+    satellite_csv_path: Path | None = None
+    satellite_png_path: Path | None = None
+    satellite_svg_path: Path | None = None
     if not args.skip_doc_publish:
         shutil.copy2(plot_svg_path, docs_plot_path)
         shutil.copy2(table_path, docs_csv_path)
+
+    if args.include_satellite_demo:
+        satellite_scales = [1.0, 10.0, 30.0, 100.0, 250.0, 500.0]
+        satellite_measurement = measure_perimeter_over_scales_toy(
+            boundary_points=boundary,
+            epsilon_values=satellite_scales,
+            boundary_object_id="synthetic_wui_boundary_001",
+            base_resolution=1.0,
+        )
+        satellite_fit = fit_loglog_scaling(
+            satellite_measurement["epsilon_values"],
+            satellite_measurement["perimeter_values"],
+        )
+
+        satellite_csv_path = output_dir / "satellite_resolution_scaling_summary.csv"
+        with satellite_csv_path.open("w", newline="", encoding="utf-8") as handle:
+            writer = csv.DictWriter(
+                handle,
+                fieldnames=[
+                    "delineation_id",
+                    "boundary_object_id",
+                    "measurement_scale_m",
+                    "perimeter",
+                    "fit_status",
+                    "loglog_slope",
+                    "loglog_intercept",
+                    "n_scales",
+                ],
+            )
+            writer.writeheader()
+            for epsilon, perimeter in zip(
+                satellite_measurement["epsilon_values"],
+                satellite_measurement["perimeter_values"],
+                strict=False,
+            ):
+                writer.writerow(
+                    {
+                        "delineation_id": summary_row["delineation_id"],
+                        "boundary_object_id": satellite_measurement["boundary_object_id"],
+                        "measurement_scale_m": epsilon,
+                        "perimeter": perimeter,
+                        "fit_status": satellite_fit.status,
+                        "loglog_slope": satellite_fit.slope,
+                        "loglog_intercept": satellite_fit.intercept,
+                        "n_scales": len(satellite_measurement["epsilon_values"]),
+                    }
+                )
+
+        satellite_png_path = output_dir / "satellite_resolution_scaling_plot.png"
+        _draw_scaling_plot(
+            satellite_png_path,
+            satellite_measurement["epsilon_values"],
+            satellite_measurement["perimeter_values"],
+        )
+
+        satellite_svg_path = output_dir / "satellite_resolution_scaling_plot.svg"
+        _draw_satellite_scaling_svg(
+            satellite_svg_path,
+            satellite_measurement["epsilon_values"],
+            satellite_measurement["perimeter_values"],
+            satellite_fit.slope,
+            satellite_fit.intercept,
+        )
+
+        if not args.skip_doc_publish:
+            shutil.copy2(satellite_svg_path, docs_figure_dir / "satellite_resolution_scaling_plot.svg")
+            shutil.copy2(satellite_csv_path, docs_data_dir / "satellite_resolution_scaling_summary.csv")
 
     summary_lines = [
         "# Minimal boundary scaling demo summary",
@@ -360,17 +527,25 @@ def run(args: argparse.Namespace | None = None) -> None:
         f"- scaling fit status: `{fit.status}`",
         f"- estimated log-log slope: `{fit.slope}`",
         f"- docs publish step: {'skipped' if args.skip_doc_publish else 'enabled'}",
+        f"- satellite-like resolution demo: {'enabled' if args.include_satellite_demo else 'disabled'}",
     ]
     write_markdown_summary(output_dir / "run_summary.md", summary_lines)
 
     print(f"Wrote: {table_path}")
     print(f"Wrote: {plot_path}")
     print(f"Wrote: {plot_svg_path}")
+    if satellite_csv_path is not None and satellite_png_path is not None and satellite_svg_path is not None:
+        print(f"Wrote: {satellite_csv_path}")
+        print(f"Wrote: {satellite_png_path}")
+        print(f"Wrote: {satellite_svg_path}")
     if args.skip_doc_publish:
         print("Skipped docs asset publish (--skip-doc-publish).")
     else:
         print(f"Published: {docs_csv_path}")
         print(f"Published: {docs_plot_path}")
+        if args.include_satellite_demo:
+            print(f"Published: {docs_data_dir / 'satellite_resolution_scaling_summary.csv'}")
+            print(f"Published: {docs_figure_dir / 'satellite_resolution_scaling_plot.svg'}")
     print(f"Wrote: {output_dir / 'run_summary.md'}")
 
 
