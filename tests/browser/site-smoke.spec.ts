@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { attachDiagnostics, saveReviewScreenshot } from './utils';
+import { assertNo404Page, attachDiagnostics, saveReviewScreenshot } from './utils';
 
 const keyPages = [
   { name: 'home', path: '' },
@@ -18,7 +18,7 @@ for (const pageCheck of keyPages) {
 
     await expect(page).toHaveTitle(/\S+/);
     await expect(page.locator('main')).toBeVisible();
-    await expect(page.getByText(/page not found|404/i)).toHaveCount(0);
+    await assertNo404Page(page);
 
     await saveReviewScreenshot(page, testInfo, pageCheck.name);
     await diagnostics.assertAndAttach();
