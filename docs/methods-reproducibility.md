@@ -9,10 +9,14 @@ What follows documents the current execution pathway, the published outputs, and
 Install dependencies and run baseline checks:
 
 ```bash
+pip install -e .
 pip install -r requirements.txt
 python -m unittest discover -s tests -v
 python scripts/run_minimal_boundary_scaling.py --include-satellite-demo
 ```
+
+
+The package dependencies declared in `pyproject.toml` include the geospatial runtime stack required by the streaming pilot (`geopandas`, `rasterio`, `shapely`, `pyproj`, `pyogrio`, `numpy`, `pandas`, `matplotlib`, and `scipy`). Install the package (`pip install -e .`) before running `scripts/run_streaming_wui_scaling.py` so those imports resolve in normal execution environments.
 
 Run the website validation gate for docs and UI-facing changes:
 

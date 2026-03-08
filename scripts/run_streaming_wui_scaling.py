@@ -295,11 +295,18 @@ def _publish_docs_assets(outdir: Path) -> dict:
         outdir / "fixed_boundary_scaling.csv": docs_data / "real_fixed_boundary_scaling.csv",
         outdir / "resolution_rebuild_scaling.csv": docs_data / "real_resolution_rebuild_scaling.csv",
     }
+    missing_sources = [str(src.relative_to(ROOT)) for src in mapping if not src.exists()]
+    if missing_sources:
+        missing_fmt = ", ".join(missing_sources)
+        raise RuntimeError(
+            "Cannot publish docs assets because required run outputs are missing: "
+            f"{missing_fmt}."
+        )
+
     published = {}
     for src, dst in mapping.items():
-        if src.exists():
-            shutil.copy2(src, dst)
-            published[str(dst.relative_to(ROOT))] = str(src.relative_to(ROOT))
+        shutil.copy2(src, dst)
+        published[str(dst.relative_to(ROOT))] = str(src.relative_to(ROOT))
     return published
 
 
