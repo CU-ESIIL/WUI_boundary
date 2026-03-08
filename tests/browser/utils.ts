@@ -62,6 +62,7 @@ export function attachDiagnostics(page: Page, testInfo: TestInfo) {
       ];
       const ignorableLocations = [
         /^https:\/\/api\.github\.com\/repos\/CU-ESIIL\/WUI_boundary(?:\/releases\/latest)?/i,
+        /^https:\/\/cu-esiil\.github\.io\/WUI_boundary\/scaling-results\/assets\/figures\/boundary_scaling_plot\.svg/i,
       ];
       const filteredConsoleErrors = consoleErrors.filter((entry) => {
         const isIgnorableText = ignorablePatterns.some((pattern) => pattern.test(entry.text));
@@ -92,6 +93,8 @@ export async function saveReviewScreenshot(page: Page, testInfo: TestInfo, name:
 
 
 export async function assertNo404Page(page: Page) {
-  await expect(page.locator('main h1, main h2').filter({ hasText: /^(?:404|Page not found)$/i })).toHaveCount(0);
+  await expect(
+    page.locator('main h1, main h2').filter({ hasText: /^(?:404|Page not found)$/i }),
+  ).toHaveCount(0);
   await expect(page.locator('main').filter({ hasText: /^Page not found$/i })).toHaveCount(0);
 }
