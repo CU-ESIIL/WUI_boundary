@@ -29,6 +29,8 @@ where **\(d\)** is the delineation choice (what counts as the boundary) and **\(
     See the latest published figure and CSV on [Scaling Results](scaling-results.md).  
     If those look stale, the workflow likely ran on a PR (artifact only) rather than a manual dispatch (commits docs assets).
 
+Satellite-like measurement scale is now treated explicitly as part of interpretation; see [Implications for remote sensing](implications-for-remote-sensing.md) for a manuscript-style discussion and synthetic scale demonstration.
+
 ## The question
 
 When WUI boundaries are used for exposure, risk, and planning decisions, perimeter length is often treated as if it were a stable property of the landscape. This site treats that assumption as a testable scientific hypothesis.

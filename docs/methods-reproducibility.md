@@ -47,7 +47,7 @@ Not yet implemented:
 ```bash
 pip install -r requirements.txt
 python -m unittest discover -s tests -v
-python scripts/run_minimal_boundary_scaling.py
+python scripts/run_minimal_boundary_scaling.py --include-satellite-demo
 ```
 
 By default, this local command writes to both:
@@ -83,7 +83,7 @@ So PR runs validate and generate artifacts, but do not refresh the published sit
 ### 1) Standard local run (default scenario)
 
 ```bash
-python scripts/run_minimal_boundary_scaling.py
+python scripts/run_minimal_boundary_scaling.py --include-satellite-demo
 ```
 
 Inspect:
@@ -91,8 +91,12 @@ Inspect:
 - `outputs/minimal_demo/run_summary.md`
 - `outputs/minimal_demo/boundary_scaling_summary.csv`
 - `outputs/minimal_demo/boundary_scaling_plot.png`
+- `outputs/minimal_demo/satellite_resolution_scaling_plot.png`
+- `outputs/minimal_demo/satellite_resolution_scaling_summary.csv`
 - `docs/assets/data/boundary_scaling_summary.csv`
+- `docs/assets/data/satellite_resolution_scaling_summary.csv`
 - `docs/assets/figures/boundary_scaling_plot.svg`
+- `docs/assets/figures/satellite_resolution_scaling_plot.svg`
 
 ### 2) Local parameter sweep / alternate scenario
 
@@ -107,7 +111,8 @@ python scripts/run_minimal_boundary_scaling.py \
   --vegetation-threshold 0.45 \
   --neighborhood-radius-m 200 \
   --adjacency-rule intersects \
-  --skip-doc-publish
+  --skip-doc-publish \
+  --include-satellite-demo
 ```
 
 Use `--skip-doc-publish` for experiments you do not want copied into `docs/assets/`.
@@ -138,6 +143,7 @@ Supported flags:
 - `--neighborhood-radius-m` (default `120.0`)
 - `--adjacency-rule` (default `touches`)
 - `--skip-doc-publish` (default disabled)
+- `--include-satellite-demo` (default disabled)
 
 
 ## Deployed website QA review (Playwright)

@@ -1,0 +1,7 @@
+delineation_id,boundary_object_id,measurement_scale_m,perimeter,fit_status,loglog_slope,loglog_intercept,n_scales
+parcel_v0.35_r120_touches,synthetic_wui_boundary_001,1.0,738.9227181354756,ok_fitted,-0.08200867676558328,6.74507067072465,6
+parcel_v0.35_r120_touches,synthetic_wui_boundary_001,10.0,737.8835417095083,ok_fitted,-0.08200867676558328,6.74507067072465,6
+parcel_v0.35_r120_touches,synthetic_wui_boundary_001,30.0,730.3127341462679,ok_fitted,-0.08200867676558328,6.74507067072465,6
+parcel_v0.35_r120_touches,synthetic_wui_boundary_001,100.0,680.9927513295079,ok_fitted,-0.08200867676558328,6.74507067072465,6
+parcel_v0.35_r120_touches,synthetic_wui_boundary_001,250.0,601.0314113118473,ok_fitted,-0.08200867676558328,6.74507067072465,6
+parcel_v0.35_r120_touches,synthetic_wui_boundary_001,500.0,379.1340790236104,ok_fitted,-0.08200867676558328,6.74507067072465,6
