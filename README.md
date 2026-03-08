@@ -53,6 +53,23 @@ npx playwright install --with-deps chromium
 npm run test:site-review
 ```
 
+## Local pre-PR website review (Codex and contributors)
+
+Run this before opening or proposing a PR for website-related changes:
+
+```bash
+npm run review:site
+```
+
+This one command runs the site-facing analysis step (`python scripts/run_minimal_demo.py`), performs `mkdocs build --strict`, ensures Playwright dependencies are installed, and executes local Playwright tests.
+
+If Playwright fails, inspect artifacts and fix before retrying:
+
+- `playwright-report/` for the HTML report
+- `test-results/` for screenshots, traces, and videos on failure
+
+GitHub Actions remains the final CI gate, but local review should catch most website/UI regressions earlier.
+
 ## Project status
 
 At present, the repository demonstrates the conceptual framework with synthetic boundary geometries and synthetic scaling outputs. It is designed to grow toward empirical WUI datasets and case-based analyses while keeping delineation choices, measurement scale, and interpretation transparent.

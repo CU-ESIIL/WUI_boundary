@@ -6,7 +6,9 @@
   "scripts": {
     "test:site-review": "playwright test",
     "test:site-review:headed": "playwright test --headed",
-    "test:site-review:report": "playwright show-report"
+    "test:site-review:report": "playwright show-report",
+    "test:playwright": "playwright test",
+    "review:site": "scripts/pre_pr_site_review.sh"
   },
   "devDependencies": {
     "@playwright/test": "^1.54.2"

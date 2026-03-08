@@ -3,6 +3,9 @@
 ## Unreleased
 
 ### Changed
+- Updated `AGENTS.md` with a required pre-PR website validation gate: docs/site-affecting changes must pass local build + MkDocs + Playwright checks before PR proposal.
+- Updated `package.json` scripts with `test:playwright` and `review:site` convenience commands.
+- Updated `README.md` with contributor instructions for the local pre-PR website review workflow and artifact locations.
 - Upgraded the synthetic boundary-scaling figure generator to emit a publication-style SVG with an internal title, explicit axis labels, readable tick labels, and an in-plot annotation panel for delineation, fitted slope, and number of evaluated scales.
 - Rewrote `docs/scaling-results.md` as a manuscript-like results narrative with a clear synthetic-status callout, figure caption, "how to read" guidance, plain-language interpretation, and reader-friendly summary-table column definitions.
 - Restored desktop manuscript navigation visibility by scoping white nav text overrides to header/tab chrome and adding explicit readable primary-sidebar link/active states in the ESIIL theme CSS.
@@ -32,6 +35,8 @@
 - Demoted legacy template-era pages under `docs/ui-drafts/` and `docs/analytics/` to internal archive stubs and removed `docs/examples.md` from the project.
 
 ### Added
+- Added `scripts/pre_pr_site_review.sh` as a one-command local pre-PR website validation workflow that runs demo build steps, `mkdocs build --strict`, Playwright dependency setup, and Playwright tests.
+- Added Codex skill guidance at `codex/skills/site-review/SKILL.md` for iterative website review/fix loops using local Playwright artifacts.
 - Added `docs/ui-drafts/draft-3/story-lab-responsive.html`, a third Story Lab draft tuned for iframe/tablet/mobile layouts with later single-column breakpoints and tighter control-to-map educational grouping.
 - Added `pyproject.toml` so the repository supports editable installs via `pip install -e .` for the documented demo workflow.
 - Added `scripts/run_minimal_demo.py` as a concise entry point that calls the existing minimal boundary-scaling runner.
