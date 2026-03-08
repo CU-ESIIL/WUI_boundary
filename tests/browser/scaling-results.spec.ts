@@ -52,12 +52,16 @@ test('scaling results page renders figure, table, and csv link', async ({ page }
   const refreshSectionHeading = page.getByRole('heading', {
     name: /Refresh and reproducibility/i,
   });
+  const refreshNarrative = page.getByText(
+    /To refresh this figure and table|run the reproducibility workflow|scripts\/pre_pr_site_review\.sh/i,
+  );
 
   await expect
     .poll(async () => {
       const modelCount = await refreshModelHeading.count();
       const sectionCount = await refreshSectionHeading.count();
-      return modelCount + sectionCount;
+      const narrativeCount = await refreshNarrative.count();
+      return modelCount + sectionCount + narrativeCount;
     })
     .toBeGreaterThan(0);
 

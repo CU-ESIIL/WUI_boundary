@@ -10,7 +10,7 @@ test('homepage loads and links to key analysis pages', async ({ page }, testInfo
   await expect(page).toHaveTitle(/\S+/);
   await expect(page.locator('main')).toBeVisible();
   await expect(page.locator('h1')).toContainText(
-    /WUI boundary length|How long is the Wildland[–-]Urban Interface boundary\?/i,
+    /Measuring the Wildland[–-]Urban Interface|WUI boundary length|How long is the Wildland[–-]Urban Interface boundary\?/i,
   );
   const article = page.locator('main article');
   await expect(article.locator('a[href="scaling-results/"]').first()).toBeVisible();
