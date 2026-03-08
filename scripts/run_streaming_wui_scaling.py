@@ -20,18 +20,61 @@ Scientific scope and honesty notes:
 from __future__ import annotations
 
 import argparse
+import io
 import json
 import math
 import shutil
 import sys
+import time
 from pathlib import Path
 
 import requests
 
 ROOT = Path(__file__).resolve().parents[1]
 
-OVERPASS_URL = "https://overpass-api.de/api/interpreter"
-DEFAULT_NLCD_URL = "https://prd-tnm.s3.amazonaws.com/StagedProducts/NLCD/data/2021/land_cover/nlcd_2021_land_cover_l48_20210604_cog.tif"
+OVERPASS_URLS = [
+    "https://overpass-api.de/api/interpreter",
+    "https://overpass.kumi.systems/api/interpreter",
+    "https://lz4.overpass-api.de/api/interpreter",
+]
+DEFAULT_NLCD_URLS = [
+    "https://prd-tnm.s3.amazonaws.com/StagedProducts/NLCD/data/2021/land_cover/nlcd_2021_land_cover_l48_20210604_cog.tif",
+    "https://s3-us-west-2.amazonaws.com/mrlc/nlcd_2021_land_cover_l48_20230630_cog.tif",
+]
+DEFAULT_NLCD_URL = DEFAULT_NLCD_URLS[0]
+MRLC_WMS_ENDPOINT = "https://www.mrlc.gov/geoserver/mrlc_display/wms"
+
+
+
+
+def _candidate_nlcd_urls(nlcd_url: str) -> list[str]:
+    urls = [nlcd_url] + [u for u in DEFAULT_NLCD_URLS if u != nlcd_url]
+    deduped: list[str] = []
+    for url in urls:
+        if url not in deduped:
+            deduped.append(url)
+    return deduped
+
+
+def _series_union(series):
+    union_all = getattr(series, "union_all", None)
+    if callable(union_all):
+        return union_all()
+    return series.unary_union
+
+
+
+
+def _vegetation_mask_from_classes(arr, veg_classes, np):
+    mask = np.isin(arr, veg_classes)
+    if mask.any():
+        return mask, "requested_classes"
+
+    # Fallback for services that return remapped/visualized class rasters where
+    # original NLCD class IDs are not preserved in-band.
+    arr_int = arr.astype("int64", copy=False)
+    fallback_mask = arr_int > 0
+    return fallback_mask, "nonzero_fallback"
 
 
 def _load_geospatial_deps() -> dict:
@@ -124,6 +167,18 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument("--nlcd-url", default=DEFAULT_NLCD_URL, help="Remote NLCD raster URL (COG recommended)")
     parser.add_argument(
+        "--network-timeout-s",
+        type=int,
+        default=90,
+        help="Per-request network timeout in seconds for Overpass/NLCD fetches",
+    )
+    parser.add_argument(
+        "--max-network-attempts",
+        type=int,
+        default=2,
+        help="Retry attempts per network source before fallback",
+    )
+    parser.add_argument(
         "--publish-doc-assets",
         action="store_true",
         help="Copy key outputs to docs/assets/{figures,data} for website publication",
@@ -131,7 +186,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     return parser.parse_args(argv)
 
 
-def _query_overpass_buildings(bbox: tuple[float, float, float, float], timeout_s: int = 120) -> dict:
+def _query_overpass_buildings(
+    bbox: tuple[float, float, float, float],
+    timeout_s: int = 120,
+    max_attempts_per_endpoint: int = 2,
+    request_timeout_s: int = 150,
+) -> dict:
     min_lon, min_lat, max_lon, max_lat = bbox
     # Keep this modest and bbox-limited for a small no-keys pilot run.
     query = f"""
@@ -142,9 +202,29 @@ def _query_overpass_buildings(bbox: tuple[float, float, float, float], timeout_s
     );
     out geom;
     """
-    resp = requests.post(OVERPASS_URL, data=query, timeout=timeout_s + 30)
-    resp.raise_for_status()
-    return resp.json()
+
+    last_exc: Exception | None = None
+    for endpoint in OVERPASS_URLS:
+        for attempt in range(1, max_attempts_per_endpoint + 1):
+            try:
+                resp = requests.post(endpoint, data=query, timeout=request_timeout_s)
+                if resp.status_code in {429, 502, 503, 504}:
+                    raise requests.HTTPError(
+                        f"Transient Overpass status {resp.status_code} at {endpoint}",
+                        response=resp,
+                    )
+                resp.raise_for_status()
+                return resp.json()
+            except (requests.Timeout, requests.ConnectionError, requests.HTTPError, ValueError) as exc:
+                last_exc = exc
+                if attempt < max_attempts_per_endpoint:
+                    time.sleep(2 * attempt)
+                continue
+
+    raise RuntimeError(
+        "Overpass request failed across all configured endpoints "
+        f"({', '.join(OVERPASS_URLS)})."
+    ) from last_exc
 
 
 def _build_building_gdf(overpass_json: dict, deps: dict):
@@ -172,6 +252,78 @@ def _build_building_gdf(overpass_json: dict, deps: dict):
     return gdf
 
 
+def _estimate_wms_shape(bbox_lonlat: tuple[float, float, float, float]) -> tuple[int, int]:
+    min_lon, min_lat, max_lon, max_lat = bbox_lonlat
+    mean_lat = (min_lat + max_lat) / 2.0
+    meters_per_deg_lat = 111320.0
+    meters_per_deg_lon = 111320.0 * max(0.2, math.cos(math.radians(mean_lat)))
+    width_m = max((max_lon - min_lon) * meters_per_deg_lon, 30.0)
+    height_m = max((max_lat - min_lat) * meters_per_deg_lat, 30.0)
+    width_px = max(32, min(4096, int(round(width_m / 30.0))))
+    height_px = max(32, min(4096, int(round(height_m / 30.0))))
+    return width_px, height_px
+
+
+def _fetch_nlcd_wms_mask(
+    bbox_lonlat: tuple[float, float, float, float],
+    veg_classes: list[int],
+    deps: dict,
+    network_timeout_s: int = 180,
+    max_attempts_per_layer: int = 2,
+):
+    np = deps["np"]
+    rasterio = deps["rasterio"]
+
+    width_px, height_px = _estimate_wms_shape(bbox_lonlat)
+    layer_candidates = [
+        "mrlc_download:NLCD_2021_Land_Cover_L48",
+        "mrlc_display:NLCD_2021_Land_Cover_L48",
+    ]
+
+    last_result = None
+    for layer_name in layer_candidates:
+        params = {
+            "service": "WMS",
+            "version": "1.1.1",
+            "request": "GetMap",
+            "layers": layer_name,
+            "styles": "",
+            "srs": "EPSG:4326",
+            "bbox": f"{bbox_lonlat[0]},{bbox_lonlat[1]},{bbox_lonlat[2]},{bbox_lonlat[3]}",
+            "width": str(width_px),
+            "height": str(height_px),
+            "format": "image/geotiff",
+            "transparent": "false",
+        }
+        for attempt in range(1, max_attempts_per_layer + 1):
+            try:
+                resp = requests.get(MRLC_WMS_ENDPOINT, params=params, timeout=network_timeout_s)
+                resp.raise_for_status()
+
+                with rasterio.MemoryFile(io.BytesIO(resp.content).getvalue()) as memfile:
+                    with memfile.open() as src:
+                        arr = src.read(1)
+                        transform = src.transform
+                        res_x = abs(src.transform.a)
+                        src_crs = src.crs
+
+                veg_mask, mode = _vegetation_mask_from_classes(arr, veg_classes, np)
+                last_result = (veg_mask, transform, float(res_x), src_crs, mode)
+                if mode == "requested_classes":
+                    return veg_mask, transform, float(res_x), src_crs
+                break
+            except Exception:
+                if attempt < max_attempts_per_layer:
+                    time.sleep(attempt)
+                continue
+
+    if last_result is None:
+        raise RuntimeError("WMS fallback returned no readable raster payload.")
+
+    veg_mask, transform, res_x, src_crs, _ = last_result
+    return veg_mask, transform, res_x, src_crs
+
+
 def _utm_crs_for_lonlat(lon: float, lat: float, deps: dict):
     CRS = deps["CRS"]
     zone = int((lon + 180.0) / 6.0) + 1
@@ -184,24 +336,58 @@ def _clip_nlcd_mask(
     nlcd_url: str,
     veg_classes: list[int],
     deps: dict,
+    network_timeout_s: int = 120,
+    max_attempts_per_source: int = 2,
 ):
     np = deps["np"]
     rasterio = deps["rasterio"]
     from_bounds = deps["from_bounds"]
 
-    with rasterio.open(nlcd_url) as src:
-        left, bottom, right, top = rasterio.warp.transform_bounds(
-            "EPSG:4326", src.crs, bbox_lonlat[0], bbox_lonlat[1], bbox_lonlat[2], bbox_lonlat[3], densify_pts=21
-        )
-        window = from_bounds(left, bottom, right, top, src.transform)
-        window = window.round_offsets().round_lengths()
-        arr = src.read(1, window=window, boundless=True)
-        transform = src.window_transform(window)
-        res_x = abs(src.transform.a)
-        src_crs = src.crs
+    last_exc: Exception | None = None
+    attempted: list[str] = []
+    for candidate_url in _candidate_nlcd_urls(nlcd_url):
+        attempted.append(candidate_url)
+        for attempt in range(1, max_attempts_per_source + 1):
+            try:
+                with rasterio.Env(GDAL_HTTP_TIMEOUT=str(network_timeout_s)):
+                    with rasterio.open(candidate_url) as src:
+                        left, bottom, right, top = rasterio.warp.transform_bounds(
+                            "EPSG:4326",
+                            src.crs,
+                            bbox_lonlat[0],
+                            bbox_lonlat[1],
+                            bbox_lonlat[2],
+                            bbox_lonlat[3],
+                            densify_pts=21,
+                        )
+                        window = from_bounds(left, bottom, right, top, src.transform)
+                        window = window.round_offsets().round_lengths()
+                        arr = src.read(1, window=window, boundless=True)
+                        transform = src.window_transform(window)
+                        res_x = abs(src.transform.a)
+                        src_crs = src.crs
 
-    veg_mask = np.isin(arr, veg_classes)
-    return veg_mask, transform, float(res_x), src_crs
+                veg_mask, _ = _vegetation_mask_from_classes(arr, veg_classes, np)
+                return veg_mask, transform, float(res_x), src_crs
+            except Exception as exc:
+                last_exc = exc
+                if attempt < max_attempts_per_source:
+                    time.sleep(attempt)
+                continue
+
+    try:
+        return _fetch_nlcd_wms_mask(
+            bbox_lonlat,
+            veg_classes,
+            deps,
+            network_timeout_s=network_timeout_s,
+            max_attempts_per_layer=max_attempts_per_source,
+        )
+    except Exception as wms_exc:
+        raise RuntimeError(
+            "Unable to open any NLCD source URL for streaming window extraction, and WMS fallback also failed. "
+            f"Attempted COG URLs: {attempted}. WMS endpoint: {MRLC_WMS_ENDPOINT}."
+        ) from wms_exc
 
 
 def _mask_to_polygons(mask, transform, deps):
@@ -295,11 +481,18 @@ def _publish_docs_assets(outdir: Path) -> dict:
         outdir / "fixed_boundary_scaling.csv": docs_data / "real_fixed_boundary_scaling.csv",
         outdir / "resolution_rebuild_scaling.csv": docs_data / "real_resolution_rebuild_scaling.csv",
     }
+    missing_sources = [str(src.relative_to(ROOT)) for src in mapping if not src.exists()]
+    if missing_sources:
+        missing_fmt = ", ".join(missing_sources)
+        raise RuntimeError(
+            "Cannot publish docs assets because required run outputs are missing: "
+            f"{missing_fmt}."
+        )
+
     published = {}
     for src, dst in mapping.items():
-        if src.exists():
-            shutil.copy2(src, dst)
-            published[str(dst.relative_to(ROOT))] = str(src.relative_to(ROOT))
+        shutil.copy2(src, dst)
+        published[str(dst.relative_to(ROOT))] = str(src.relative_to(ROOT))
     return published
 
 
@@ -319,18 +512,30 @@ def main(argv: list[str] | None = None) -> int:
     outdir.mkdir(parents=True, exist_ok=True)
 
     try:
-        overpass_json = _query_overpass_buildings(bbox)
+        overpass_json = _query_overpass_buildings(
+            bbox,
+            timeout_s=max(30, args.network_timeout_s),
+            max_attempts_per_endpoint=max(1, args.max_network_attempts),
+            request_timeout_s=max(30, args.network_timeout_s),
+        )
         buildings_wgs84 = _build_building_gdf(overpass_json, deps)
     except Exception as exc:
         raise RuntimeError(f"Failed to build settlement geometry from Overpass: {exc}") from exc
 
-    centroid = buildings_wgs84.geometry.unary_union.centroid
+    centroid = _series_union(buildings_wgs84.geometry).centroid
     metric_crs = _utm_crs_for_lonlat(centroid.x, centroid.y, deps)
     buildings_metric = buildings_wgs84.to_crs(metric_crs)
-    settlement_union = buildings_metric.geometry.unary_union
+    settlement_union = _series_union(buildings_metric.geometry)
 
     try:
-        veg_mask, veg_transform, base_res_m, nlcd_crs = _clip_nlcd_mask(bbox, args.nlcd_url, veg_classes, deps)
+        veg_mask, veg_transform, base_res_m, nlcd_crs = _clip_nlcd_mask(
+            bbox,
+            args.nlcd_url,
+            veg_classes,
+            deps,
+            network_timeout_s=max(30, args.network_timeout_s),
+            max_attempts_per_source=max(1, args.max_network_attempts),
+        )
     except Exception as exc:
         raise RuntimeError(
             "Failed to stream/clip NLCD raster window. Check --nlcd-url and network access."
