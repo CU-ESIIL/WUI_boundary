@@ -25,11 +25,11 @@ The core layout is compact. `docs/` contains the website narrative, while `docs/
 ## Running the demo analysis
 
 ```bash
-pip install -e .
+python -m pip install -e .
 python scripts/run_minimal_demo.py
 ```
 
-Demo outputs are written to `outputs/` (specifically `outputs/minimal_demo/` for the current minimal run).
+Demo outputs are written to `outputs/` (specifically `outputs/minimal_demo/` for the current minimal run). The canonical runtime install path is editable package install (`python -m pip install -e .`), which includes geospatial dependencies for the streaming real-data pilot. `requirements.txt` is reserved for documentation tooling (MkDocs) layered on top when needed.
 
 
 ## Automated deployed-site review (Playwright)

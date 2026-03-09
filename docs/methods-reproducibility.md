@@ -9,14 +9,13 @@ What follows documents the current execution pathway, the published outputs, and
 Install dependencies and run baseline checks:
 
 ```bash
-pip install -e .
-pip install -r requirements.txt
+python -m pip install -e .
+python -m pip install -r requirements.txt
 python -m unittest discover -s tests -v
 python scripts/run_minimal_boundary_scaling.py --include-satellite-demo
 ```
 
-
-The package dependencies declared in `pyproject.toml` include the geospatial runtime stack required by the streaming pilot (`geopandas`, `rasterio`, `shapely`, `pyproj`, `pyogrio`, `numpy`, `pandas`, `matplotlib`, and `scipy`). Install the package (`pip install -e .`) before running `scripts/run_streaming_wui_scaling.py` so those imports resolve in normal execution environments.
+The canonical install path for contributors and CI runtime is `python -m pip install -e .`. This installs the geospatial stack needed by the streaming pilot (`geopandas`, `rasterio`, `shapely`, `pyproj`, `pyogrio`, `numpy`, `pandas`, `matplotlib`, `requests`, and `scipy`). `requirements.txt` is documentation-only (MkDocs) and should be layered on top when you need local site builds.
 
 Run the website validation gate for docs and UI-facing changes:
 
@@ -60,6 +59,8 @@ docs/assets/data/real_fixed_boundary_scaling.csv
 docs/assets/data/real_resolution_rebuild_scaling.csv
 ```
 
+CI and local pre-PR site review now include an explicit hard check for these four docs-facing real-data assets. If any are missing, the workflow exits with a clear error instead of allowing a successful docs build with implied-but-absent empirical outputs.
+
 The local analysis run refreshes the published synthetic assets used by the manuscript pages:
 
 ```text
@@ -93,6 +94,6 @@ python scripts/run_streaming_wui_scaling.py --help
 
 In pull requests, generated artifacts are attached for review in CI. Publication to GitHub Pages still occurs through the repository’s manual dispatch release workflow when maintainers decide to promote a validated revision.
 
-Playwright-backed local review remains part of the expected validation path for website-facing changes, and `scripts/pre_pr_site_review.sh` is the canonical entry point for that check.
+Playwright-backed local review remains part of the expected validation path for website-facing changes, and `scripts/pre_pr_site_review.sh` is the canonical entry point for that check. If geospatial runtime support or network access is unavailable, the streaming pilot may fail before publication; in that case, do not publish placeholders—fix the environment or fail the check clearly.
 
 For prompt-level reconstruction of the workflow narrative and implementation sequence, see [Reproducible prompts](reproducible-prompts.md). For the synthetic-to-empirical handoff now scaffolded in code, see [Real-data experiments](real-data-experiments.md). The staged development context for both is summarized in the [Project roadmap](project-roadmap.md).
