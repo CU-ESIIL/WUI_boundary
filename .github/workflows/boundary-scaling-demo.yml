@@ -31,7 +31,24 @@ jobs:
       - name: Run minimal boundary scaling analysis
         run: python scripts/run_minimal_boundary_scaling.py --include-satellite-demo
 
-      - name: Run streaming real-data boundary scaling analysis
+      - name: Verify required committed real-data docs assets
+        run: |
+          required=(
+            docs/assets/figures/real_fixed_boundary_scaling.png
+            docs/assets/figures/real_resolution_rebuild_scaling.png
+            docs/assets/data/real_fixed_boundary_scaling.csv
+            docs/assets/data/real_resolution_rebuild_scaling.csv
+          )
+          for path in "${required[@]}"; do
+            if [[ ! -f "$path" ]]; then
+              echo "::error::Missing required committed real-data docs asset: $path"
+              echo "::error::Regenerate with: python scripts/run_streaming_wui_scaling.py --bbox=-105.292,40.004,-105.236,40.047 --outdir outputs/real_data_demo --publish-doc-assets"
+              exit 1
+            fi
+          done
+
+      - name: Run streaming real-data boundary scaling analysis (manual refresh)
+        if: github.event_name == 'workflow_dispatch'
         timeout-minutes: 10
         env:
           PYTHONUNBUFFERED: "1"
@@ -43,21 +60,19 @@ jobs:
             --max-network-attempts 1 \
             --max-runtime-s 480 \
             --publish-doc-assets
-      - name: Verify required real-data outputs
+
+      - name: Verify generated real-data outputs (manual refresh)
+        if: github.event_name == 'workflow_dispatch'
         run: |
           required=(
             outputs/real_data_demo/fixed_boundary_scaling.png
             outputs/real_data_demo/resolution_rebuild_scaling.png
             outputs/real_data_demo/fixed_boundary_scaling.csv
             outputs/real_data_demo/resolution_rebuild_scaling.csv
-            docs/assets/figures/real_fixed_boundary_scaling.png
-            docs/assets/figures/real_resolution_rebuild_scaling.png
-            docs/assets/data/real_fixed_boundary_scaling.csv
-            docs/assets/data/real_resolution_rebuild_scaling.csv
           )
           for path in "${required[@]}"; do
             if [[ ! -f "$path" ]]; then
-              echo "::error::Missing required real-data artifact: $path"
+              echo "::error::Missing required real-data output: $path"
               exit 1
             fi
           done
@@ -70,6 +85,7 @@ jobs:
           if-no-files-found: error
 
       - name: Upload real-data demo outputs
+        if: github.event_name == 'workflow_dispatch'
         uses: actions/upload-artifact@v4
         with:
           name: boundary-scaling-real-data-demo
@@ -77,6 +93,7 @@ jobs:
           if-no-files-found: error
 
   publish-doc-assets:
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     needs: run-analysis
 
