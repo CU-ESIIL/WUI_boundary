@@ -150,7 +150,7 @@ def interface_length_m(settlement, vegetation, buffer_m: float) -> float:
     settlement_buffer = settlement.buffer(buffer_m)
     if settlement_buffer.is_empty:
         return 0.0
-    shared_front = settlement_buffer.boundary.intersection(vegetation)
+    shared_front = settlement_buffer.boundary.intersection(vegetation.boundary)
     if shared_front.is_empty:
         return 0.0
     # Count both sides of the interface front to keep scale behavior stable
