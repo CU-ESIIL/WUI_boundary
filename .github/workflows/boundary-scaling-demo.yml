@@ -32,8 +32,11 @@ jobs:
         run: python scripts/run_minimal_boundary_scaling.py --include-satellite-demo
 
       - name: Run streaming real-data boundary scaling analysis
+        timeout-minutes: 15
+        env:
+          PYTHONUNBUFFERED: "1"
         run: |
-          timeout 15m python scripts/run_streaming_wui_scaling.py \
+          python scripts/run_streaming_wui_scaling.py \
             --bbox=-105.292,40.004,-105.236,40.047 \
             --outdir outputs/real_data_demo \
             --network-timeout-s 45 \
