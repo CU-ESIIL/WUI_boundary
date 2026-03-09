@@ -45,11 +45,11 @@ class StreamingModuleTests(unittest.TestCase):
         self.assertIsNotNone(geom)
         self.assertAlmostEqual(float(geom.area), 2.0)
 
-    def test_interface_length_calculation(self) -> None:
+    def test_interface_length_clipped_to_settlement_buffer_zone(self) -> None:
         settlement = box(0, 0, 10, 10)
         vegetation = box(8, 0, 20, 10)
         value = interface_length_m(settlement, vegetation, 0.0)
-        self.assertAlmostEqual(value, 20.0)
+        self.assertAlmostEqual(value, 8.0)
 
     def test_overpass_fallback(self) -> None:
         class FakeResp:
