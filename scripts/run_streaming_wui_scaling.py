@@ -179,6 +179,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         help="Retry attempts per network source before fallback",
     )
     parser.add_argument(
+        "--max-runtime-s",
+        type=int,
+        default=480,
+        help="Maximum total runtime in seconds before failing fast",
+    )
+    parser.add_argument(
         "--publish-doc-assets",
         action="store_true",
         help="Copy key outputs to docs/assets/{figures,data} for website publication",
@@ -496,13 +502,28 @@ def _publish_docs_assets(outdir: Path) -> dict:
     return published
 
 
+def _log(message: str) -> None:
+    print(message, flush=True)
+
+
+def _check_runtime_or_raise(start_ts: float, max_runtime_s: int, stage: str) -> None:
+    elapsed = time.time() - start_ts
+    if elapsed > max_runtime_s:
+        raise TimeoutError(
+            f"Streaming run exceeded max runtime ({max_runtime_s}s) at stage '{stage}' after {elapsed:.1f}s"
+        )
+
+
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
+    start_ts = time.time()
+    _log("[streaming] Starting real-data pilot run")
     bbox = _parse_bbox(args.bbox)
     epsilons = _parse_float_list(args.epsilons)
     resolutions = _parse_float_list(args.resolutions)
     veg_classes = _parse_int_list(args.veg_classes)
 
+    _check_runtime_or_raise(start_ts, args.max_runtime_s, "load_geospatial_deps")
     deps = _load_geospatial_deps()
     pd = deps["pd"]
 
@@ -511,6 +532,8 @@ def main(argv: list[str] | None = None) -> int:
         outdir = ROOT / outdir
     outdir.mkdir(parents=True, exist_ok=True)
 
+    _log("[streaming] Querying OSM buildings from Overpass")
+    _check_runtime_or_raise(start_ts, args.max_runtime_s, "query_overpass")
     try:
         overpass_json = _query_overpass_buildings(
             bbox,
@@ -527,6 +550,8 @@ def main(argv: list[str] | None = None) -> int:
     buildings_metric = buildings_wgs84.to_crs(metric_crs)
     settlement_union = _series_union(buildings_metric.geometry)
 
+    _log("[streaming] Streaming and clipping NLCD vegetation window")
+    _check_runtime_or_raise(start_ts, args.max_runtime_s, "clip_nlcd")
     try:
         veg_mask, veg_transform, base_res_m, nlcd_crs = _clip_nlcd_mask(
             bbox,
@@ -548,8 +573,10 @@ def main(argv: list[str] | None = None) -> int:
     vegetation_base_metric = deps["gpd"].GeoSeries([vegetation_base], crs=nlcd_crs).to_crs(metric_crs).iloc[0]
     interface_base, interface_length_base = _extract_interface_length(settlement_union, vegetation_base_metric, args.adj_buffer, deps)
 
+    _log("[streaming] Running fixed-boundary scaling experiment")
     fixed_rows = []
     for eps in epsilons:
+        _check_runtime_or_raise(start_ts, args.max_runtime_s, f"fixed_boundary_eps_{eps}")
         geom = interface_base.simplify(eps, preserve_topology=True) if interface_base and not interface_base.is_empty else interface_base
         length_val = 0.0 if geom is None or geom.is_empty else float(geom.length)
         fixed_rows.append({"epsilon_m": eps, "interface_length_m": length_val})
@@ -558,8 +585,10 @@ def main(argv: list[str] | None = None) -> int:
     fixed_csv = outdir / "fixed_boundary_scaling.csv"
     fixed_df.to_csv(fixed_csv, index=False)
 
+    _log("[streaming] Running resolution-rebuild scaling experiment")
     resolution_rows = []
     for target_res in resolutions:
+        _check_runtime_or_raise(start_ts, args.max_runtime_s, f"resolution_rebuild_{target_res}")
         factor = max(1, int(round(target_res / base_res_m)))
         coarse_mask = _coarsen_binary_mask(veg_mask, factor, deps)
 
@@ -589,6 +618,7 @@ def main(argv: list[str] | None = None) -> int:
     resolution_csv = outdir / "resolution_rebuild_scaling.csv"
     resolution_df.to_csv(resolution_csv, index=False)
 
+    _log("[streaming] Writing figures and tables")
     _plot_scaling(
         fixed_df["epsilon_m"].tolist(),
         fixed_df["interface_length_m"].tolist(),
@@ -609,6 +639,8 @@ def main(argv: list[str] | None = None) -> int:
     )
 
     _write_geometries(outdir, settlement_union, vegetation_base_metric, interface_base, metric_crs, deps)
+
+    _check_runtime_or_raise(start_ts, args.max_runtime_s, "publish_summary")
 
     fixed_fit = _fit_loglog(fixed_df["epsilon_m"].tolist(), fixed_df["interface_length_m"].tolist())
     rebuild_fit = _fit_loglog(
@@ -657,7 +689,7 @@ def main(argv: list[str] | None = None) -> int:
     summary_path = outdir / "run_summary.json"
     summary_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
 
-    print(f"Run complete. Summary: {summary_path.relative_to(ROOT)}")
+    _log(f"[streaming] Run complete. Summary: {summary_path.relative_to(ROOT)}")
     return 0
 
 

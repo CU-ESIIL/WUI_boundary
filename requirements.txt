@@ -1,2 +1,4 @@
+# Documentation-only dependencies.
+# Canonical runtime install for this repo is: python -m pip install -e .
 mkdocs>=1.6
 mkdocs-material>=9.5
