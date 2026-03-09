@@ -31,28 +31,23 @@ jobs:
       - name: Run minimal boundary scaling analysis
         run: python scripts/run_minimal_boundary_scaling.py --include-satellite-demo
 
-      - name: Run streaming real-data boundary scaling analysis (manual refresh)
-        if: github.event_name == 'workflow_dispatch'
+      - name: Run streaming real-data boundary scaling analysis
         timeout-minutes: 10
         env:
           PYTHONUNBUFFERED: "1"
         run: |
           python scripts/run_streaming_wui_scaling.py \
-            --bbox=-105.292,40.004,-105.236,40.047 \
+            --bbox=-105.271,40.018,-105.268,40.021 \
             --outdir outputs/real_data_demo \
-            --network-timeout-s 45 \
-            --max-network-attempts 1 \
-            --max-runtime-s 480 \
+            --resolutions=10,20,40,80 \
+            --adj-buffer=30 \
             --publish-doc-assets
 
-      - name: Verify required docs-facing real-data assets (manual refresh)
-        if: github.event_name == 'workflow_dispatch'
+      - name: Verify required docs-facing real-data assets
         run: |
           required=(
-            docs/assets/figures/real_fixed_boundary_scaling.png
-            docs/assets/figures/real_resolution_rebuild_scaling.png
-            docs/assets/data/real_fixed_boundary_scaling.csv
-            docs/assets/data/real_resolution_rebuild_scaling.csv
+            docs/assets/figures/real_interface_scaling.png
+            docs/assets/data/real_interface_scaling.csv
           )
           for path in "${required[@]}"; do
             if [[ ! -f "$path" ]]; then
@@ -61,14 +56,12 @@ jobs:
             fi
           done
 
-      - name: Verify generated real-data outputs (manual refresh)
-        if: github.event_name == 'workflow_dispatch'
+      - name: Verify generated real-data outputs
         run: |
           required=(
-            outputs/real_data_demo/fixed_boundary_scaling.png
-            outputs/real_data_demo/resolution_rebuild_scaling.png
-            outputs/real_data_demo/fixed_boundary_scaling.csv
-            outputs/real_data_demo/resolution_rebuild_scaling.csv
+            outputs/real_data_demo/interface_scaling.png
+            outputs/real_data_demo/interface_scaling.csv
+            outputs/real_data_demo/interface_scaling.json
           )
           for path in "${required[@]}"; do
             if [[ ! -f "$path" ]]; then
@@ -85,7 +78,6 @@ jobs:
           if-no-files-found: error
 
       - name: Upload real-data demo outputs
-        if: github.event_name == 'workflow_dispatch'
         uses: actions/upload-artifact@v4
         with:
           name: boundary-scaling-real-data-demo
@@ -93,7 +85,6 @@ jobs:
           if-no-files-found: error
 
   publish-doc-assets:
-    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     needs: run-analysis
 
@@ -122,10 +113,8 @@ jobs:
           cp outputs/minimal_demo/satellite_resolution_scaling_plot.svg docs/assets/figures/satellite_resolution_scaling_plot.svg
           cp outputs/minimal_demo/boundary_scaling_summary.csv docs/assets/data/boundary_scaling_summary.csv
           cp outputs/minimal_demo/satellite_resolution_scaling_summary.csv docs/assets/data/satellite_resolution_scaling_summary.csv
-          cp outputs/real_data_demo/fixed_boundary_scaling.png docs/assets/figures/real_fixed_boundary_scaling.png
-          cp outputs/real_data_demo/resolution_rebuild_scaling.png docs/assets/figures/real_resolution_rebuild_scaling.png
-          cp outputs/real_data_demo/fixed_boundary_scaling.csv docs/assets/data/real_fixed_boundary_scaling.csv
-          cp outputs/real_data_demo/resolution_rebuild_scaling.csv docs/assets/data/real_resolution_rebuild_scaling.csv
+          cp outputs/real_data_demo/interface_scaling.png docs/assets/figures/real_interface_scaling.png
+          cp outputs/real_data_demo/interface_scaling.csv docs/assets/data/real_interface_scaling.csv
 
       - name: Commit website assets back to branch
         if: github.event_name == 'workflow_dispatch' && github.actor != 'github-actions[bot]'
@@ -142,10 +131,8 @@ jobs:
             docs/assets/figures/satellite_resolution_scaling_plot.svg \
             docs/assets/data/boundary_scaling_summary.csv \
             docs/assets/data/satellite_resolution_scaling_summary.csv \
-            docs/assets/figures/real_fixed_boundary_scaling.png \
-            docs/assets/figures/real_resolution_rebuild_scaling.png \
-            docs/assets/data/real_fixed_boundary_scaling.csv \
-            docs/assets/data/real_resolution_rebuild_scaling.csv
+            docs/assets/figures/real_interface_scaling.png \
+            docs/assets/data/real_interface_scaling.csv
           if git diff --cached --quiet; then
             echo "No website asset changes to commit."
             exit 0

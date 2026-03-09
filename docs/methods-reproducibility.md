@@ -23,46 +23,37 @@ Run the website validation gate for docs and UI-facing changes:
 scripts/pre_pr_site_review.sh
 ```
 
-## Streaming real-data pilot (OSM + NLCD, no keys)
+## Streaming real-data pilot (OSM + ESA WorldCover, no keys)
 
-The repository now includes `scripts/run_streaming_wui_scaling.py`, a first empirical WUI-like pilot that pairs OSM building footprints (Overpass API) with a streamed NLCD raster subset. The workflow requires network access but no API keys or secrets. For CI and constrained runners, keep network retries bounded (`--network-timeout-s`, `--max-network-attempts`) so failures are explicit rather than ending as long-running cancellations. In GitHub Actions, pull requests run the lightweight synthetic validation path. The networked streaming refresh and docs-facing real-data asset verification are reserved for `workflow_dispatch`, capped with `timeout-minutes: 10`, and paired with the script-level `--max-runtime-s 480` guard to avoid long cancellation-prone runs.
+The repository now includes `scripts/run_streaming_wui_scaling.py`, a first empirical WUI-like pilot that pairs OSM building footprints (Overpass API) with a streamed ESA WorldCover COG window. The workflow requires network access but no API keys or secrets. In GitHub Actions, pull requests run this tiny-bbox real-data demo directly so published assets remain synchronized with code changes.
 
 Run a small-area pilot and publish docs-facing assets:
 
 ```bash
 python scripts/run_streaming_wui_scaling.py \
-  --bbox "-105.292,40.004,-105.236,40.047" \
+  --bbox "-105.271,40.018,-105.268,40.021" \
   --outdir outputs/real_data_demo \
-  --adj-buffer 250 \
-  --epsilons "5,10,20,30,60,120" \
-  --resolutions "30,60,90,120,150" \
-  --veg-classes "41,42,43,52" \
-  --network-timeout-s 45 \
-  --max-network-attempts 1 \
-  --max-runtime-s 480 \
+  --resolutions "10,20,40,80" \
+  --adj-buffer 30 \
   --publish-doc-assets
 ```
 
 Primary run outputs are written under `outputs/real_data_demo/`:
 
 ```text
-fixed_boundary_scaling.csv
-fixed_boundary_scaling.png
-resolution_rebuild_scaling.csv
-resolution_rebuild_scaling.png
-run_summary.json
+interface_scaling.csv
+interface_scaling.json
+interface_scaling.png
 ```
 
 When `--publish-doc-assets` is supplied, the script refreshes docs-facing publication assets:
 
 ```text
-docs/assets/figures/real_fixed_boundary_scaling.png
-docs/assets/figures/real_resolution_rebuild_scaling.png
-docs/assets/data/real_fixed_boundary_scaling.csv
-docs/assets/data/real_resolution_rebuild_scaling.csv
+docs/assets/figures/real_interface_scaling.png
+docs/assets/data/real_interface_scaling.csv
 ```
 
-CI and local pre-PR site review now include an explicit hard check for these four docs-facing real-data assets. If any are missing, the workflow exits with a clear error instead of allowing a successful docs build with implied-but-absent empirical outputs.
+CI and local pre-PR site review include an explicit hard check for these docs-facing real-data assets. If either is missing, the workflow exits with a clear error instead of allowing a successful docs build with implied-but-absent empirical outputs.
 
 The local analysis run refreshes the published synthetic assets used by the manuscript pages:
 

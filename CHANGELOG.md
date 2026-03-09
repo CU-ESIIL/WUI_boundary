@@ -3,6 +3,10 @@
 ## Unreleased
 
 ### Changed
+- Replaced the previous broken real-data scaling path with a minimal streaming ESA WorldCover + OSM buildings pipeline in `src/boundary_analytics/streaming_wui.py` and a thin CLI runner `scripts/run_streaming_wui_scaling.py`, producing deterministic CI-friendly outputs (`interface_scaling.csv/json/png`).
+- Added focused unit tests for coarsening, pixel-size estimation, mask-to-polygon conversion, interface-length measurement, and Overpass endpoint fallback in `tests/test_streaming_script.py`.
+- Updated the boundary-scaling GitHub Actions workflow and site review gate to run the tiny-bbox streaming demo by default and publish docs-facing assets as `real_interface_scaling.{csv,png}`.
+- Corrected `interface_length_m` in the streaming pipeline to measure the settlement-buffer interface front consistently (using buffered-settlement boundary intersection with vegetation boundary), fixing CI failure in `test_interface_length_calculation`.
 - Unblocked routine PR checks by moving strict real-data docs-asset verification out of the default PR demo workflow and into the manual `workflow_dispatch` refresh path, while retaining hard missing-asset failure gates for manual refresh and Pages deploy.
 - Standardized install workflow around editable package install (`python -m pip install -e .`) for runtime/CI paths, clarified `requirements.txt` as documentation-only dependencies, and updated local/CI website validation to fail fast when required real-data docs assets are missing.
 - Updated reproducibility and real-data docs to reflect canonical installation, explicit real-data publication behavior, and clear not-published status when docs-facing real-data assets are absent.
