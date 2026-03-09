@@ -32,7 +32,7 @@ jobs:
         run: python scripts/run_minimal_boundary_scaling.py --include-satellite-demo
 
       - name: Run streaming real-data boundary scaling analysis
-        timeout-minutes: 15
+        timeout-minutes: 10
         env:
           PYTHONUNBUFFERED: "1"
         run: |
@@ -41,6 +41,7 @@ jobs:
             --outdir outputs/real_data_demo \
             --network-timeout-s 45 \
             --max-network-attempts 1 \
+            --max-runtime-s 480 \
             --publish-doc-assets
       - name: Verify required real-data outputs
         run: |
