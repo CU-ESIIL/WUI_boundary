@@ -33,8 +33,12 @@ jobs:
 
       - name: Run streaming real-data boundary scaling analysis
         run: |
-          python scripts/run_streaming_wui_scaling.py --bbox=-105.292,40.004,-105.236,40.047 --outdir outputs/real_data_demo --publish-doc-assets
-
+          timeout 15m python scripts/run_streaming_wui_scaling.py \
+            --bbox=-105.292,40.004,-105.236,40.047 \
+            --outdir outputs/real_data_demo \
+            --network-timeout-s 45 \
+            --max-network-attempts 1 \
+            --publish-doc-assets
       - name: Verify required real-data outputs
         run: |
           required=(

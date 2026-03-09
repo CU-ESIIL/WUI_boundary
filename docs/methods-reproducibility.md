@@ -25,7 +25,7 @@ scripts/pre_pr_site_review.sh
 
 ## Streaming real-data pilot (OSM + NLCD, no keys)
 
-The repository now includes `scripts/run_streaming_wui_scaling.py`, a first empirical WUI-like pilot that pairs OSM building footprints (Overpass API) with a streamed NLCD raster subset. The workflow requires network access but no API keys or secrets.
+The repository now includes `scripts/run_streaming_wui_scaling.py`, a first empirical WUI-like pilot that pairs OSM building footprints (Overpass API) with a streamed NLCD raster subset. The workflow requires network access but no API keys or secrets. For CI and constrained runners, keep network retries bounded (`--network-timeout-s`, `--max-network-attempts`) so failures are explicit rather than ending as long-running cancellations.
 
 Run a small-area pilot and publish docs-facing assets:
 
@@ -37,6 +37,8 @@ python scripts/run_streaming_wui_scaling.py \
   --epsilons "5,10,20,30,60,120" \
   --resolutions "30,60,90,120,150" \
   --veg-classes "41,42,43,52" \
+  --network-timeout-s 45 \
+  --max-network-attempts 1 \
   --publish-doc-assets
 ```
 
