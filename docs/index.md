@@ -13,6 +13,10 @@ For this reason the quantity examined throughout this site is written as \(L_d(\
 The pages that follow move from first principles to implication. They begin by asking why complex boundaries resist simple measurement, then turn to the question of what counts as the boundary in the first place, then to interactive experiments and scaling results, and finally to the consequences for remote sensing and wildfire science. The argument is simple, but its implications are not: there is no single WUI boundary length independent of delineation and scale.
 The manuscript now also includes a first empirical pilot that streams open settlement and vegetation inputs into the same analytical frame; see [Real-data experiments](real-data-experiments.md).
 
+## Manuscript PDF
+
+For readers who prefer a single document format, the current manuscript draft is available as a PDF: [Download `main-4.pdf`](assets/main-4.pdf).
+
 <div class="oasis-embed" markdown>
   <iframe
     title="Interactive Figure — Measuring the WUI boundary"
