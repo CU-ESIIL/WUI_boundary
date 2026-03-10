@@ -3,6 +3,7 @@
 ## Unreleased
 
 ### Changed
+- Added `PROJECT_CONTEXT.md` to capture the project's full conceptual framing, working hypothesis, and initial OSM + ESA WorldCover dataset plan, and linked it from the README for discoverability.
 - Replaced the previous broken real-data scaling path with a minimal streaming ESA WorldCover + OSM buildings pipeline in `src/boundary_analytics/streaming_wui.py` and a thin CLI runner `scripts/run_streaming_wui_scaling.py`, producing deterministic CI-friendly outputs (`interface_scaling.csv/json/png`).
 - Added focused unit tests for coarsening, pixel-size estimation, mask-to-polygon conversion, interface-length measurement, and Overpass endpoint fallback in `tests/test_streaming_script.py`.
 - Updated the boundary-scaling GitHub Actions workflow and site review gate to run the tiny-bbox streaming demo by default and publish docs-facing assets as `real_interface_scaling.{csv,png}`.

@@ -18,6 +18,8 @@ This repository contains a scientific website in `docs/` that presents the argum
 
 The current code-and-docs pairing is intentionally explicit: the website explains the reasoning, and the scripts show how \(L_d(\epsilon)\) can be produced in practice. Outputs from demo runs are written to `outputs/` and selected artifacts are mirrored into `docs/assets/` for web presentation.
 
+For extended narrative context (motivation, hypothesis development, and core dataset framing), see `PROJECT_CONTEXT.md`.
+
 ## Repository structure
 
 The core layout is compact. `docs/` contains the website narrative, while `docs/ui-drafts/` holds interactive draft experiments. `src/wui_boundary/` is not used in this repository; the analytics code currently lives in `src/boundary_analytics/`. `scripts/` contains runnable analysis entry points. `outputs/` stores generated demo artifacts. `tests/` includes lightweight checks for the analytics scaffold. Site configuration lives in `mkdocs.yml`.
